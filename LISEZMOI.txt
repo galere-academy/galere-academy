@@ -1,0 +1,29 @@
+GALÈRE ACADEMY – SITE À METTRE EN LIGNE
+
+Ce dossier contient toute l'application. Il suffit de le déposer chez un hébergeur de site statique.
+Aucune base de données, aucun compte : les infos des jeunes restent sur leur téléphone.
+
+Contenu :
+- index.html : l'application
+- manifest.webmanifest, sw.js, icons/ : installation sur l'écran d'accueil et fonctionnement hors connexion
+- data/annuaire.json : 10 915 accueils (annuaire Service Public, extraction du 04/11/2026)
+- data/communes.json : 34 969 communes (geo.api.gouv.fr)
+
+Mise en ligne la plus simple (gratuite) : Netlify Drop
+1. Aller sur https://app.netlify.com/drop
+2. Glisser-déposer CE DOSSIER (décompressé) dans la page
+3. Créer un compte gratuit pour garder le site en ligne, puis renommer l'adresse (ex. galere-academy.netlify.app)
+
+Le site doit être en https (c'est automatique sur Netlify, GitHub Pages, etc.) pour l'installation et le hors connexion.
+Pour une mise à jour : redéposer le dossier complet au même endroit.
+
+Brancher le nom de domaine galere-academy.fr sur Netlify
+1. Dans Netlify : votre site > Domain management > Add a domain > saisir galere-academy.fr
+2. Netlify affiche les réglages DNS à faire chez le registraire où le domaine a été acheté
+   (soit changer les « serveurs de noms » pour ceux de Netlify, soit ajouter les enregistrements indiqués).
+3. Attendre la propagation (quelques minutes à 24 h). Le certificat https est créé automatiquement.
+4. Vérifier que https://galere-academy.fr ouvre bien l'appli, et que www.galere-academy.fr redirige vers elle.
+
+Important : garder toujours la même adresse. Les données des jeunes (agenda, coffre-fort…) sont liées à l'adresse du site.
+En cas de changement d'hébergeur, garder le même domaine : rien ne sera perdu.
+Si l'adresse change quand même, les jeunes utilisent « Mon kit > Ma sauvegarde » pour récupérer leurs données.

@@ -1,0 +1,1478 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Galère Academy</title>
+<meta name="description" content="L'appli des 17-21 ans pour s'y retrouver dans ses papiers, ses droits et ses rendez-vous. Gratuite, sans compte, tes infos restent sur ton téléphone.">
+<meta name="theme-color" content="#15213b">
+<link rel="canonical" href="https://galere-academy.fr/">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Galère Academy">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: une app mobile d'abord — barre d'onglets en bas, une vue à la fois (Accueil, Fiches, Jeux, Mon kit, Contacts) ; le dossier administratif comme motif : onglets de classeur, tampons « VALIDÉ » */
+:root{
+  --bg:#f3f5fa; --surface:#ffffff; --ink:#15213b; --muted:#56627a; --line:#d9dfeb;
+  --marker:#ffd23f; --marker-ink:#15213b; --accent:#2747c9; --accent-soft:#e6ebfb;
+  --ok:#1f8a5b; --ok-soft:#e2f4ea; --ko:#d1432b; --ko-soft:#fbe6e1;
+  --display:"Bricolage Grotesque","Arial Black",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:14px;
+  --c-qui:#15213b; --c-sante:#e5484d; --c-caf:#f76b15; --c-impots:#8e4ec6; --c-banque:#12a594;
+  --c-logement:#3e63dd; --c-emploi:#0090ff; --c-mdph:#d6409f; --c-papiers:#e2a336; --c-droits:#5b5bd6;
+  --tint:14%;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1424; --surface:#172038; --ink:#e9edf6; --muted:#9ba6bf; --line:#2a3552;
+  --marker:#ffd23f; --marker-ink:#15213b; --accent:#8ea4ff; --accent-soft:#1f2b52;
+  --ok:#5fd19a; --ok-soft:#173a2b; --ko:#ff8a73; --ko-soft:#3d1f1a; --tint:24%; --c-qui:#3a4a73; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --tint:24%; --c-qui:#3a4a73;
+  --bg:#0e1424; --surface:#172038; --ink:#e9edf6; --muted:#9ba6bf; --line:#2a3552;
+  --marker:#ffd23f; --marker-ink:#15213b; --accent:#8ea4ff; --accent-soft:#1f2b52;
+  --ok:#5fd19a; --ok-soft:#173a2b; --ko:#ff8a73; --ko-soft:#3d1f1a; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 calc(88px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:20px;padding-block:20px 8px}
+h1,h2,h3{font-family:var(--display);line-height:1.1;margin:0;text-wrap:balance}
+h1{font-size:clamp(2rem,7vw,3.1rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.5rem;font-weight:800}
+h3{font-size:1.1rem;font-weight:600}
+p{margin:0}
+.mk{background:var(--marker);color:var(--marker-ink);padding:0 .15em;border-radius:4px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.lede{color:var(--muted);max-width:60ch}
+.eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+a{color:var(--accent)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+/* onglets du bas */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
+nav.tabs .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr)}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 2px 10px;text-decoration:none;color:var(--muted);font-size:.72rem;font-weight:700}
+nav.tabs a svg{width:24px;height:24px}
+nav.tabs a[aria-current="page"]{color:var(--ink)}
+nav.tabs a[aria-current="page"] .ic{background:var(--marker);color:var(--marker-ink)}
+.ic{display:grid;place-items:center;width:44px;height:28px;border-radius:999px}
+/* accueil */
+.hero{display:flex;flex-direction:column;gap:12px;padding-top:8px}
+.stamp{display:inline-block;border:3px solid currentColor;border-radius:8px;padding:2px 10px;font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.06em;transform:rotate(-4deg);font-size:.8rem}
+.progress{height:12px;background:var(--line);border-radius:999px;overflow:hidden}
+.progress>i{display:block;height:100%;background:var(--ok);border-radius:999px;transition:width .3s}
+.big-btn{display:flex;align-items:center;justify-content:space-between;gap:12px;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.big-btn strong{font-family:var(--display);font-size:1.15rem}
+.big-btn span{color:var(--muted);font-size:.9rem}
+.big-btn .go{flex:none;width:36px;height:36px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:800}
+/* fiches : onglets de classeur */
+.folder{position:relative;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:4px var(--r) var(--r) var(--r);padding:20px 16px 16px;display:flex;flex-direction:column;gap:6px;min-height:104px}
+.folder::before{content:attr(data-n);position:absolute;top:-1px;left:-1px;transform:translateY(-100%);background:var(--surface);border:1px solid var(--line);border-bottom:0;border-radius:10px 10px 0 0;padding:2px 14px;font-family:var(--display);font-weight:800;font-size:.85rem}
+.folder strong{font-family:var(--display);font-size:1.1rem;line-height:1.15}
+.folder span{color:var(--muted);font-size:.88rem}
+.folder .done{color:var(--ok);font-weight:700}
+.fgrid{display:grid;gap:30px 12px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));padding-top:22px}
+.back{align-self:flex-start;background:none;border:0;padding:6px 0;color:var(--accent);font-weight:700}
+.bref{background:var(--marker);color:var(--marker-ink);border-radius:var(--r);padding:16px 16px 16px 18px;display:flex;flex-direction:column;gap:8px}
+.bref h3{font-size:1rem;text-transform:uppercase;letter-spacing:.06em}
+.bref ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+tr:last-child td{border-bottom:0}
+.note{border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:0 var(--r) var(--r) 0;padding:12px 14px}
+.help{border:2px dashed var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:4px}
+.mots{display:grid;gap:8px}
+.mot{display:grid;grid-template-columns:minmax(120px,34%) 1fr;gap:12px;padding:10px 12px;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.mot b{font-family:var(--display)}
+@media (max-width:480px){.mot{grid-template-columns:1fr;gap:2px}}
+/* cases à cocher */
+.checks{display:flex;flex-direction:column;gap:8px}
+.chk{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px;cursor:pointer}
+.chk input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:var(--ok)}
+.chk:has(input:checked){background:var(--ok-soft);border-color:var(--ok)}
+.chk:has(input:checked) span{text-decoration:line-through;text-decoration-color:var(--ok)}
+/* jeux */
+.gcard{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:6px}
+.gcard strong{font-family:var(--display);font-size:1.2rem}
+.gcard span{color:var(--muted);font-size:.9rem}
+.gcard .tag{align-self:flex-start;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:2px 9px}
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:.88rem;font-weight:700}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.play{display:flex;flex-direction:column;gap:14px}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:700}
+.hud .sc{font-family:var(--display);font-size:1.2rem;font-variant-numeric:tabular-nums}
+.q{font-family:var(--display);font-size:clamp(1.25rem,4.6vw,1.75rem);font-weight:600;line-height:1.25}
+.sms{background:var(--surface);border:1px solid var(--line);border-radius:18px 18px 18px 4px;padding:14px 16px;font-size:1.08rem}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{text-align:left;border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:14px 16px;font-size:1.02rem;font-weight:700;min-height:54px}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}
+.opt.ko{border-color:var(--ko);background:var(--ko-soft)}
+.opt:disabled{cursor:default}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.duo .opt{text-align:center;font-family:var(--display);font-size:1.25rem}
+.verdict{position:relative;border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.verdict.ok{background:var(--ok-soft)} .verdict.ko{background:var(--ko-soft)}
+.verdict .stamp{align-self:flex-start}
+.verdict.ok .stamp{color:var(--ok)} .verdict.ko .stamp{color:var(--ko)}
+.btn{border:0;background:var(--ink);color:var(--bg);border-radius:12px;padding:13px 18px;font-weight:700;font-size:1rem}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.end{align-items:flex-start;text-align:left}
+.end .big{font-family:var(--display);font-size:3.2rem;font-weight:800;font-variant-numeric:tabular-nums}
+/* budget */
+.money{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.money{grid-template-columns:1fr}}
+.line{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);font-variant-numeric:tabular-nums}
+.line:last-child{border-bottom:0}
+.solde{font-family:var(--display);font-size:2.2rem;font-weight:800;font-variant-numeric:tabular-nums}
+.solde.neg{color:var(--ko)} .solde.pos{color:var(--ok)}
+.weeks{display:flex;gap:6px}
+.weeks i{flex:1;height:8px;border-radius:999px;background:var(--line)}
+.weeks i.on{background:var(--accent)}
+.fld{display:grid;grid-template-columns:1fr 110px;gap:10px;align-items:center}
+.fld label{font-size:.95rem}
+input[type=number],input[type=text],input[type=tel],input[type=password]{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 10px;width:100%;min-width:0}
+input[type=number]{text-align:right;font-variant-numeric:tabular-nums}
+/* annuaire */
+.num{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.num div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:2px}
+.num b{font-family:var(--display);font-size:1.45rem;font-variant-numeric:tabular-nums;user-select:all}
+.num span{font-size:.85rem;color:var(--muted)}
+.num .urgent{border-color:var(--ko)} .num .urgent b{color:var(--ko)}
+.org{display:flex;flex-direction:column;gap:4px}
+.org .tel{font-family:var(--display);font-weight:600;user-select:all}
+.org .miss{color:var(--muted);font-style:italic;font-size:.88rem}
+.search{font:inherit;width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.contact{display:grid;grid-template-columns:minmax(110px,28%) 1fr 1fr;gap:8px;align-items:center}
+@media (max-width:560px){.contact{grid-template-columns:1fr 1fr}.contact b{grid-column:1/-1}}
+.foot{color:var(--muted);font-size:.85rem}
+/* couleurs par thème */
+[data-c]{--c:var(--c-qui)}
+[data-c=sante]{--c:var(--c-sante)}[data-c=caf]{--c:var(--c-caf)}[data-c=impots]{--c:var(--c-impots)}[data-c=banque]{--c:var(--c-banque)}
+[data-c=logement]{--c:var(--c-logement)}[data-c=emploi]{--c:var(--c-emploi)}[data-c=mdph],[data-c=handicap]{--c:var(--c-mdph)}[data-c=papiers]{--c:var(--c-papiers)}[data-c=droits]{--c:var(--c-droits)}
+.ico{flex:none;display:grid;place-items:center;width:var(--s,44px);height:var(--s,44px);border-radius:calc(var(--s,44px)*.3);background:var(--c);color:#fff;box-shadow:0 2px 0 color-mix(in srgb,var(--c) 70%,#000)}
+.ico svg{width:58%;height:58%}
+.mosaic{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;max-width:340px}
+.mosaic .ico{--s:100%;aspect-ratio:1;width:100%;height:auto}
+.mosaic .ico:nth-child(odd){transform:rotate(-4deg)} .mosaic .ico:nth-child(3n){transform:rotate(5deg)}
+.folder[data-c]{border-color:color-mix(in srgb,var(--c) 35%,var(--line));background:color-mix(in srgb,var(--c) var(--tint),var(--surface))}
+.folder[data-c]::before{background:var(--c);color:#fff;border-color:var(--c)}
+.folder .top{display:flex;gap:12px;align-items:center}
+.fhead{display:flex;gap:14px;align-items:center;background:var(--c);color:#fff;border-radius:var(--r);padding:16px}
+.fhead .ico{background:rgba(255,255,255,.18);box-shadow:none}
+.fhead .eyebrow{color:rgba(255,255,255,.85)}
+.fhead h2{color:#fff}
+.bref[data-c]{background:color-mix(in srgb,var(--c) var(--tint),var(--surface));color:var(--ink);border-left:6px solid var(--c)}
+.bref[data-c] h3{color:var(--c)}
+:root[data-theme="dark"] .bref[data-c] h3{color:var(--ink)}
+.gcard[data-c]{border-color:color-mix(in srgb,var(--c) 35%,var(--line));background:color-mix(in srgb,var(--c) var(--tint),var(--surface))}
+.gcard .top{display:flex;gap:12px;align-items:center;justify-content:space-between}
+.qcard{border-radius:var(--r);padding:16px;background:color-mix(in srgb,var(--c) var(--tint),var(--surface));border:1px solid color-mix(in srgb,var(--c) 35%,var(--line));display:flex;flex-direction:column;gap:10px}
+.qcard .top{display:flex;gap:10px;align-items:center}
+.big-btn .ico,.folder .ico,.gcard .ico{--s:46px;color:#fff}
+.folder .ico{--s:40px}
+.big-btn .lft{display:flex;gap:14px;align-items:center;min-width:0}
+.opt .k{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--line);margin-right:10px;font-size:.85rem}
+.emo{font-size:1.6rem;line-height:1}
+.idrow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px;align-items:center}
+.idrow .btn{padding:8px 10px;font-size:.85rem}
+/* démarches */
+.dem{border:1px solid color-mix(in srgb,var(--c) 40%,var(--line));border-radius:var(--r);background:var(--surface);overflow:hidden}
+.dem>summary{list-style:none;cursor:pointer;display:flex;gap:12px;align-items:center;padding:14px 16px;background:color-mix(in srgb,var(--c) var(--tint),var(--surface))}
+.dem>summary::-webkit-details-marker{display:none}
+.dem>summary b{font-family:var(--display);font-size:1.05rem;line-height:1.2;flex:1}
+.dem>summary .pg{font-size:.8rem;font-weight:700;color:var(--muted);white-space:nowrap}
+.dem[open]>summary .chev{transform:rotate(90deg)}
+.dem .chev{transition:transform .2s;font-weight:800}
+.dem .body{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.dem .when{background:var(--accent-soft);border-radius:10px;padding:10px 12px;font-size:.95rem}
+.dem ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;counter-reset:st}
+.dem ol .chk span::before{counter-increment:st;content:counter(st) ". ";font-weight:800;color:var(--c)}
+.links{display:flex;flex-direction:column;gap:8px}
+.links a{display:flex;justify-content:space-between;gap:10px;align-items:center;text-decoration:none;font-weight:700;border:2px solid var(--c);color:var(--ink);border-radius:12px;padding:11px 14px}
+.links a::after{content:"↗";font-weight:800;color:var(--c)}
+.links a:first-child{background:var(--c);color:#fff}.links a:first-child::after{color:#fff}
+/* coffre chiffré */
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.vdoc{border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden;display:flex;flex-direction:column;text-align:left;padding:0}
+.vdoc img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--line);display:block}
+.vdoc span{padding:8px 10px;font-size:.85rem;font-weight:700;line-height:1.25}
+.vdoc small{padding:0 10px 8px;color:var(--muted);font-size:.75rem}
+.pin{font-family:var(--display);font-size:1.6rem;letter-spacing:.5em;text-align:center}
+.viewer{position:fixed;inset:0;z-index:50;background:#000;display:flex;flex-direction:column;padding:calc(10px + env(safe-area-inset-top,0px)) max(10px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px));gap:10px}
+.viewer .vt{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#fff}
+.viewer .vt b{font-family:var(--display)}
+.viewer img{flex:1;min-height:0;width:100%;object-fit:contain}
+.viewer button{background:#fff;color:#000;border:0;border-radius:10px;padding:10px 14px;font-weight:700}
+.lockbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.err{color:var(--ko);font-weight:700}
+/* adresses proches */
+.places{display:flex;flex-direction:column;gap:8px}
+.place{display:flex;flex-direction:column;gap:3px;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--c) var(--tint),var(--surface));font-size:.92rem}
+.place>b{font-family:var(--display);font-size:.98rem;line-height:1.2}
+.place .tel{font-family:var(--display);font-weight:600;user-select:all}
+/* feuille de route */
+.road{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;position:relative}
+.road>li{display:flex;flex-direction:column;gap:8px;padding-left:0}
+.road .ph{display:flex;gap:10px;align-items:center}
+.road .ph b{font-family:var(--display);font-size:1.05rem}
+.dotn{flex:none;width:30px;height:30px;border-radius:50%;background:var(--c-droits);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:800}
+/* anniversaire */
+.bday{background:linear-gradient(135deg,var(--c-sante),var(--c-caf) 45%,var(--marker));color:#15213b;border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:8px;text-align:left}
+.bday h2{font-size:1.7rem}
+.bday .btn{background:#15213b;color:#fff}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:60}
+.road>li.now{background:color-mix(in srgb,var(--c-droits) var(--tint),var(--surface));border-radius:var(--r);padding:10px}
+.road .soon{border-radius:999px;padding:1px 9px;font-size:.75rem;font-weight:700;color:#fff}
+/* installation */
+.inst{margin:10px 0 0;padding-left:0;list-style:none;counter-reset:i;display:flex;flex-direction:column;gap:10px}
+.inst li{counter-increment:i;display:flex;gap:12px;align-items:flex-start;line-height:1.4}
+.inst li::before{content:counter(i);flex:none;width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-family:var(--display);font-weight:800}
+/* agenda */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal .dn{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase}
+.cal button{aspect-ratio:1;border:1px solid transparent;background:none;border-radius:10px;font-variant-numeric:tabular-nums;position:relative;font-weight:700;min-width:0;padding:0}
+.cal button.out{color:var(--muted);opacity:.45}
+.cal button.today{border-color:var(--ink)}
+.cal button.sel{background:var(--ink);color:var(--bg)}
+.cal button .dots{position:absolute;left:0;right:0;bottom:12%;display:flex;justify-content:center;gap:2px}
+.cal button .dots i{width:6px;height:6px;border-radius:50%;background:var(--c)}
+.calhd{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.calhd button{border:1px solid var(--line);background:var(--surface);border-radius:10px;width:40px;height:40px;font-weight:800}
+.rdv{border-left:6px solid var(--c);background:color-mix(in srgb,var(--c) var(--tint),var(--surface));border-radius:0 var(--r) var(--r) 0;padding:14px;display:flex;flex-direction:column;gap:8px}
+.rdv .when{font-family:var(--display);font-weight:800;font-size:1.05rem}
+.rdv .meta{display:flex;flex-direction:column;gap:2px;font-size:.95rem}
+.rdv .meta .tel{font-family:var(--display);font-weight:600;user-select:all}
+.rdv .docs{display:flex;flex-direction:column;gap:6px}
+.rdv .docs .chk{padding:8px 10px;background:var(--surface)}
+.rdv.past{opacity:.6}
+.rdv .soon{align-self:flex-start;background:var(--ko);color:#fff;border-radius:999px;padding:1px 9px;font-size:.75rem;font-weight:700}
+form.rf{display:grid;gap:10px;grid-template-columns:1fr 1fr}
+form.rf .full{grid-column:1/-1}
+form.rf label{display:flex;flex-direction:column;gap:4px;font-size:.88rem;color:var(--muted);font-weight:700}
+form.rf input,form.rf select,form.rf textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 10px;width:100%;min-width:0}
+.sugg{display:flex;flex-wrap:wrap;gap:6px}
+.sugg button{border:1px dashed var(--line);background:var(--surface);border-radius:999px;padding:5px 10px;font-size:.85rem}
+.sugg button[aria-pressed="true"]{border-style:solid;border-color:var(--ok);background:var(--ok-soft)}
+@media (max-width:420px){form.rf{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@keyframes pop{from{transform:scale(.6) rotate(-14deg);opacity:0}to{transform:scale(1) rotate(-4deg);opacity:1}}
+.verdict .stamp{animation:pop .25s ease-out}
+</style>
+
+<div class="wrap" id="app"></div>
+
+<nav class="tabs" aria-label="Menu">
+  <div class="in">
+    <a href="#accueil" data-v="accueil"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span>Accueil</a>
+    <a href="#fiches" data-v="fiches"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>Fiches</a>
+    <a href="#jeux" data-v="jeux"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="11" rx="4"/><path d="M8 11v3M6.5 12.5h3M15 12h.01M17.5 13.5h.01"/></svg></span>Jeux</a>
+    <a href="#agenda" data-v="agenda"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>Agenda</a>
+    <a href="#kit" data-v="kit"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span>Mon kit</a>
+    <a href="#contacts" data-v="contacts"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></span>Contacts</a>
+  </div>
+</nav>
+
+<script>
+// Contenu Galère Academy (version octobre 2026)
+const GA = {
+fiches: [
+ {id:"qui", n:"0", titre:"Qui fait quoi ?", couleur:"ink",
+  bref:["Chaque organisme a son rôle. Le bon réflexe : savoir à qui s'adresser avant de chercher partout."],
+  tableau:{tete:["Organisme","Il s'occupe de…","Site"],lignes:[
+   ["CPAM (Assurance maladie)","Ta santé : carte Vitale, remboursements","ameli.fr"],
+   ["Mutuelle / CSS","Le reste des frais de santé que la Sécu ne paie pas","ameli.fr (CSS)"],
+   ["CAF","Aide au logement (APL), prime d'activité","caf.fr"],
+   ["Impôts","Déclarer tes revenus, ton avis d'impôt","impots.gouv.fr"],
+   ["Mission locale","T'accompagner de 16 à 25 ans : emploi, formation, aides","missionlocale31.org"],
+   ["France Travail","Chercher un emploi, être indemnisé","francetravail.fr"],
+   ["MDPH","Les droits liés au handicap","mdph31.fr"],
+   ["MDS (Département)","Aides sociales, FSL, FAJ, ton référent","haute-garonne.fr"],
+   ["ANTS / mairie","Carte d'identité, passeport, permis","ants.gouv.fr"],
+   ["Banque","Ton compte, ta carte, ton RIB","–"]]}},
+ {id:"sante", n:"1", titre:"Ma santé",
+  bref:["À 18 ans, tu es assuré à ton nom : carte Vitale, compte ameli, ton RIB, ton adresse.",
+   "La Sécu paie une partie, la mutuelle paie le reste. Sans mutuelle, c'est toi qui paies le reste.",
+   "Si tu gagnes moins d'environ 868 € par mois, tu peux avoir la CSS : une mutuelle gratuite.",
+   "Choisis un médecin traitant : sinon tu es beaucoup moins remboursé."],
+  tableau:{titre:"Je ne me sens pas bien : qu'est-ce que je fais ?",tete:["Ma situation","Je fais quoi ?"],lignes:[
+   ["Je suis malade, ce n'est pas grave","Je prends rendez-vous chez mon médecin traitant (ou en téléconsultation)"],
+   ["C'est le soir ou le week-end, le cabinet est fermé","J'appelle le 116 117 (médecin de garde)"],
+   ["Il me faut une pharmacie ouverte","J'appelle le 3237"],
+   ["C'est très grave (malaise, accident, je respire mal)","J'appelle le 15 ou le 112"],
+   ["J'ai mal aux dents le week-end","J'appelle le 15"],
+   ["Ça ne va pas dans ma tête, j'ai besoin de parler","Fil Santé Jeunes 0 800 235 236 (gratuit, anonyme, 9 h-23 h) ou Mon soutien psy (12 séances chez un psy)"],
+   ["J'ai des idées noires","J'appelle le 3114, jour et nuit, gratuit"],["Je subis des violences sexistes, sexuelles ou dans mon couple","J'appelle le 3919 (gratuit, anonyme, 24 h/24). En danger tout de suite : le 17, ou le 114 par SMS"]]},
+  note:"Les urgences de l'hôpital, c'est seulement pour les urgences graves. Si tu hésites : appelle d'abord le 15 ou le 116 117, ils te disent où aller.",
+  tableau2:{titre:"Combien ça coûte ? Une consultation chez le généraliste : 30 €",tete:["Ma situation","Je paie à la fin"],lignes:[
+   ["Avec médecin traitant + mutuelle","2 €"],["Avec médecin traitant, sans mutuelle","11 €"],
+   ["Sans médecin traitant, avec mutuelle","12,60 €"],["Avec la CSS","0 € (et je n'avance rien)"]]},
+  liste:{titre:"C'est gratuit pour moi (moins de 26 ans)",items:["Préservatifs en pharmacie, sans ordonnance.",
+   "Contraception (pilule, implant, stérilet) et la pilule du lendemain (pour toutes, sans ordonnance).",
+   "Dépistage du VIH et des IST en laboratoire, sans ordonnance.",
+   "Mon bilan prévention (18-25 ans) : un rendez-vous gratuit pour faire le point sur ta santé.",
+   "Dentiste M'T dents : un rendez-vous par an jusqu'à 24 ans."]},
+  mots:[["Carte Vitale","Ta carte de santé. La 1re est gratuite. Elle existe aussi en appli."],
+   ["Compte ameli","Ton espace en ligne : remboursements, attestation, carte Vitale."],
+   ["Attestation de droits","Le papier qui prouve que tu es assuré (à télécharger sur ameli)."],
+   ["Médecin traitant","Ton médecin principal, que tu déclares à la Sécu."],
+   ["Reste à charge","Ce que tu paies vraiment à la fin."],
+   ["Tiers payant","Tu n'avances pas l'argent."],
+   ["Secteur 1 / secteur 2","Secteur 1 : prix de la Sécu. Secteur 2 : le médecin peut demander plus."]],
+  faire:["J'ai ma carte Vitale à mon nom (ou l'appli).","J'ai créé mon compte ameli.","Mon RIB et mon adresse sont à jour sur ameli.",
+   "J'ai déclaré un médecin traitant.","J'ai une mutuelle ou la CSS (et je connais sa date de fin).","J'ai enregistré le 15, le 116 117 et le 3114 dans mon téléphone."],
+  aide:"Accueil CPAM, MDS, Mission locale, ton référent. Téléphone de l'Assurance maladie : 36 46."},
+ {id:"caf", n:"2", titre:"La CAF",
+  bref:["La CAF peut t'aider à payer ton loyer (APL) et compléter ton salaire (prime d'activité, dès 18 ans).",
+   "Rien n'est automatique : tu fais une simulation, puis une demande sur caf.fr ou l'appli.",
+   "Demande l'APL dès que tu entres dans ton logement : le 1er mois n'est jamais payé.",
+   "Tu dois signaler tout changement (adresse, travail, salaire, couple). Sinon, tu devras rembourser.","Tu attends un enfant ou tu es déjà parent ? La CAF a des aides pour toi : prime à la naissance, allocation de base, ASF si tu l'élèves seul(e). Les démarches sont plus bas."],
+  mots:[["Numéro d'allocataire","Ton numéro CAF, sur tous tes courriers."],["APL","Aide pour payer le loyer, souvent versée directement au propriétaire."],
+   ["Prime d'activité","Un complément pour ceux qui travaillent avec un petit salaire."],["Déclaration trimestrielle","Tous les 3 mois, tu vérifies et tu valides tes revenus (pré-remplis)."],
+   ["Indu / trop-perçu","De l'argent touché en trop, à rembourser."]],
+  faire:["J'ai fait une simulation sur caf.fr ou mesdroitssociaux.gouv.fr.","J'ai créé mon compte CAF et installé l'appli « Caf - Mon Compte ».",
+   "Je connais mon numéro d'allocataire (ou je sais où le trouver).","Je fais ma déclaration tous les 3 mois si je touche la prime d'activité."],
+  aide:"Permanence CAF à Villefranche, 134 rue de la République, sur rendez-vous (pris sur caf.fr). France Services de Nailloux. Ton référent."},
+ {id:"impots", n:"3", titre:"Les impôts",
+  bref:["Chaque printemps, tu déclares tes revenus, même si tu gagnes peu.","Tu reçois un avis d'impôt (ou de non-imposition) en ligne, dans ton espace impots.gouv.fr.",
+   "Cet avis, on te le demandera souvent : logement, CSS, bourse, CAF, banque. Garde-le.","Si tu travailles, l'impôt est retiré directement de ton salaire."],
+  note:"Bon à savoir : apprenti ? Ton salaire n'est pas imposé jusqu'à 21 622 € par an (revenus 2025). Étudiant ? Tes petits boulots sont exonérés jusqu'à 5 405 €. Bourses et APL ne se déclarent pas.",
+  faire:["Je sais si je dois déclarer seul ou si je suis rattaché (je pose la question à mon référent).","J'ai créé mon espace sur impots.gouv.fr.","J'ai téléchargé mon avis d'impôt et je l'ai rangé."],
+  aide:"Permanence des impôts à la France Services de Nailloux (le lundi). Téléphone : 0809 401 401. Ton référent."},
+ {id:"banque", n:"4", titre:"Ma banque et mon budget",
+  bref:["Ton RIB sert à recevoir ton salaire, l'APL, les remboursements santé. Tu peux le donner.",
+   "Tes codes, ton mot de passe et les codes reçus par SMS : à personne. Jamais. Même à « ta banque ».",
+   "Le découvert coûte cher. Regarde ton solde sur l'appli avant de payer.",
+   "Une banque refuse de t'ouvrir un compte ? La Banque de France peut obliger une banque à le faire (droit au compte)."],
+  liste:{titre:"Attention arnaques",items:["Un « conseiller » t'appelle pour « bloquer une fraude » ? Raccroche et rappelle ta banque.",
+   "Un SMS te demande de payer une amende, un colis ou ta carte Vitale ? N'ouvre pas le lien.",
+   "Quelqu'un te propose de l'argent facile contre ta carte ou ton RIB ? C'est illégal, tu risques gros."]},
+  note:"Mon budget : reste pour vivre = ce qui rentre − ce qui sort. Fais le calcul dans « Mon kit » > « Mon budget ».",
+  aide:"Point conseil budget (gratuit) à la France Services de Nailloux. Banque de France : 34 14. Appli gratuite « Pilote Budget »."},
+ {id:"logement", n:"5", titre:"Mon logement",
+  bref:["Avant de signer, calcule : loyer + charges + énergie + assurance − APL. Il doit te rester de quoi vivre.",
+   "Visale : une caution gratuite si tu as 30 ans ou moins. Demande-la avant de signer.","L'assurance habitation est obligatoire.",
+   "Fais l'état des lieux avec des photos, et demande l'APL tout de suite.","Ancien de l'ASE ? Tu es prioritaire pour un logement social pendant 3 ans."],
+  faire:["J'ai fait ma demande de logement social sur demande-logement-social.gouv.fr (à renouveler chaque année).","J'ai demandé mon visa Visale avant de signer.",
+   "J'ai une assurance habitation.","J'ai fait ma demande d'APL le mois de mon entrée.","J'ai noté les relevés des compteurs le jour de l'état des lieux."],
+  aide:"MDS (FSL : aide pour la caution, l'installation, les factures), ADIL 31 (conseils gratuits, 05 61 22 46 22), CLLAJ 31. Urgence : 115."},
+ {id:"emploi", n:"6", titre:"Emploi, permis, arrêt de travail",
+  bref:["La Mission locale t'aide de 16 à 25 ans. Elle peut te proposer le CEJ : un accompagnement avec une allocation jusqu'à 566 € par mois.",
+   "Inscrit à France Travail ? Tu dois t'actualiser chaque mois (du 28 au 15), sinon tu es radié.","Tes fiches de paie : à garder toute ta vie.",
+   "Transport : avec l'appli FAIRTIQ et « + = 0 » (12-26 ans), les trains et cars liO deviennent gratuits à partir du 11e trajet du mois.",
+   "Permis : le permis à 1 € par jour (prêt sans intérêts). Le FAJ peut aussi aider : parles-en à ton référent.","Malade ou blessé au travail ? Ton arrêt s'envoie sous 48 heures, un accident se signale sous 24 heures. Les démarches sont plus bas."],
+  faire:["Je connais la permanence de la Mission locale à Villefranche (Labège : 05 61 28 71 30).","J'ai mon attestation de JDC (demandée pour le permis et les examens).","Je range mes fiches de paie dans un classeur."],
+  aide:"Mission locale, France Travail (7 place des Cerisiers, Villefranche, 39 49), ton référent."},
+ {id:"mdph", n:"7", titre:"Handicap : la MDPH",
+  bref:["La MDPH s'occupe des droits liés au handicap : AAH (une allocation), RQTH (reconnaissance au travail), aides, orientation.",
+   "Il faut un formulaire et un certificat médical de moins d'un an.","C'est long (environ 5 mois) : on anticipe avec son référent.","Avoir une RQTH ne t'oblige pas à le dire à ton employeur."],
+  aide:"MDPH 31, Toulouse, 05 34 33 11 00 (le matin), sur rendez-vous. Ton référent et ton médecin."},
+ {id:"papiers", n:"8", titre:"Mes papiers et le numérique",
+  bref:["Une adresse mail sérieuse (prénom.nom) que tu lis vraiment.","FranceConnect : un seul identifiant pour ameli, CAF, impôts…",
+   "Un classeur papier et une copie scannée de tes papiers importants.","Ne donne jamais tes mots de passe, même à un ami."],
+  tableau:{titre:"Je garde combien de temps ?",tete:["Papier","Je le garde"],lignes:[
+   ["Fiches de paie, contrats de travail, diplômes","Toute ma vie"],["Avis d'impôt","Au moins 3 ans"],["Quittances de loyer","Le temps de la location + 3 ans"],
+   ["Factures (électricité, téléphone, internet), relevés de banque, courriers CAF","5 ans"],["Remboursements santé","2 ans"]]},
+  liste:{titre:"Mon classeur en 6 intercalaires",items:["Identité (carte d'identité, acte de naissance, JDC)","Santé (carte Vitale, CSS, mutuelle)","CAF et aides","Impôts",
+   "Travail et formation (fiches de paie, contrats, diplômes)","Logement et banque (bail, quittances, assurance, RIB)"]},
+  aide:"France Services de Nailloux (aide aux démarches en ligne, conseiller numérique), ton référent."},
+ {id:"droits", n:"9", titre:"Mes 18 ans : la feuille de route",
+  bref:["Tu signes seul tes contrats, tu votes, tu es responsable de tes papiers.",
+   "Jusqu'à 21 ans, si tu as été confié à l'ASE, le Département peut continuer à t'accompagner. Et tu peux revenir demander de l'aide.",
+   "Ton pécule (l'allocation de rentrée scolaire mise de côté pour toi) : tu dois le demander à la Caisse des dépôts.",
+   "Tu peux demander à lire ton dossier ASE.","Étudiant ? Ancien de l'ASE = bourse au maximum, sans condition de revenus."],
+  liste:{titre:"Mes devoirs",items:["Ouvrir mes courriers et mes messages en ligne.","Signaler mes changements (CAF, Sécu, France Travail, impôts).","Déclarer mes revenus chaque année.",
+   "Assurer mon logement.","Respecter mes engagements (bail, contrat de travail, contrat jeune majeur)."]},
+  aide:"Ton référent ASE, la MDS, la Mission locale. Point justice gratuit à Villefranche (134 rue de la République, sur rendez-vous)."}
+],
+kit:["Carte d'identité valide","Carte Vitale à mon nom + compte ameli","Médecin traitant déclaré","Mutuelle ou CSS (date de fin notée)","Compte bancaire à mon nom + RIB",
+ "Adresse mail sérieuse + FranceConnect","Attestation de recensement ou de JDC","Compte CAF (si logement ou travail)","Espace impots.gouv.fr","Inscription Mission locale",
+ "Demande du pécule (à 18 ans)","Classeur de papiers rangé"],
+numeros:[["15","Urgence médicale"],["17","Police, gendarmerie"],["112","Urgence (tous pays d'Europe)"],["3919","Violences sexistes et sexuelles, violences conjugales : écoute gratuite et anonyme, 24 h/24"],["114","Urgence par SMS, si tu ne peux pas parler"],["3114","Idées noires, 24 h/24"],["116 117","Médecin de garde"],["3237","Pharmacie de garde"],["119","Enfant ou ado en danger (jusqu'à 18 ans), 24 h/24"],
+ ["0 800 235 236","Fil Santé Jeunes (9 h-23 h)"],["115","Hébergement d'urgence"],["36 46","Assurance maladie"],["39 49","France Travail"],["0809 401 401","Impôts"],["32 30","CAF"],["34 14","Banque de France"]],
+annuaire:[
+ {nom:"Ton référent ASE – MDS de Villefranche-de-Lauragais",role:"Accompagnement jeune majeur, aides sociales, FSL, FAJ",ou:"69 avenue de la Fontasse, 31290 Villefranche-de-Lauragais",tel:"05 62 71 49 60",site:"haute-garonne.fr"},
+ {nom:"CPAM (Assurance maladie)",role:"Carte Vitale, remboursements, CSS",ou:"Accueil de Villefranche-de-Lauragais, place Jean-Moulin (du lundi au vendredi, 8 h-12 h 30 et 13 h 30-17 h, à vérifier)",tel:"36 46",site:"ameli.fr"},
+ {nom:"CAF",role:"APL, prime d'activité",ou:"Permanence à Villefranche, 134 rue de la République (square du Général-de-Gaulle), 1er et 3e vendredis du mois, sur rendez-vous pris dans Mon Compte",tel:"32 30",site:"caf.fr"},
+ {nom:"Impôts",role:"Déclaration de revenus, avis d'impôt",ou:"Permanence à la France Services de Nailloux (le lundi)",tel:"0809 401 401",site:"impots.gouv.fr"},
+ {nom:"France Services de Nailloux",role:"Aide aux démarches en ligne, conseiller numérique, Point conseil budget, permanences CAF et impôts",ou:"2 avenue de Saint-Léon, 31560 Nailloux, sur rendez-vous · franceservices.sud@terres-du-lauragais.fr",tel:"05 34 66 91 64",site:""},
+ {nom:"Mission locale",role:"Emploi, formation, CEJ, aides (16-25 ans)",ou:"Permanence à Villefranche ; antenne de Labège",tel:"05 61 28 71 30",site:"missionlocale31.org"},
+ {nom:"France Travail",role:"Recherche d'emploi, indemnisation",ou:"7 place des Cerisiers, Villefranche-de-Lauragais",tel:"39 49",site:"francetravail.fr"},
+ {nom:"MDPH 31",role:"AAH, RQTH, droits liés au handicap",ou:"Toulouse, sur rendez-vous",tel:"05 34 33 11 00 (le matin)",site:"mdph31.fr"},
+ {nom:"ADIL 31",role:"Conseils gratuits sur le logement (bail, caution, droits du locataire)",ou:"4 rue Furgole, 31000 Toulouse, sur rendez-vous",tel:"05 61 22 46 22",site:"anil.org/adil-31"},
+ {nom:"CLLAJ 31",role:"Information et aide au logement des jeunes",ou:"169 avenue de Muret, 31300 Toulouse · contact-cllaj31@ajh.fr",tel:"05 61 23 60 19",site:"cllaj31.org"},
+ {nom:"Banque de France",role:"Droit au compte, difficultés d'argent",ou:"4 rue Antoine-Deville, 31000 Toulouse (du lundi au vendredi, 9 h-12 h et 13 h 30-17 h)",tel:"34 14",site:"banque-france.fr"},
+ {nom:"Point justice",role:"Conseils juridiques gratuits",ou:"Maison de l'Emploi, 132 rue de la République, 31290 Villefranche-de-Lauragais, sur rendez-vous",tel:"05 61 27 23 06",site:""},
+ {nom:"ANTS / mairie",role:"Carte d'identité, passeport, permis",ou:"Mairie de ton domicile",tel:"",site:"ants.gouv.fr"}
+],
+// Jeu 1 : J'appelle qui ?
+qui:[
+ {t:"sante",q:"Kenza a de la fièvre et mal à la gorge depuis hier. Ce n'est pas grave.",r:"Son médecin traitant",o:["Son médecin traitant","Le 15","Les urgences de l'hôpital"],e:"Pas grave = rendez-vous chez le médecin traitant, ou en téléconsultation."},
+ {t:"sante",q:"Dimanche soir, Yanis a très mal à l'oreille. Le cabinet de son médecin est fermé.",r:"Le 116 117",o:["Le 116 117","Le 3237","La CPAM"],e:"Le soir et le week-end, le 116 117 trouve un médecin de garde."},
+ {t:"sante",q:"Il est 23 h, Inès a besoin d'un médicament. Toutes les pharmacies près de chez elle sont fermées.",r:"Le 3237",o:["Le 3237","Le 116 117","Le 115"],e:"Le 3237 donne la pharmacie de garde la plus proche."},
+ {t:"sante",q:"Le colocataire de Théo fait un malaise et respire mal.",r:"Le 15 ou le 112",o:["Le 15 ou le 112","Son médecin traitant","Le 116 117"],e:"C'est très grave : on appelle le 15 ou le 112 tout de suite."},
+ {t:"sante",q:"Samedi, Lina a une rage de dents. Son dentiste est fermé.",r:"Le 15",o:["Le 15","Le 3237","M'T dents"],e:"Mal aux dents le week-end : le 15 oriente vers un dentiste de garde."},
+ {t:"sante",q:"Depuis quelques semaines, Malik ne va pas bien dans sa tête. Il a besoin de parler à quelqu'un.",r:"Le Fil Santé Jeunes",o:["Le Fil Santé Jeunes","Le 3237","La CAF"],e:"Fil Santé Jeunes, 0 800 235 236 : gratuit, anonyme, 9 h-23 h. Il y a aussi Mon soutien psy (12 séances)."},
+ {t:"sante",q:"Une amie de Sarah lui dit qu'elle a des idées noires et qu'elle ne voit plus de solution.",r:"Le 3114",o:["Le 3114","Le 116 117","Elle attend que ça passe"],e:"Le 3114 répond jour et nuit, gratuitement. On peut appeler pour soi ou pour quelqu'un d'autre."},
+ {t:"sante",q:"Le copain de Léa la rabaisse, contrôle son téléphone et l'a déjà frappée. Elle voudrait en parler à quelqu'un.",r:"Le 3919",o:["Le 3919","Le 3237","La CAF"],e:"Le 3919 écoute les victimes de violences sexistes, sexuelles et conjugales : gratuit, anonyme, 24 h/24. En danger immédiat : le 17, ou le 114 par SMS."},
+ {t:"sante",q:"Hugo a 19 ans et gagne 600 € par mois. Il n'a pas de mutuelle.",r:"La CPAM, pour demander la CSS",o:["La CPAM, pour demander la CSS","La CAF","La banque"],e:"Sous environ 868 € par mois, la CSS est une mutuelle gratuite. La demande se fait sur ameli.fr."},
+ {t:"handicap",q:"Nora voudrait une reconnaissance de son handicap pour l'aider dans son travail.",r:"La MDPH",o:["La MDPH","France Travail","La mairie"],e:"La RQTH se demande à la MDPH, avec un certificat médical de moins d'un an. Compte environ 5 mois."},
+ {t:"caf",q:"Adam vient d'emménager. Il voudrait une aide pour payer son loyer.",r:"La CAF",o:["La CAF","La CPAM","Les impôts"],e:"L'APL se demande à la CAF dès l'entrée dans le logement. Le 1er mois n'est jamais payé."},
+ {t:"caf",q:"Jade travaille à mi-temps avec un petit salaire. Elle voudrait un complément.",r:"La CAF (prime d'activité)",o:["La CAF (prime d'activité)","France Travail","La banque"],e:"La prime d'activité est versée par la CAF, dès 18 ans. Il faut la déclarer tous les 3 mois."},
+ {t:"caf",q:"Yasmine élève seule son bébé. Le père ne verse aucune pension.",r:"La CAF (allocation de soutien familial)",o:["La CAF (allocation de soutien familial)","La banque","La mairie"],e:"L'ASF aide le parent qui élève seul son enfant sans pension de l'autre parent. Elle se demande à la CAF, sans condition de ressources."},
+ {t:"sante",q:"Chloé est enceinte de 2 mois et ne sait pas qui va suivre sa grossesse.",r:"Un médecin, une sage-femme ou la PMI",o:["Un médecin, une sage-femme ou la PMI","La CAF","Les urgences"],e:"Le 1er examen prénatal a lieu avant la fin du 3e mois. La PMI du Département suit gratuitement les grossesses et les bébés."},
+ {t:"impots",q:"Pour son dossier de logement, on demande à Rayan son avis d'impôt.",r:"Son espace impots.gouv.fr",o:["Son espace impots.gouv.fr","La CAF","Sa banque"],e:"L'avis d'impôt (ou de non-imposition) se télécharge dans son espace impots.gouv.fr."},
+ {t:"emploi",q:"Lou a 19 ans, elle ne sait pas quelle formation choisir et cherche aussi un petit boulot.",r:"La Mission locale",o:["La Mission locale","La MDPH","La CAF"],e:"La Mission locale accompagne de 16 à 25 ans : emploi, formation, aides, CEJ."},
+ {t:"emploi",q:"Tom a fini son CDD. Il voudrait être indemnisé pendant qu'il cherche un emploi.",r:"France Travail",o:["France Travail","La Mission locale","La CAF"],e:"France Travail indemnise. Attention : il faut s'actualiser chaque mois, du 28 au 15."},
+ {t:"emploi",q:"Élise veut passer son permis mais n'a pas d'argent de côté.",r:"Son référent (FAJ, permis à 1 € par jour)",o:["Son référent (FAJ, permis à 1 € par jour)","La CPAM","La mairie"],e:"Le permis à 1 € par jour est un prêt sans intérêts. Le FAJ peut aussi aider : on en parle à son référent."},
+ {t:"papiers",q:"La carte d'identité de Sofiane est périmée.",r:"La mairie / l'ANTS",o:["La mairie / l'ANTS","La CAF","La Mission locale"],e:"Carte d'identité, passeport, permis : pré-demande sur ants.gouv.fr, puis rendez-vous en mairie."},
+ {t:"papiers",q:"Maëlle n'arrive pas à faire ses démarches en ligne toute seule.",r:"La France Services de Nailloux",o:["La France Services de Nailloux","La Banque de France","Le 115"],e:"La France Services aide aux démarches en ligne, avec un conseiller numérique."},
+ {t:"banque",q:"Deux banques ont refusé d'ouvrir un compte à Ibrahim.",r:"La Banque de France",o:["La Banque de France","La CAF","Les impôts"],e:"La Banque de France peut obliger une banque à ouvrir un compte : c'est le droit au compte (34 14)."},
+ {t:"banque",q:"Chaque fin de mois, Clara est à découvert. Elle voudrait de l'aide pour faire son budget.",r:"Le Point conseil budget",o:["Le Point conseil budget","La MDPH","La mairie"],e:"Le Point conseil budget est gratuit, à la France Services de Nailloux. Il y a aussi l'appli « Pilote Budget »."},
+ {t:"logement",q:"Ayoub a trouvé un studio. Le propriétaire demande un garant et Ayoub n'en a pas.",r:"Visale",o:["Visale","La CAF","La banque"],e:"Visale est une caution gratuite si tu as 30 ans ou moins. On la demande avant de signer."},
+ {t:"logement",q:"Manon doit payer le dépôt de garantie et acheter un lit, mais elle n'a pas l'argent.",r:"La MDS (FSL)",o:["La MDS (FSL)","Les impôts","France Travail"],e:"Le FSL peut aider pour la caution, l'installation et les factures. On le demande à la MDS."},
+ {t:"logement",q:"Le propriétaire de Léo refuse de lui rendre sa caution. Léo ne sait pas quels sont ses droits.",r:"L'ADIL 31",o:["L'ADIL 31","Le 115","La CPAM"],e:"L'ADIL 31 donne des conseils gratuits sur le logement : 05 61 22 46 22."},
+ {t:"logement",q:"Ce soir, Dylan n'a nulle part où dormir.",r:"Le 115",o:["Le 115","Le 3237","La Mission locale"],e:"Le 115 cherche un hébergement d'urgence."},
+ {t:"droits",q:"Anaïs a 18 ans. Elle a entendu parler d'argent mis de côté pour elle pendant son placement.",r:"La Caisse des dépôts (le pécule)",o:["La Caisse des dépôts (le pécule)","La CAF","Sa banque"],e:"Le pécule (allocation de rentrée scolaire mise de côté) se demande à la Caisse des dépôts. Il n'arrive pas tout seul."},
+ {t:"droits",q:"Mehdi a un litige avec son employeur et voudrait un conseil juridique gratuit.",r:"Le Point justice",o:["Le Point justice","La MDPH","La CAF"],e:"Point justice gratuit à Villefranche, 134 rue de la République, sur rendez-vous."}
+],
+// Jeu 2 : Vrai ou faux
+vf:[
+ {t:"caf",q:"L'APL arrive toute seule quand on emménage.",r:false,e:"Rien n'est automatique : il faut faire la demande sur caf.fr ou l'appli."},
+ {t:"caf",q:"Le premier mois d'APL est payé.",r:false,e:"Le 1er mois n'est jamais payé. D'où l'intérêt de demander tout de suite."},
+ {t:"caf",q:"On peut toucher la prime d'activité dès 18 ans.",r:true,e:"Oui, pour ceux qui travaillent avec un petit salaire."},
+ {t:"caf",q:"La déclaration de grossesse se fait avant la fin du 3e mois.",r:true,e:"Oui. Le médecin ou la sage-femme la fait en général en ligne, et elle part à la CPAM et à la CAF."},
+ {t:"caf",q:"La prime à la naissance est versée après la naissance du bébé.",r:false,e:"Elle est versée pendant la grossesse, sous conditions de ressources, après la déclaration de grossesse."},
+ {t:"caf",q:"J'ai 1 mois pour déclarer la naissance de mon bébé à la mairie.",r:false,e:"C'est 5 jours après l'accouchement, à la mairie du lieu de naissance."},
+ {t:"caf",q:"Si je ne signale pas un changement à la CAF, il ne se passe rien.",r:false,e:"Tu devras rembourser ce que tu as touché en trop (un indu)."},
+ {t:"sante",q:"Sans mutuelle, c'est moi qui paie ce que la Sécu ne rembourse pas.",r:true,e:"La Sécu paie une partie, la mutuelle le reste. Sinon, c'est pour toi."},
+ {t:"sante",q:"La première carte Vitale est payante.",r:false,e:"La 1re carte Vitale est gratuite. Elle existe aussi en appli."},
+ {t:"sante",q:"La pilule du lendemain est gratuite et sans ordonnance.",r:true,e:"Oui, pour toutes, en pharmacie."},
+ {t:"sante",q:"Les urgences de l'hôpital, c'est pour tous les problèmes de santé.",r:false,e:"Seulement pour les urgences graves. Si tu hésites : le 15 ou le 116 117."},
+ {t:"sante",q:"Sans médecin traitant, je suis aussi bien remboursé.",r:false,e:"Tu es beaucoup moins remboursé : 12,60 € à payer au lieu de 2 € avec une mutuelle."},
+ {t:"impots",q:"Si je gagne peu, je n'ai pas besoin de déclarer mes revenus.",r:false,e:"On déclare chaque printemps, même si on gagne peu. L'avis d'impôt sert partout."},
+ {t:"impots",q:"Les bourses et l'APL se déclarent aux impôts.",r:false,e:"Bourses et APL ne se déclarent pas."},
+ {t:"banque",q:"Je peux donner mon RIB à mon employeur.",r:true,e:"Le RIB sert à recevoir ton salaire, l'APL, les remboursements. Tu peux le donner."},
+ {t:"banque",q:"Ma banque peut me demander le code reçu par SMS au téléphone.",r:false,e:"Jamais. Tes codes ne se donnent à personne, même à « ta banque »."},
+ {t:"logement",q:"L'assurance habitation est facultative.",r:false,e:"Elle est obligatoire."},
+ {t:"logement",q:"Visale, c'est seulement pour les plus de 30 ans.",r:false,e:"C'est l'inverse : la caution Visale est gratuite si tu as 30 ans ou moins."},
+ {t:"logement",q:"Un ancien de l'ASE est prioritaire pour un logement social pendant 3 ans.",r:true,e:"Oui. La demande se fait sur demande-logement-social.gouv.fr et se renouvelle chaque année."},
+ {t:"emploi",q:"Si j'oublie de m'actualiser à France Travail, je suis radié.",r:true,e:"Il faut s'actualiser chaque mois, du 28 au 15."},
+ {t:"emploi",q:"Je peux jeter mes fiches de paie au bout d'un an.",r:false,e:"Elles se gardent toute la vie."},
+ {t:"emploi",q:"J'ai une semaine pour envoyer mon arrêt maladie à mon employeur.",r:false,e:"Tu as 48 heures. En retard, tu risques de perdre une partie de tes indemnités."},
+ {t:"emploi",q:"Si je me blesse sur le trajet du travail, c'est un accident du travail.",r:true,e:"Oui, c'est un accident de trajet. Préviens ton employeur dans les 24 heures."},
+ {t:"handicap",q:"Avec une RQTH, je dois le dire à mon employeur.",r:false,e:"Avoir une RQTH ne t'oblige pas à le dire à ton employeur."},
+ {t:"droits",q:"Mon pécule m'est versé automatiquement à 18 ans.",r:false,e:"Il faut le demander à la Caisse des dépôts."},
+ {t:"droits",q:"J'ai le droit de lire mon dossier ASE.",r:true,e:"Oui, tu peux en faire la demande."},
+ {t:"droits",q:"Après 18 ans, l'ASE c'est fini, je ne peux plus demander d'aide.",r:false,e:"Jusqu'à 21 ans, le Département peut continuer à t'accompagner. Et tu peux revenir demander de l'aide."},
+ {t:"droits",q:"Ancien de l'ASE étudiant, j'ai la bourse au maximum, sans condition de revenus.",r:true,e:"Oui, c'est un droit pour les anciens de l'ASE."},
+ {t:"papiers",q:"Je garde mes factures de téléphone 5 ans.",r:true,e:"Factures, relevés de banque et courriers CAF : 5 ans."},
+ {t:"papiers",q:"Je peux donner mon mot de passe ameli à un ami pour qu'il m'aide.",r:false,e:"Ne donne jamais tes mots de passe, même à un ami. Demande plutôt à la France Services ou à ton référent."}
+],
+// Jeu 3 : Arnaque ou pas ?
+arnaque:[
+ {m:"Appel : « Bonjour, ici le service fraude de votre banque. Pour bloquer l'opération, donnez-moi le code que vous allez recevoir par SMS. »",r:true,e:"Arnaque. Raccroche et rappelle ta banque avec le numéro au dos de ta carte."},
+ {m:"SMS : « Vous avez une amende impayée de 35 €. Payez ici avant majoration : amende-reglement.info »",r:true,e:"Arnaque. N'ouvre pas le lien. Les vraies amendes se paient sur le site officiel indiqué sur l'avis."},
+ {m:"SMS : « Votre colis est bloqué. Réglez 1,99 € de frais pour le recevoir : bit.ly/… »",r:true,e:"Arnaque. N'ouvre pas le lien et supprime le message."},
+ {m:"SMS : « Votre carte Vitale expire. Commandez la nouvelle ici : vitale-renouvellement.com »",r:true,e:"Arnaque. La carte Vitale ne se renouvelle pas par SMS. Va sur ton compte ameli."},
+ {m:"Message : « Prête-moi ta carte bancaire une semaine, je te donne 200 €. »",r:true,e:"C'est illégal et tu risques gros : ton compte peut servir à blanchir de l'argent."},
+ {m:"Ton nouvel employeur te demande ton RIB pour verser ton salaire.",r:false,e:"C'est normal. Ton RIB, tu peux le donner."},
+ {m:"Dans ton espace CAF en ligne, un message te rappelle de faire ta déclaration trimestrielle.",r:false,e:"C'est normal, si tu touches la prime d'activité. Fais-la depuis l'appli ou caf.fr."},
+ {m:"Un « ami » te demande ton identifiant et ton mot de passe ameli pour « régler ton dossier ».",r:true,e:"On ne donne jamais ses mots de passe, même à un ami."},
+ {m:"Sur ton compte ameli, une notification indique un remboursement de consultation.",r:false,e:"C'est normal. Vérifie toujours dans l'appli officielle, pas par un lien reçu par SMS."},
+ {m:"Annonce : « Super appart pas cher. Je suis à l'étranger, faites un virement de la caution et je vous envoie les clés. »",r:true,e:"Arnaque classique. On ne paie jamais avant d'avoir visité et signé un bail."}
+],
+// Jeu 4 : Le mois de Sam (chiffres inventés pour le jeu)
+sam:{intro:"Sam a 19 ans. Il est apprenti et vit dans un studio. Voici son mois. Chiffres inventés pour le jeu.",
+ entrees:[["Salaire d'apprenti",950],["APL",230]],
+ sorties:[["Loyer",450],["Électricité, eau",45],["Téléphone, internet",25],["Assurance habitation",12],["Transport",30],["Courses",220]],
+ evenements:[
+  {s:1,t:"Tes potes organisent un resto pour un anniversaire. C'est 25 €.",c:[["J'y vais",-25],["Je propose un pique-nique à la place",-5]]},
+  {s:1,t:"Contrôle dans le car : tu n'avais pas validé ton trajet. Amende de 35 €.",c:[["Je paie",-35,"Avec FAIRTIQ, valider est simple, et les trajets deviennent gratuits à partir du 11e du mois avec « + = 0 »."]]},
+  {s:2,t:"Ameli te rembourse une consultation.",c:[["Super",23]]},
+  {s:2,t:"L'écran de ton téléphone est fissuré. La réparation coûte 80 €.",c:[["Je répare tout de suite",-80],["J'attends le mois prochain et je mets une protection",-10]]},
+  {s:3,t:"Un SMS te demande 1,99 € pour débloquer un colis.",c:[["Je paie, c'est pas cher",-150,"C'était une arnaque : le faux site a vidé 150 € de ton compte."],["Je supprime le message",0,"Bon réflexe : c'était une arnaque."]]},
+  {s:3,t:"Ton patron te verse une prime de 60 €.",c:[["Je la mets de côté",60],["Je m'achète des baskets",-30]]},
+  {s:4,t:"La CAF te demande de rembourser 40 € : tu n'avais pas signalé ta hausse de salaire.",c:[["Je rembourse",-40,"Un indu, ça s'évite : on signale tout changement à la CAF."]]},
+  {s:4,t:"Il reste un week-end. Courses en plus ?",c:[["Grosses courses",-40],["Je cuisine avec ce qu'il reste",-10]]}
+ ]},
+// Cartes papiers (séance 1)
+papiers:[["Fiche de paie de juin","5","Toute ma vie"],["Avis d'impôt 2026","4","Au moins 3 ans"],["Facture de téléphone","6","5 ans"],["Bail du studio","6","Le temps de la location + 3 ans"],
+ ["Quittance de loyer","6","Le temps de la location + 3 ans"],["Attestation de JDC","1",""],["Courrier de la CAF","3","5 ans"],["Relevé de banque","6","5 ans"],
+ ["Diplôme du CAP","5","Toute ma vie"],["Décompte de remboursement santé","2","2 ans"],["Attestation CSS","2",""],["Contrat de travail","5","Toute ma vie"],
+ ["Attestation d'assurance habitation","6",""],["Acte de naissance","1",""],["RIB","6",""],["Facture d'électricité","6","5 ans"]],
+// Étapes logement (séance 5)
+etapes:["Je calcule mon budget (loyer + charges + énergie + assurance − APL)","Je fais ma demande de logement social et/ou je cherche une annonce","Je demande mon visa Visale",
+ "Je visite le logement","Je signe le bail","Je prends une assurance habitation","Je fais l'état des lieux avec photos et relevés des compteurs","Je demande l'APL le mois de mon entrée"],
+coffre:["Carte d'identité ou passeport","Acte de naissance","Attestation de recensement ou de JDC","Attestation de droits ameli (carte Vitale)","Attestation de mutuelle ou de CSS","RIB","Avis d'impôt (ou de non-imposition)","Fiches de paie","Contrats de travail","Diplômes","Bail et état des lieux","Quittances de loyer","Attestation d'assurance habitation","Attestation CAF","Livret de famille et acte de naissance de mon enfant"],
+// documents suggérés par type de rendez-vous (à vérifier sur la convocation)
+rdvTypes:[
+ {id:"referent",nom:"Mon référent ASE / MDS",c:"droits",org:0,nat:"cg",docs:["Mon téléphone chargé (appli Galère Academy)","Mon classeur de papiers","Mes questions notées"]},
+ {id:"as",nom:"Mon assistante sociale (MDS)",c:"droits",org:0,nat:"cg",docs:["Pièce d'identité","Justificatifs de ressources (fiches de paie, attestation CAF)","Courriers ou factures en cours","Mes questions notées"]},
+ {id:"caf",nom:"CAF",c:"caf",org:2,nat:"caf",docs:["Pièce d'identité","Numéro d'allocataire","RIB","Bail ou attestation de loyer","Avis d'impôt"]},
+ {id:"cpam",nom:"CPAM / ameli",c:"sante",org:1,nat:"cpam",docs:["Pièce d'identité","Carte Vitale ou attestation de droits","RIB"]},
+ {id:"pmi",nom:"PMI, sage-femme, maternité",c:"sante",org:null,docs:["Carte Vitale","Pièce d'identité","Carnet de santé du bébé","Résultats d'examens et échographies"]},
+ {id:"medecin",nom:"Médecin, dentiste, santé",c:"sante",org:null,docs:["Carte Vitale","Attestation de mutuelle ou de CSS","Ordonnances ou résultats en cours"]},
+ {id:"mission",nom:"Mission locale",c:"emploi",org:5,nat:"mission_locale",docs:["Pièce d'identité","Carte Vitale","CV","Diplômes"]},
+ {id:"ft",nom:"France Travail",c:"emploi",org:6,nat:"france_travail",docs:["Pièce d'identité","CV","Attestation employeur","RIB"]},
+ {id:"emploi",nom:"Entretien d'embauche",c:"emploi",org:null,docs:["CV imprimé","Pièce d'identité","Diplômes"]},
+ {id:"logement",nom:"Visite ou état des lieux",c:"logement",org:null,docs:["Pièce d'identité","Avis d'impôt","Fiches de paie","Visa Visale","Attestation d'assurance habitation","Téléphone chargé pour les photos"]},
+ {id:"banque",nom:"Banque",c:"banque",org:null,docs:["Pièce d'identité","Justificatif de domicile"]},
+ {id:"impots",nom:"Impôts / France Services",c:"impots",org:4,nat:"sip",docs:["Pièce d'identité","Avis d'impôt","Identifiants impots.gouv.fr ou FranceConnect"]},
+ {id:"mdph",nom:"MDPH",c:"mdph",org:7,nat:"maison_handicapees",docs:["Pièce d'identité","Certificat médical de moins d'un an","Justificatif de domicile"]},
+ {id:"mairie",nom:"Mairie / carte d'identité",c:"papiers",org:12,nat:"mairie",docs:["Pré-demande ANTS","Photo d'identité","Justificatif de domicile","Ancienne carte d'identité"]},
+ {id:"autre",nom:"Autre",c:"qui",org:null,docs:["Pièce d'identité"]}
+],
+deps:[["01", "Ain", "auvergne-rhone-alpes/ain"], ["02", "Aisne", "hauts-de-france/aisne"], ["03", "Allier", "auvergne-rhone-alpes/allier"], ["04", "Alpes-de-Haute-Provence", "provence-alpes-cote-d-azur/alpes-de-haute-provence"], ["05", "Hautes-Alpes", "provence-alpes-cote-d-azur/hautes-alpes"], ["06", "Alpes-Maritimes", "provence-alpes-cote-d-azur/alpes-maritimes"], ["07", "Ardèche", "auvergne-rhone-alpes/ardeche"], ["08", "Ardennes", "grand-est/ardennes"], ["09", "Ariège", "occitanie/ariege"], ["10", "Aube", "grand-est/aube"], ["11", "Aude", "occitanie/aude"], ["12", "Aveyron", "occitanie/aveyron"], ["13", "Bouches-du-Rhône", "provence-alpes-cote-d-azur/bouches-du-rhone"], ["14", "Calvados", "normandie/calvados"], ["15", "Cantal", "auvergne-rhone-alpes/cantal"], ["16", "Charente", "nouvelle-aquitaine/charente"], ["17", "Charente-Maritime", "nouvelle-aquitaine/charente-maritime"], ["18", "Cher", "centre-val-de-loire/cher"], ["19", "Corrèze", "nouvelle-aquitaine/correze"], ["2A", "Corse-du-Sud", "corse/corse-du-sud"], ["2B", "Haute-Corse", "corse/haute-corse"], ["21", "Côte-d'Or", "bourgogne-franche-comte/cote-d-or"], ["22", "Côtes-d'Armor", "bretagne/cotes-d-armor"], ["23", "Creuse", "nouvelle-aquitaine/creuse"], ["24", "Dordogne", "nouvelle-aquitaine/dordogne"], ["25", "Doubs", "bourgogne-franche-comte/doubs"], ["26", "Drôme", "auvergne-rhone-alpes/drome"], ["27", "Eure", "normandie/eure"], ["28", "Eure-et-Loir", "centre-val-de-loire/eure-et-loir"], ["29", "Finistère", "bretagne/finistere"], ["30", "Gard", "occitanie/gard"], ["31", "Haute-Garonne", "occitanie/haute-garonne"], ["32", "Gers", "occitanie/gers"], ["33", "Gironde", "nouvelle-aquitaine/gironde"], ["34", "Hérault", "occitanie/herault"], ["35", "Ille-et-Vilaine", "bretagne/ille-et-vilaine"], ["36", "Indre", "centre-val-de-loire/indre"], ["37", "Indre-et-Loire", "centre-val-de-loire/indre-et-loire"], ["38", "Isère", "auvergne-rhone-alpes/isere"], ["39", "Jura", "bourgogne-franche-comte/jura"], ["40", "Landes", "nouvelle-aquitaine/landes"], ["41", "Loir-et-Cher", "centre-val-de-loire/loir-et-cher"], ["42", "Loire", "auvergne-rhone-alpes/loire"], ["43", "Haute-Loire", "auvergne-rhone-alpes/haute-loire"], ["44", "Loire-Atlantique", "pays-de-la-loire/loire-atlantique"], ["45", "Loiret", "centre-val-de-loire/loiret"], ["46", "Lot", "occitanie/lot"], ["47", "Lot-et-Garonne", "nouvelle-aquitaine/lot-et-garonne"], ["48", "Lozère", "occitanie/lozere"], ["49", "Maine-et-Loire", "pays-de-la-loire/maine-et-loire"], ["50", "Manche", "normandie/manche"], ["51", "Marne", "grand-est/marne"], ["52", "Haute-Marne", "grand-est/haute-marne"], ["53", "Mayenne", "pays-de-la-loire/mayenne"], ["54", "Meurthe-et-Moselle", "grand-est/meurthe-et-moselle"], ["55", "Meuse", "grand-est/meuse"], ["56", "Morbihan", "bretagne/morbihan"], ["57", "Moselle", "grand-est/moselle"], ["58", "Nièvre", "bourgogne-franche-comte/nievre"], ["59", "Nord", "hauts-de-france/nord"], ["60", "Oise", "hauts-de-france/oise"], ["61", "Orne", "normandie/orne"], ["62", "Pas-de-Calais", "hauts-de-france/pas-de-calais"], ["63", "Puy-de-Dôme", "auvergne-rhone-alpes/puy-de-dome"], ["64", "Pyrénées-Atlantiques", "nouvelle-aquitaine/pyrenees-atlantiques"], ["65", "Hautes-Pyrénées", "occitanie/hautes-pyrenees"], ["66", "Pyrénées-Orientales", "occitanie/pyrenees-orientales"], ["67", "Bas-Rhin", "grand-est/bas-rhin"], ["68", "Haut-Rhin", "grand-est/haut-rhin"], ["69", "Rhône", "auvergne-rhone-alpes/rhone"], ["70", "Haute-Saône", "bourgogne-franche-comte/haute-saone"], ["71", "Saône-et-Loire", "bourgogne-franche-comte/saone-et-loire"], ["72", "Sarthe", "pays-de-la-loire/sarthe"], ["73", "Savoie", "auvergne-rhone-alpes/savoie"], ["74", "Haute-Savoie", "auvergne-rhone-alpes/haute-savoie"], ["75", "Paris", "ile-de-france/paris"], ["76", "Seine-Maritime", "normandie/seine-maritime"], ["77", "Seine-et-Marne", "ile-de-france/seine-et-marne"], ["78", "Yvelines", "ile-de-france/yvelines"], ["79", "Deux-Sèvres", "nouvelle-aquitaine/deux-sevres"], ["80", "Somme", "hauts-de-france/somme"], ["81", "Tarn", "occitanie/tarn"], ["82", "Tarn-et-Garonne", "occitanie/tarn-et-garonne"], ["83", "Var", "provence-alpes-cote-d-azur/var"], ["84", "Vaucluse", "provence-alpes-cote-d-azur/vaucluse"], ["85", "Vendée", "pays-de-la-loire/vendee"], ["86", "Vienne", "nouvelle-aquitaine/vienne"], ["87", "Haute-Vienne", "nouvelle-aquitaine/haute-vienne"], ["88", "Vosges", "grand-est/vosges"], ["89", "Yonne", "bourgogne-franche-comte/yonne"], ["90", "Territoire de Belfort", "bourgogne-franche-comte/territoire-de-belfort"], ["91", "Essonne", "ile-de-france/essonne"], ["92", "Hauts-de-Seine", "ile-de-france/hauts-de-seine"], ["93", "Seine-Saint-Denis", "ile-de-france/seine-saint-denis"], ["94", "Val-de-Marne", "ile-de-france/val-de-marne"], ["95", "Val-d'Oise", "ile-de-france/val-d-oise"], ["971", "Guadeloupe", "guadeloupe/guadeloupe"], ["972", "Martinique", "martinique/martinique"], ["973", "Guyane", "guyane/guyane"], ["974", "La Réunion", "la-reunion/la-reunion"], ["976", "Mayotte", "mayotte/mayotte"]],
+// organismes présents partout : numéro national + page de l'annuaire Service Public du département
+national:[
+ {k:"cg",q:"Conseil départemental",nom:"Conseil départemental (ASE, MDS / maison des solidarités)",role:"Ton référent ASE, l'accompagnement jeune majeur, les aides sociales, FSL, FAJ",tel:"",site:"",c:"droits",ic:"droits"},
+ {k:"cpam",q:"Caisse primaire d'assurance maladie",nom:"CPAM (Assurance maladie)",role:"Carte Vitale, remboursements, CSS",tel:"36 46",site:"ameli.fr",c:"sante",ic:"sante"},
+ {k:"caf",q:"Caisse d'allocations familiales",nom:"CAF",role:"APL, prime d'activité",tel:"32 30",site:"caf.fr",c:"caf",ic:"caf"},
+ {k:"sip",q:"Service des impôts des particuliers",nom:"Impôts (service des impôts des particuliers)",role:"Déclaration de revenus, avis d'impôt",tel:"0809 401 401",site:"impots.gouv.fr",c:"impots",ic:"impots"},
+ {k:"france_services",q:"France services",nom:"France Services",role:"Aide aux démarches en ligne, conseiller numérique, permanences",tel:"",site:"",c:"papiers",ic:"papiers"},
+ {k:"mission_locale",q:"Mission locale",nom:"Mission locale",role:"Emploi, formation, CEJ, aides (16-25 ans)",tel:"",site:"",c:"emploi",ic:"emploi"},
+ {k:"france_travail",q:"France Travail",nom:"France Travail",role:"Recherche d'emploi, indemnisation",tel:"39 49",site:"francetravail.fr",c:"emploi",ic:"emploi"},
+ {k:"maison_handicapees",q:"Maison départementale des personnes handicapées",nom:"MDPH",role:"AAH, RQTH, droits liés au handicap",tel:"",site:"",c:"mdph",ic:"mdph"},
+ {k:"adil",q:"Agence départementale d'information sur le logement",nom:"ADIL",role:"Conseils gratuits sur le logement",tel:"",site:"anil.org",c:"logement",ic:"logement"},
+ {k:"point_justice",q:"Point-justice",nom:"Point justice",role:"Conseils juridiques gratuits",tel:"",site:"",c:"droits",ic:"droits"},
+ {k:"mairie",q:"Mairie",nom:"Mairie",role:"Carte d'identité, passeport (après la pré-demande sur ants.gouv.fr)",tel:"",site:"ants.gouv.fr",c:"papiers",ic:"papiers"},
+ {k:"pmi",q:"PMI",nom:"PMI (protection maternelle et infantile)",role:"Suivi gratuit de la grossesse et du bébé, conseils aux jeunes parents",tel:"",site:"",c:"sante",ic:"sante"},
+ {k:"msa",q:"MSA",nom:"MSA (si tu travailles dans l'agriculture)",role:"Santé et prestations familiales du régime agricole, à la place de la CPAM et de la CAF",tel:"",site:"msa.fr",c:"banque",ic:"banque"},
+ {k:null,nom:"Banque de France",role:"Droit au compte, difficultés d'argent",tel:"34 14",site:"banque-france.fr/fr/nous-trouver",c:"banque",ic:"banque"}
+],
+demarches:[
+ {id:"cni",fiche:"papiers",titre:"Faire ma carte d'identité",quand:"Dès que la tienne est périmée ou si tu n'en as pas. Elle est gratuite et valable 10 ans. Compte plusieurs semaines, plus avant l'été.",
+  etapes:["Fais ta pré-demande en ligne sur le site de l'ANTS (facultatif, mais tu gagnes du temps). Garde le numéro ou le QR code.","Trouve une mairie équipée : ça peut être n'importe laquelle, pas forcément celle de ta commune.","Prends rendez-vous : la plupart des mairies l'exigent.","Va au rendez-vous avec tes papiers originaux. Tu dois venir toi-même : on prend tes empreintes.","Suis ta demande en ligne. Tu reçois un SMS quand la carte est prête si tu as donné ton numéro.","Va la chercher toi-même à la mairie, dans les 3 mois. Après, elle est détruite."],
+  pieces:["Numéro de pré-demande (ou formulaire rempli sur place)","Photo d'identité de moins de 6 mois, aux normes","Justificatif de domicile de moins d'1 an (si tu es hébergé : attestation et pièce d'identité de la personne qui t'héberge)","Ton passeport s'il est valide ou périmé depuis moins de 5 ans","Sinon : un acte de naissance de moins de 3 mois (pas besoin si ta commune de naissance est reliée à l'ANTS)"],
+  liens:[["Faire ma pré-demande (ANTS)","https://www.service-public.gouv.fr/particuliers/vosdroits/R45668"],["Trouver une mairie équipée","https://passeport.ants.gouv.fr/services/geolocaliser-une-mairie-habilitee"],["Prendre rendez-vous","https://www.service-public.gouv.fr/particuliers/vosdroits/R63715"],["Suivre ma demande","https://www.service-public.gouv.fr/particuliers/vosdroits/R49786"],["Tout savoir (service-public)","https://www.service-public.gouv.fr/particuliers/vosdroits/F1341"]],
+  astuce:"La carte d'identité est gratuite. Si un site te demande de payer, ce n'est pas le site officiel. Ensuite, tu peux la mettre dans ton téléphone avec l'appli France Identité."},
+ {id:"passeport",fiche:"papiers",titre:"Faire mon passeport",quand:"Avant un voyage hors d'Europe, ou si tu n'as pas de carte d'identité. Valable 10 ans. Anticipe : plusieurs semaines, plus avant l'été.",
+  etapes:["Fais ta pré-demande en ligne (facultatif) : tu peux payer le timbre fiscal à la fin.","Sinon, achète le timbre fiscal de 86 € en ligne ou dans un bureau de tabac.","Trouve une mairie équipée et prends rendez-vous.","Va au rendez-vous avec tes papiers originaux (prise d'empreintes).","Suis ta demande en ligne et attends le SMS.","Va le chercher toi-même à la mairie, dans les 3 mois. Tu le signes sur place."],
+  pieces:["Numéro de pré-demande","Timbre fiscal de 86 €","Photo d'identité de moins de 6 mois","Justificatif de domicile de moins d'1 an","Ta carte d'identité si elle est valide ou périmée depuis moins de 5 ans, sinon un acte de naissance de moins de 3 mois"],
+  liens:[["Faire ma pré-demande","https://www.service-public.gouv.fr/particuliers/vosdroits/R42946"],["Acheter le timbre fiscal","https://www.service-public.gouv.fr/particuliers/vosdroits/R39812"],["Trouver une mairie équipée","https://passeport.ants.gouv.fr/services/geolocaliser-une-mairie-habilitee"],["Prendre rendez-vous","https://www.service-public.gouv.fr/particuliers/vosdroits/R63716"],["Tout savoir (service-public)","https://www.service-public.gouv.fr/particuliers/vosdroits/F14929"]],
+  astuce:"Le passeport coûte 86 € : parles-en à ton référent, une aide est parfois possible. Garde la photo de ton passeport dans ton coffre-fort."},
+ {id:"acte",fiche:"papiers",titre:"Demander mon acte de naissance",quand:"Pour une carte d'identité, un passeport, un mariage, un dossier administratif. Souvent demandé de moins de 3 mois.",
+  etapes:["Né(e) en France : fais la demande gratuite en ligne, ou va à la mairie de ta commune de naissance avec ta pièce d'identité (tu l'as tout de suite).","Né(e) à l'étranger et Français(e) : fais la demande en ligne au service central d'état civil de Nantes (environ 30 jours par courrier).","Indique ton nom, tes prénoms, ta date et ton lieu de naissance, et les noms de tes parents.","Range-le dans ton classeur, intercalaire « Identité »."],
+  pieces:["Ta pièce d'identité (si tu vas à la mairie)"],
+  liens:[["Demande gratuite : né(e) en France","https://www.service-public.gouv.fr/particuliers/vosdroits/R1406"],["Demande gratuite : né(e) à l'étranger","https://www.service-public.gouv.fr/particuliers/vosdroits/R1405"],["Tout savoir (service-public)","https://www.service-public.gouv.fr/particuliers/vosdroits/F1427"]],
+  astuce:"C'est toujours gratuit. Les sites qui font payer un acte de naissance ne sont pas officiels."},
+ {id:"jdc",fiche:"papiers",titre:"Me faire recenser et faire ma JDC",quand:"Si tu es Français(e) : dans les 3 mois après tes 16 ans (possible jusqu'à 25 ans si tu as oublié).",
+  etapes:["Fais-toi recenser à la mairie de ton domicile ou en ligne. Prends ton livret de famille et ta pièce d'identité.","Garde ton attestation de recensement : elle est demandée pour des examens avant 18 ans.","Tu es ensuite convoqué(e) à la Journée défense et citoyenneté (JDC). Vas-y.","Garde ton attestation de JDC : on te la demande pour le permis (de 17 à 24 ans), les examens et les concours (de 18 à 24 ans).","Attestation perdue ? Avant 25 ans, demande une attestation de situation au centre du service national (CSNJ), avec une copie de ta pièce d'identité."],
+  pieces:["Pièce d'identité","Livret de famille"],
+  liens:[["Le recensement (service-public)","https://www.service-public.gouv.fr/particuliers/vosdroits/F870"],["Mon espace JDC","https://www.service-public.gouv.fr/particuliers/vosdroits/R51719"],["Attestation perdue","https://www.service-public.gouv.fr/particuliers/vosdroits/F1290"]],
+  astuce:"Le recensement t'inscrit aussi automatiquement sur les listes électorales à 18 ans."},
+ {id:"grossesse",fiche:"caf",titre:"J'attends un enfant",quand:"Dès que tu sais que tu es enceinte. La déclaration de grossesse se fait avant la fin du 3e mois.",
+  etapes:["Prends rendez-vous chez un médecin ou une sage-femme pour le 1er examen prénatal, avant la fin du 3e mois.","Il ou elle fait la déclaration de grossesse en ligne : elle part toute seule à la CPAM et à la CAF. Si on te donne un formulaire papier, envoie-le dans les 14 premières semaines.","Mets à jour ta carte Vitale et préviens ta mutuelle ou ta CSS.","Inscris-toi à la maternité dès la fin du 3e mois.","Demande la prime à la naissance à la CAF, en ligne, dans les 6 mois après le début de la grossesse.","Avant le 7e mois : inscris-toi à la préparation à la naissance et, si tu veux une crèche, sur les listes d'attente.","Si les parents ne sont pas mariés, le père peut reconnaître l'enfant à la mairie avant la naissance."],
+  pieces:["Carte Vitale","Pièce d'identité","Identifiants CAF et ameli"],
+  liens:[["Je deviens parent : toutes les étapes (service-public)","https://www.service-public.gouv.fr/particuliers/vosdroits/F16225"],["La prime à la naissance","https://www.service-public.gouv.fr/particuliers/vosdroits/F2550"],["Reconnaître l'enfant avant la naissance","https://www.service-public.gouv.fr/particuliers/vosdroits/F887"]],
+  astuce:"La prime à la naissance (1 093,11 € en 2026, sous conditions de ressources) est versée avant la naissance. La PMI du Département suit gratuitement ta grossesse et ton bébé : demande à ton référent ou à ton assistante sociale."},
+ {id:"naissance",fiche:"caf",titre:"Mon bébé est né",quand:"Dans les jours qui suivent la naissance. La déclaration à la mairie se fait dans les 5 jours.",
+  etapes:["Déclare la naissance à la mairie du lieu de naissance dans les 5 jours (souvent possible à la maternité).","Déclare la naissance à l'Assurance maladie dans ton compte ameli, ou au 36 46.","Rattache ton enfant à ta carte Vitale (et à celle de l'autre parent).","Déclare la naissance à la CAF en ligne : elle calcule l'allocation de base (jusqu'aux 3 ans de l'enfant).","Fais faire le 1er examen médical du bébé avant ses 8 jours. Une sage-femme peut venir à la maison les premiers jours.","Préviens ton employeur pour les congés : congé maternité, ou congé de naissance et congé paternité pour le second parent."],
+  pieces:["Acte de naissance de l'enfant","Livret de famille (s'il existe)","Pièce d'identité des parents","Carnet de santé du bébé (remis par la maternité)"],
+  liens:[["Déclarer la naissance","https://www.service-public.gouv.fr/particuliers/vosdroits/F961"],["L'allocation de base de la Paje","https://www.service-public.gouv.fr/particuliers/vosdroits/F2552"],["Je deviens parent : après la naissance","https://www.service-public.gouv.fr/particuliers/vosdroits/F16225"]],
+  astuce:"Signale vite la naissance à la CAF : elle peut aussi changer ton APL et ta prime d'activité."},
+ {id:"solo",fiche:"caf",titre:"J'élève mon enfant seul(e)",quand:"Dès que tu élèves seul(e) ton enfant sans aide financière de l'autre parent.",
+  etapes:["Signale à la CAF que tu vis seul(e) avec ton enfant : tes droits sont recalculés.","Si l'autre parent ne verse pas de pension, demande l'allocation de soutien familial (ASF), sans condition de ressources.","Fais une simulation sur caf.fr ou mesdroitssociaux.gouv.fr pour voir les autres aides (RSA, prime d'activité, aide à la garde).","Parles-en à ton référent ou à ton assistante sociale : la PMI et le Département peuvent aussi t'accompagner."],
+  pieces:["Acte de naissance de l'enfant","Pièce d'identité","RIB"],
+  liens:[["L'allocation de soutien familial (ASF)","https://pension-alimentaire.caf.fr/usagers/aides-et-demarches/allocation-de-soutien-familial"],["Simulateur de droits","https://www.mesdroitssociaux.gouv.fr/votre-simulateur/accueil"]],
+  astuce:"Tu n'as pas à te débrouiller seul(e) : la PMI, ta MDS et la Mission locale peuvent t'aider à trouver une solution de garde pour travailler ou te former."},
+ {id:"css",fiche:"sante",titre:"Demander la CSS (mutuelle gratuite ou à petit prix)",quand:"Dès que tes revenus sont faibles, puis chaque année : entre 4 et 2 mois avant la date de fin.",
+  etapes:["Vérifie si tu y as droit avec le simulateur mesdroitssociaux.gouv.fr.","Connecte-toi à ton compte ameli et remplis la demande de Complémentaire santé solidaire.","Ajoute tes justificatifs (photo ou scan).","Attends la réponse : 2 mois maximum. Sans réponse au bout de 2 mois, c'est accepté.","Note la date de fin de tes droits dans ton agenda pour renouveler à temps."],
+  pieces:["Ton avis d'impôt","Tes justificatifs de ressources si on te les demande"],
+  liens:[["Faire la demande en ligne (ameli)","https://www.service-public.gouv.fr/particuliers/vosdroits/R52880"],["Simulateur de droits","https://www.mesdroitssociaux.gouv.fr/votre-simulateur/accueil"],["Formulaire papier (cerfa 12504)","https://www.service-public.gouv.fr/particuliers/vosdroits/R54651"],["Tout savoir (service-public)","https://www.service-public.gouv.fr/particuliers/vosdroits/F10027"]],
+  astuce:"Un adulte de confiance peut faire la demande pour toi avec une procuration."},
+ {id:"apl",fiche:"caf",titre:"Demander l'APL",quand:"Le mois où tu entres dans ton logement. L'APL est due à partir du mois qui suit ta demande.",
+  etapes:["Crée ton compte sur caf.fr si tu n'es pas encore allocataire.","Fais la demande d'aide au logement en ligne.","Ajoute les pièces demandées pendant la démarche.","Suis ton dossier dans ton compte : environ 1 mois de traitement.","Premier versement le 5 du mois. Exemple : entrée le 15 octobre, droits en novembre, versement le 5 décembre."],
+  pieces:["Pièce d'identité (ou titre de séjour)","RIB","Attestation de loyer remplie par le propriétaire","Ton bail"],
+  liens:[["Faire la demande d'APL (Caf)","https://www.service-public.gouv.fr/particuliers/vosdroits/R1292"],["Tout savoir (service-public)","https://www.service-public.gouv.fr/particuliers/vosdroits/F12006"]],
+  astuce:"Fais la simulation sur caf.fr avant de signer : tu sauras combien il te reste vraiment à payer."},
+ {id:"prime",fiche:"caf",titre:"Demander la prime d'activité",quand:"Dès que tu travailles avec un petit salaire, à partir de 18 ans.",
+  etapes:["Fais une simulation sur caf.fr.","Fais la demande en ligne dans ton compte Caf.","Tous les 3 mois, vérifie et valide ta déclaration : tes salaires sont déjà remplis.","Ajoute les autres revenus s'il y en a."],
+  pieces:["Tes fiches de paie (pour vérifier)","RIB"],
+  liens:[["Faire la demande (Caf)","https://www.service-public.gouv.fr/particuliers/vosdroits/R42724"],["Tout savoir (service-public)","https://www.service-public.gouv.fr/particuliers/vosdroits/F2882"]],
+  astuce:"Si tu oublies la déclaration des 3 mois, la prime s'arrête."},
+ {id:"hlm",fiche:"logement",titre:"Faire ma demande de logement social",quand:"Le plus tôt possible : les délais sont longs. Renouvelle-la chaque année.",
+  etapes:["Va sur le service en ligne de demande de logement social (ou demande le formulaire papier n° 14069).","Choisis les communes où tu veux habiter. Hors Île-de-France, il faut un dossier par département.","Remplis ta situation et ajoute tes pièces.","Garde ton attestation : elle contient ton numéro de demande. Note-le dans « Mes numéros ».","Renouvelle ta demande chaque année à la date anniversaire."],
+  pieces:["Pièce d'identité recto verso ou titre de séjour","Avis d'impôt","Fiches de paie ou justificatifs de ressources","Tout document sur ta situation (quittance, certificat de scolarité…)"],
+  liens:[["Faire la demande en ligne","https://www.service-public.gouv.fr/particuliers/vosdroits/R34754"],["Suis-je éligible ? (simulateur)","https://www.demande-logement-social.gouv.fr/demandeCreation/localisation.afficher"],["Formulaire papier n° 14069","https://www.service-public.gouv.fr/particuliers/vosdroits/R149"],["Où déposer un dossier papier","https://www.service-public.gouv.fr/particuliers/vosdroits/R54377"],["Tout savoir (service-public)","https://www.service-public.gouv.fr/particuliers/vosdroits/F869"]],
+  astuce:"Ancien de l'ASE : tu es prioritaire pendant 3 ans, dis-le à ton référent. Aide par téléphone : 0 806 000 113 (du lundi au vendredi, 9 h-19 h)."},
+ {id:"visale",fiche:"logement",titre:"Obtenir la caution Visale",quand:"Avant de signer le bail, dès le début de ta recherche.",
+  etapes:["Crée ton compte locataire sur visale.fr et active-le avec le code reçu par mail.","Dépose tes justificatifs (5 Mo maximum par fichier, renommés).","Reçois ton visa en quelques jours si le dossier est complet. Incomplet : tu as 15 jours pour le compléter.","Donne ton visa au propriétaire : c'est lui qui active la garantie.","Signe le bail avant la fin du visa : 3 mois (6 mois pour les étudiants et les alternants)."],
+  pieces:["Pièce d'identité","Justificatif de ta situation (contrat, certificat de scolarité…)","Justificatifs de ressources","Justificatif de domicile","Avis d'impôt"],
+  liens:[["Faire ma demande sur visale.fr","https://www.visale.fr/vos-questions/faq-locataires/ma-demande-de-visa/"],["Suis-je éligible ? (30 ans ou moins)","https://www.visale.fr/vos-questions/faq-locataires/locataire-de-30-ans-ou-moins-suis-je-eligible/"]],
+  astuce:"Visale, c'est gratuit. Personne ne doit te faire payer pour ce service."},
+ {id:"mdph",fiche:"mdph",titre:"Faire un dossier MDPH (AAH, RQTH…)",quand:"Le plus tôt possible : c'est long. Pour un renouvellement, environ 6 mois avant la fin de tes droits.",
+  etapes:["Télécharge le formulaire de demande (cerfa 15692) et remplis-le, date et signe.","Demande à ton médecin de remplir le certificat médical (cerfa 15695). Il doit avoir moins de 12 mois.","Remplis si tu peux la partie « vie quotidienne » : ce que tu vis au quotidien. La MDPH ou ton référent peuvent t'aider.","Dépose le dossier à la MDPH de ton département, ou en ligne si ton département propose « MDPH en ligne ».","Tu reçois un accusé de réception. S'il manque un papier, il est indiqué avec une date limite."],
+  pieces:["Formulaire cerfa 15692 rempli et signé","Certificat médical cerfa 15695 de moins de 12 mois (original)","Pièce d'identité recto verso","Justificatif de domicile (si tu es hébergé : attestation de la personne qui t'héberge)","Comptes rendus médicaux utiles"],
+  liens:[["Formulaire de demande (PDF)","https://www.monparcourshandicap.gouv.fr/sites/default/files/2025-03/Formulaire-demande-MDPH_cerfa_15692-01.pdf"],["Certificat médical (PDF)","https://www.monparcourshandicap.gouv.fr/sites/default/files/2022-05/cerfa_Certificat%20m%C3%A9dical%20MDPH_15695_accessible.pdf"],["Déposer en ligne (MDPH en ligne)","https://mdphenligne.cnsa.fr/"],["Comment déposer son dossier","https://www.monparcourshandicap.gouv.fr/aides/le-depot-du-dossier-et-le-traitement-de-la-demande-par-la-maison-departementale-des-personnes"]],
+  astuce:"Fais une copie de tout le dossier avant de l'envoyer et range-la dans ton classeur."},
+ {id:"arret",fiche:"emploi",titre:"Je suis en arrêt maladie",quand:"Dès que le médecin te met en arrêt : tu as 48 heures pour l'envoyer.",
+  etapes:["Le médecin envoie souvent l'arrêt en ligne à la CPAM. Il te donne alors une seule feuille (volet 3) : envoie-la à ton employeur dans les 48 heures (à France Travail si tu es sans emploi).","Si l'arrêt est sur papier (3 feuilles) : envoie les volets 1 et 2 à ta CPAM et le volet 3 à ton employeur, dans les 48 heures.","Respecte les heures de sortie écrites sur l'arrêt. Si les sorties sont limitées, tu dois être chez toi de 9 h à 11 h et de 14 h à 16 h, même le week-end. Des contrôles peuvent avoir lieu.","Si tu vas dormir ailleurs, note l'adresse sur le volet 1. Pour partir hors du département, demande l'accord de la CPAM avant.","Besoin de prolonger ? Retourne voir le médecin avant la fin de l'arrêt, et renvoie le nouveau papier sous 48 heures.","Tu reprends plus tôt ? Préviens la CPAM sous 24 heures."],
+  pieces:["Ton avis d'arrêt de travail","Ta carte Vitale","Ton numéro de sécurité sociale"],
+  liens:[["Les démarches du salarié (ameli)","https://www.ameli.fr/assure/droits-demarches/maladie-accident-hospitalisation/arret-travail-maladie/arret-travail-maladie-salarie"],["Indemnités journalières : conditions et montant","https://www.service-public.gouv.fr/particuliers/vosdroits/F3053"],["Les sorties pendant l'arrêt","https://www.service-public.gouv.fr/particuliers/vosdroits/F12415"]],
+  astuce:"Les 3 premiers jours ne sont en général pas payés par la Sécu (délai de carence). Pour avoir des indemnités, il faut avoir assez travaillé avant l'arrêt (par exemple 150 heures sur les 3 derniers mois). Si tu envoies ton arrêt en retard, tu peux perdre une partie de l'argent."},
+ {id:"accident",fiche:"emploi",titre:"J'ai eu un accident au travail ou sur le trajet",quand:"Le jour même, ou dans les 24 heures au plus tard.",
+  etapes:["Préviens ton employeur tout de suite (appel, mail, SMS), dans les 24 heures au plus tard.","Ton employeur déclare l'accident à la CPAM dans les 48 heures. S'il ne le fait pas, tu peux le déclarer toi-même pendant 2 ans.","Demande à ton employeur ta feuille d'accident : montre-la chez le médecin, à la pharmacie… Tes soins sont pris en charge à 100 % sans avancer d'argent.","Va voir le médecin de ton choix : il fait un certificat médical et, si besoin, un arrêt de travail.","La CPAM a 30 jours pour reconnaître l'accident (2 mois de plus si elle enquête). Sans réponse, il est reconnu."],
+  pieces:["La feuille d'accident donnée par l'employeur","Le certificat médical","Ta carte Vitale"],
+  liens:[["Accident du travail : les démarches (service-public)","https://www.service-public.gouv.fr/particuliers/vosdroits/F171"],["Accident de trajet : c'est quoi ?","https://www.service-public.gouv.fr/particuliers/vosdroits/F31881"],["Les indemnités en cas d'accident","https://www.service-public.gouv.fr/particuliers/vosdroits/F175"]],
+  astuce:"Un accident sur le trajet entre chez toi et ton travail compte aussi. Garde une copie de tous les papiers dans ton classeur."},
+ {id:"permis",fiche:"emploi",titre:"M'inscrire au permis de conduire",quand:"Dès que tu veux commencer le code.",
+  etapes:["Choisis une auto-école (elle peut faire l'inscription pour toi) ou inscris-toi seul en candidat libre.","Connecte-toi à ton compte ANTS (ou avec FranceConnect) et fais une nouvelle demande : « Je m'inscris pour passer les examens du permis ».","Remplis le formulaire et ajoute tes justificatifs.","Reçois ton numéro NEPH en 2 semaines environ. Note-le dans « Mes numéros ».","Inscris-toi ensuite à l'examen du code, puis à la conduite."],
+  pieces:["Pièce d'identité","Photo d'identité numérique avec code (cabine ou photographe agréé)","Justificatif de domicile","Attestation de JDC ou de recensement"],
+  liens:[["S'inscrire en ligne (ANTS)","https://permisdeconduire.ants.gouv.fr/demarches-en-ligne/inscription-examen-permis"],["Passer le code","https://www.service-public.gouv.fr/particuliers/vosdroits/F33694"],["Le permis en candidat libre","https://www.service-public.gouv.fr/particuliers/vosdroits/F2825"]],
+  astuce:"Méfie-toi des sites qui font payer l'inscription : la démarche sur l'ANTS est gratuite."},
+ {id:"permis1",fiche:"emploi",titre:"Financer mon permis (permis à 1 € par jour)",quand:"Avant de signer avec l'auto-école.",
+  etapes:["Vérifie que tu as entre 15 et 25 ans.","Choisis une auto-école labellisée qui propose le permis à 1 € par jour et demande un devis.","Signe le contrat, puis demande le prêt à une banque partenaire (600, 800, 1 000 ou 1 200 €).","La banque décide : elle peut demander un justificatif de revenus ou un garant.","Tu rembourses environ 30 € par mois, sans intérêts."],
+  pieces:["Devis et contrat de l'auto-école","Pièce d'identité","Justificatifs de revenus si la banque les demande"],
+  liens:[["Le permis à 1 € par jour (Sécurité routière)","https://www.securite-routiere.gouv.fr/passer-son-permis-de-conduire/financement-du-permis-de-conduire/permis-1-eu-par-jour/definition-du-permis-1-eu-par-jour"],["Tout savoir (service-public)","https://www.service-public.gouv.fr/particuliers/vosdroits/F10705"]],
+  astuce:"C'est un prêt : il faut le rembourser même si tu rates l'examen. Parle aussi du FAJ à ton référent, il peut compléter."},
+ {id:"pecule",fiche:"droits",titre:"Récupérer mon pécule",quand:"À tes 18 ans, si tu as été placé à l'ASE avant tes 18 ans.",
+  etapes:["Va sur le site de la Caisse des dépôts, rubrique « jeunes majeurs de l'enfance protégée ».","Fais ta demande de restitution de l'allocation de rentrée scolaire mise de côté pour toi.","Suis ta demande et garde le courrier de réponse dans ton classeur."],
+  pieces:["Pièce d'identité","RIB à ton nom"],
+  liens:[["Faire ma demande (Caisse des dépôts)","https://consignations.caissedesdepots.fr/particulier/restitution-jeunes-majeurs-enfance-protegee/allocation-rentree-scolaire-ars"],["Explications de la Caf","https://caf.fr/allocataires/actualites/actualites-nationales/jeunes-majeurs-issus-de-l-ase-demandez-vos-allocations-de-rentree"]],
+  astuce:"Il n'arrive pas tout seul : si tu ne le demandes pas, il reste bloqué. Ton référent peut t'aider."}
+],
+majorite:[
+ {p:"Dès 16 ans",items:[
+  {t:"Me faire recenser (si je suis Français·e), dans les 3 mois après mes 16 ans.",dm:"jdc"},
+  {t:"Avoir une carte d'identité valide.",dm:"cni"},
+  {t:"M'inscrire à la Mission locale (possible dès 16 ans) et parler du CEJ.",f:"emploi"}]},
+ {p:"À 17 ans, au plus tard un an avant mes 18 ans",items:[
+  {t:"Faire avec mon référent l'entretien de préparation à la majorité : bilan de mon parcours, mes droits, mon projet d'accès à l'autonomie. C'est un droit : je peux venir avec ma personne de confiance."},
+  {t:"Préparer avec mon référent ma demande d'accompagnement jeune majeur, possible jusqu'à 21 ans si je n'ai pas assez de ressources ou de soutien familial."},
+  {t:"Si je suis de nationalité étrangère : préparer dès maintenant ma demande de titre de séjour avec mon référent."},
+  {t:"Faire ma JDC si je suis convoqué·e, et garder l'attestation.",dm:"jdc"}]},
+ {p:"Les 3 derniers mois avant mes 18 ans",items:[
+  {t:"Vérifier que j'ai ma carte Vitale et mon compte ameli à mon nom, et une mutuelle ou la CSS.",dm:"css"},
+  {t:"Ouvrir un compte bancaire à mon nom et avoir mon RIB.",f:"banque"},
+  {t:"Créer une adresse mail sérieuse et mon compte FranceConnect.",f:"papiers"},
+  {t:"Rassembler mes papiers originaux dans mon classeur (acte de naissance, carte d'identité, carte Vitale…).",dm:"acte"},
+  {t:"Préparer avec mon référent où je vais habiter après 18 ans (logement social, Visale…).",dm:"hlm"}]},
+ {p:"Le mois de mes 18 ans",items:[
+  {t:"Demander mon pécule à la Caisse des dépôts.",dm:"pecule"},
+  {t:"Signer mon accompagnement jeune majeur, si je l'ai demandé, et noter mes engagements."},
+  {t:"Créer mon compte CAF si j'ai un logement ou un travail (APL, prime d'activité).",dm:"apl"},
+  {t:"Créer mon espace impots.gouv.fr et savoir avec mon référent si je déclare seul·e ou si je reste rattaché·e.",f:"impots"},
+  {t:"Vérifier que je suis bien inscrit·e sur les listes électorales."}]},
+ {p:"Entre 18 et 21 ans",items:[
+  {t:"Faire le point régulièrement avec mon référent et respecter les engagements de mon accompagnement."},
+  {t:"Renouveler ma CSS chaque année (2 à 4 mois avant la fin) et ma demande de logement social.",dm:"css"},
+  {t:"Déclarer mes revenus chaque printemps, même si je gagne peu.",f:"impots"},
+  {t:"Signaler mes changements à la CAF, à la CPAM et à France Travail.",f:"caf"},
+  {t:"Préparer la suite avant 21 ans. Si mon accompagnement s'arrête, je peux redemander une aide au Département tant que j'ai moins de 21 ans."}]}
+],
+mots:["Carte Vitale","Mutuelle","Tiers payant","Médecin traitant","Reste à charge","APL","Numéro d'allocataire","Indu","Prime d'activité","Avis d'impôt","RIB","Découvert",
+ "Visale","État des lieux","Quittance","FranceConnect","Pécule","CEJ","RQTH","Actualisation"]
+};
+
+
+const ICON = {
+ qui:'<path d="M12 3v18"/><path d="M5 5h11l3 3-3 3H5z"/><path d="M19 13H8l-3 3 3 3h11z"/>',
+ sante:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/><path d="M7 12h2.5l1.5-3 2 6 1.5-3H17"/>',
+ caf:'<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5a4 4 0 1 0 0 7M7 11h6M7 13.5h6"/>',
+ impots:'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 17l6-6M9.5 11.5h.01M14.5 16.5h.01"/>',
+ banque:'<rect x="2" y="5" width="20" height="14" rx="2.5"/><path d="M2 10h20M6 15h4"/>',
+ logement:'<circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3L20 3M16 7l3 3M14 9l2 2"/>',
+ emploi:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/>',
+ mdph:'<circle cx="12" cy="4" r="1.6"/><path d="M5 8h14M12 8v6M12 14l-4 7M12 14l4 7"/>',
+ papiers:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M8 13h8"/>',
+ droits:'<path d="M12 3v17M5 7h14M8 21h8"/><path d="M5 7l-3 6a3 3 0 0 0 6 0zM19 7l-3 6a3 3 0 0 0 6 0z"/>',
+ phone:'<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/>',
+ vf:'<path d="M4 12l4 4 8-9"/><path d="M15 15l5 5M20 15l-5 5"/>',
+ alerte:'<path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+ wallet:'<path d="M20 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-4a2 2 0 0 0 0 4h4v3a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5"/>',
+ kit:'<path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/>'
+};
+const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s}px"`:""} aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICON[k]||ICON.qui}</svg></span>`;
+(function(){
+  const $app = document.getElementById("app");
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const KEY = "galere-academy-v1";
+  let st = {checks:{}, contacts:{}, budget:{}, best:{}};
+  try{ const s = JSON.parse(localStorage.getItem(KEY) || "null"); if(s) st = Object.assign(st, s); }catch(e){}
+  const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} };
+  // le navigateur garde-t-il les infos ?
+  let storageOK = false;
+  try{ localStorage.setItem("ga-test", "1"); storageOK = localStorage.getItem("ga-test") === "1"; localStorage.removeItem("ga-test"); }catch(e){ storageOK = false; }
+  const embedded = (() => { try{ return window.self !== window.top; }catch(e){ return true; } })();
+  try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); }catch(e){}
+  function storageBanner(){
+    if(storageOK && !embedded) return "";
+    return `<div class="note" style="border-left-color:var(--ko);background:var(--ko-soft)">⚠️ <b>${storageOK ? "Tes infos risquent de ne pas être gardées ici." : "Ce navigateur ne garde pas tes infos."}</b> Pour que l'appli se souvienne de tout, ouvre-la depuis <b>galere-academy.fr</b> et installe-la sur ton écran d'accueil.</div>`;
+  }
+  const THEMES = {sante:"Santé",handicap:"MDPH",caf:"CAF",impots:"Impôts",banque:"Banque",logement:"Logement",emploi:"Emploi",papiers:"Papiers",droits:"Droits"};
+  const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+  const dep = () => GA.deps.find(d => d[0] === st.dep) || null;
+  const annu = k => { const d = dep(); return d && k ? `https://lannuaire.service-public.gouv.fr/navigation/${d[2]}/${k}` : (k ? `https://lannuaire.service-public.gouv.fr/navigation/${k}` : null); };
+  let AN = null, CO = null, loadP = null;
+  const loadData = () => loadP || (loadP = Promise.all([fetch("data/annuaire.json").then(r => r.json()), fetch("data/communes.json").then(r => r.json())]).then(([a,c]) => { AN = a; CO = c; }).catch(e => { loadP = null; throw e; }));
+  const norm = s => String(s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+  function findCommunes(q){
+    q = q.trim(); if(!q || !CO) return [];
+    if(/^\d{5}$/.test(q)) return CO.filter(c => c[1].split(" ").includes(q)).map(c => [c, q]);
+    if(/^\d{2,4}$/.test(q)) return CO.filter(c => c[1].split(" ").some(p => p.startsWith(q))).slice(0,8).map(c => [c, c[1].split(" ").find(p => p.startsWith(q))]);
+    const n = norm(q); if(n.length < 2) return [];
+    const ex = CO.filter(c => norm(c[0]) === n), st2 = CO.filter(c => norm(c[0]).startsWith(n) && norm(c[0]) !== n);
+    return ex.concat(st2).slice(0,8).map(c => [c, c[1].split(" ")[0]]);
+  }
+  const km = (a,b,c,d) => { const t = Math.PI/180, x = (c-a)*t, y = (d-b)*t, s = Math.sin(x/2)**2 + Math.cos(a*t)*Math.cos(c*t)*Math.sin(y/2)**2; return 2*6371*Math.asin(Math.sqrt(s)); };
+  const ANYDEP = ["france_services","point_justice","france_travail","msa"];
+  const nearest = (type, n) => (!st.loc || !AN) ? [] : AN.filter(r => r[0] === type && r[6] != null && (ANYDEP.includes(type) || depOfCp(r[3]) === st.loc.dep)).map(r => [km(st.loc.la, st.loc.lo, r[6], r[7]), r]).sort((a,b) => a[0]-b[0]).slice(0, n);
+  const depOfCp = cp => !cp ? "" : cp.startsWith("97") ? cp.slice(0,3) : cp.startsWith("20") ? (+cp < 20200 ? "2A" : "2B") : cp.slice(0,2);
+  const ficheUrl = r => { const d = GA.deps.find(x => x[0] === depOfCp(r[3])); return d && r[11] ? `https://lannuaire.service-public.gouv.fr/${d[2]}/${r[11]}` : null; };
+  const kmTxt = k => k < 1 ? "moins de 1 km" : (k < 10 ? k.toFixed(1).replace(".",",") : Math.round(k)) + " km";
+  function placeHtml([k, r]){
+    const u = ficheUrl(r);
+    return `<div class="place"><b>${esc(r[1])}</b><span>${esc([r[2], (r[3]+" "+r[4]).trim()].filter(Boolean).join(", "))} · <b>${kmTxt(k)}</b></span>${r[5]?`<span class="tel">📞 ${esc(r[5])}</span>`:""}${r[8]?`<span class="foot">🕒 ${esc(r[8])}</span>`:""}${r[9]?`<span class="foot">${esc(r[9])}</span>`:""}${r[10]?`<span class="foot" style="user-select:all">✉️ ${esc(r[10])}</span>`:""}${u?`<a href="${u}" target="_blank" rel="noopener">Fiche officielle ↗</a>`:""}</div>`;
+  }
+  function attachVille(input, sug, onPick){
+    let t;
+    const show = async () => {
+      const q = input.value.trim();
+      if(!q){ sug.innerHTML = ""; return; }
+      try{ await loadData(); }catch(e){ sug.innerHTML = `<span class="err">La liste des communes n'a pas pu se charger. Vérifie ta connexion.</span>`; return; }
+      const m = findCommunes(q);
+      if(st.loc && norm(q) === norm(st.loc.nom)){ sug.innerHTML = ""; return; }
+      sug.innerHTML = m.length ? m.map(([c,cp],i) => `<button type="button" class="chip" data-i="${i}">${esc(c[0])} (${esc(cp)})</button>`).join("") : `<span class="foot">Aucune commune trouvée. Essaie avec ton code postal.</span>`;
+      sug.querySelectorAll("[data-i]").forEach(b => b.onclick = () => { const [c,cp] = m[+b.dataset.i]; st.loc = {nom:c[0], cp, la:c[2], lo:c[3], dep:c[4]}; st.ville = c[0]; st.dep = c[4]; save(); input.value = c[0]; sug.innerHTML = ""; onPick && onPick(); });
+    };
+    input.addEventListener("input", () => { clearTimeout(t); t = setTimeout(show, 250); });
+  }
+  const near = o => st.ville && o.q ? `https://lannuaire.service-public.gouv.fr/recherche?whoWhat=${encodeURIComponent(o.q)}&where=${encodeURIComponent(st.ville)}` : null;
+  const villeInput = id => `<input class="search" type="text" id="${id}" value="${esc(st.loc ? st.loc.nom : (st.ville||""))}" placeholder="Ma ville ou mon code postal (ex. Revel, 31250)" aria-label="Ma ville ou mon code postal" autocomplete="off"><div class="filters" id="${id}-sug"></div>`;
+  const depSelect = id => `<select id="${id}" class="search" aria-label="Mon département"><option value="">Choisir mon département…</option>${GA.deps.map(d=>`<option value="${d[0]}" ${d[0]===st.dep?"selected":""}>${d[0]} – ${esc(d[1])}</option>`).join("")}</select>`;
+  const fmt = n => (Math.round(n)).toLocaleString("fr-FR") + " €";
+
+  // toutes les cases du parcours
+  const allChecks = () => {
+    const L = GA.kit.map((t,i) => "kit-"+i);
+    GA.fiches.forEach(f => (f.faire||[]).forEach((t,i) => L.push(f.id+"-"+i)));
+    return L;
+  };
+  const nbDone = keys => keys.filter(k => st.checks[k]).length;
+
+  function checkbox(key, label){
+    return `<label class="chk"><input type="checkbox" id="c-${key}" data-k="${key}" ${st.checks[key]?"checked":""}><span>${esc(label)}</span></label>`;
+  }
+  function bindChecks(){
+    $app.querySelectorAll("input[data-k]").forEach(i => i.addEventListener("change", () => { st.checks[i.dataset.k] = i.checked; save(); const p = $app.querySelector("[data-prog]"); if(p) renderProg(p); renderCoffre(); if(i.dataset.k.startsWith("mj-")){ const all = [...$app.querySelectorAll('input[data-k^="mj-"]')], n = all.filter(x=>x.checked).length; const t = $app.querySelector("#mjn"), bar = $app.querySelector("#mjb"); if(t) t.textContent = n + " / " + all.length; if(bar) bar.style.width = Math.round(n/all.length*100) + "%"; } const dm = i.closest(".dem"); if(dm){ const all = dm.querySelectorAll("input[data-k]"); dm.querySelector(".pg").textContent = [...all].filter(x=>x.checked).length + "/" + all.length; } }));
+  }
+  function renderCoffre(){
+    const el = $app.querySelector("[data-prog2]"); if(!el) return;
+    const keys = GA.coffre.map((t,i)=>"cf-"+i), d = nbDone(keys);
+    el.innerHTML = `<div class="row" style="justify-content:space-between"><b>${d} / ${keys.length} à l'abri</b><span class="foot">aucun document n'est stocké ici</span></div><div class="progress"><i style="width:${Math.round(d/keys.length*100)}%;background:var(--c-papiers)"></i></div>`;
+  }
+  function renderProg(el){
+    const keys = el.dataset.prog === "kit" ? GA.kit.map((t,i)=>"kit-"+i) : allChecks();
+    const d = nbDone(keys);
+    el.innerHTML = `<div class="row" style="justify-content:space-between"><b>${d} / ${keys.length} fait${d>1?"s":""}</b><span class="foot">enregistré sur ce téléphone</span></div><div class="progress"><i style="width:${Math.round(d/keys.length*100)}%"></i></div>`;
+  }
+
+  // ---------- ÂGE ET ANNIVERSAIRE
+  const birth = () => st.naissance ? new Date(st.naissance+"T12:00") : null;
+  function ageNow(){ const b = birth(); if(!b) return null; const n = new Date(); let a = n.getFullYear() - b.getFullYear(); if(n.getMonth() < b.getMonth() || (n.getMonth() === b.getMonth() && n.getDate() < b.getDate())) a--; return a; }
+  const isBirthday = () => { const b = birth(); if(!b) return false; const n = new Date(); return n.getDate() === b.getDate() && n.getMonth() === b.getMonth(); };
+  function monthsTo18(){ const b = birth(); if(!b) return null; const t = new Date(b.getFullYear()+18, b.getMonth(), b.getDate()), n = new Date(); return (t.getFullYear()-n.getFullYear())*12 + (t.getMonth()-n.getMonth()) - (n.getDate() > t.getDate() ? 1 : 0); }
+  function phaseNow(){ const a = ageNow(); if(a === null) return -1; const m = monthsTo18(); if(a < 17) return 0; if(a === 17) return m <= 3 ? 2 : 1; if(a === 18 && m > -2) return 3; return a < 21 ? 4 : -1; }
+  function confetti(){
+    try{ if(matchMedia("(prefers-reduced-motion: reduce)").matches) return; }catch(e){}
+    const cv = document.createElement("canvas"); cv.className = "confetti"; document.body.appendChild(cv);
+    const W = cv.width = innerWidth, H = cv.height = innerHeight, x = cv.getContext("2d");
+    const C = ["#e5484d","#f76b15","#ffd23f","#12a594","#3e63dd","#d6409f","#8e4ec6"];
+    const P = Array.from({length:140}, () => ({x:Math.random()*W, y:-20-Math.random()*H*.5, r:4+Math.random()*5, c:C[Math.floor(Math.random()*C.length)], vy:2+Math.random()*3, vx:-1.5+Math.random()*3, a:Math.random()*6, va:-.2+Math.random()*.4}));
+    let f = 0; (function step(){ x.clearRect(0,0,W,H); P.forEach(p => { p.y += p.vy; p.x += p.vx; p.a += p.va; x.save(); x.translate(p.x,p.y); x.rotate(p.a); x.fillStyle = p.c; x.fillRect(-p.r,-p.r/2,p.r*2,p.r); x.restore(); }); if(++f < 220) requestAnimationFrame(step); else cv.remove(); })();
+  }
+  function birthdayBanner(){
+    if(!isBirthday()) return "";
+    const a = ageNow(), nom = st.prenom ? " " + esc(st.prenom) : "";
+    const extra = a === 18 ? `<p>Tu as 18 ans aujourd'hui : c'est le moment de demander ton pécule et de faire le point avec ton référent.</p><a class="btn" href="#fiches" id="bd18" style="text-align:center;text-decoration:none">Ma feuille de route des 18 ans</a>` : a === 21 ? `<p>21 ans : une nouvelle étape. Ton référent et la Mission locale restent là si tu as besoin.</p>` : `<p>Profite bien de ta journée.</p>`;
+    return `<div class="bday" role="status"><span class="emo" aria-hidden="true">🎂</span><h2>Joyeux anniversaire${nom} !</h2>${a ? `<b>${a} ans aujourd'hui</b>` : ""}${extra}<span class="foot" style="color:inherit;opacity:.8">Toute l'équipe de la Galère Academy te souhaite une belle journée.</span></div>`;
+  }
+
+  // ---------- INSTALLER L'APPLI
+  const isIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent);
+  const SHARE_SVG = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-5px"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
+  function installHtml(which){
+    const ios = `<ol class="inst"><li><span>Ouvre ce lien dans <b>Safari</b>.</span></li><li><span>Touche le bouton <b>Partager</b> ${SHARE_SVG} en bas de l'écran.</span></li><li><span>Fais défiler et choisis <b>« Sur l'écran d'accueil »</b>.</span></li><li><span>Touche <b>« Ajouter »</b> en haut à droite.</span></li><li><span>L'icône apparaît sur ton écran d'accueil. Ouvre toujours l'appli <b>depuis cette icône</b>.</span></li></ol>`;
+    const and = `<ol class="inst"><li><span>Ouvre ce lien dans <b>Chrome</b>.</span></li><li><span>Touche le menu <b>⋮</b> en haut à droite.</span></li><li><span>Choisis <b>« Ajouter à l'écran d'accueil »</b> (ou « Installer l'appli »).</span></li><li><span>Touche <b>« Ajouter »</b> ou <b>« Installer »</b>.</span></li><li><span>L'icône apparaît sur ton écran d'accueil. Ouvre toujours l'appli <b>depuis cette icône</b>.</span></li></ol>`;
+    return `${bipBtn()}<div class="filters" role="group" aria-label="Mon téléphone"><button type="button" class="chip" data-os="ios" aria-pressed="${which==="ios"}">iPhone</button><button type="button" class="chip" data-os="and" aria-pressed="${which!=="ios"}">Android</button></div><div id="instbody">${which==="ios"?ios:and}</div>`;
+  }
+  let bip = null;
+  window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); bip = e; document.querySelectorAll(".instbox").forEach(b => { if(!b.querySelector("#bipbtn")) b.insertAdjacentHTML("afterbegin", bipBtn()); bindInstall(b); }); });
+  const bipBtn = () => bip ? `<button type="button" class="btn" id="bipbtn" style="margin-bottom:10px">📲 Installer l'appli maintenant</button>` : "";
+  const standalone = () => { try{ return matchMedia("(display-mode: standalone)").matches || navigator.standalone === true; }catch(e){ return false; } };
+  function bindInstall(root){
+    const bb = root.querySelector("#bipbtn"); if(bb) bb.onclick = async () => { if(!bip) return; bip.prompt(); try{ await bip.userChoice; }catch(e){} bip = null; bb.remove(); };
+    root.querySelectorAll("[data-os]").forEach(b => b.onclick = () => { const box = b.closest(".instbox"); box.innerHTML = installHtml(b.dataset.os); bindInstall(box); });
+  }
+  function vInstaller(){
+    document.querySelector("nav.tabs").hidden = true;
+    $app.innerHTML = `<section class="hero" style="padding-top:24px">
+      <span class="eyebrow">Étape 1 sur 2</span>
+      <h1>D'abord, <span class="mk">installe l'appli</span> sur ton téléphone</h1>
+      <p class="lede">Comme ça, elle est sur ton écran d'accueil, comme une vraie appli. C'est gratuit et il n'y a rien à télécharger dans un store.</p></section>
+      <div class="card instbox">${installHtml(isIOS() ? "ios" : "and")}</div>
+      <div class="note">⚠️ <b>Installe-la avant de remplir tes infos.</b> Sur iPhone, l'appli de l'écran d'accueil et Safari ne partagent pas leurs données : ce que tu notes dans l'une n'apparaît pas dans l'autre.</div>
+      <button class="btn" id="inst-ok">C'est fait, ou je l'ouvre déjà depuis l'icône</button>
+      <button class="back" id="inst-later" style="align-self:center">Plus tard</button>`;
+    bindInstall($app);
+    const go = () => { st.installSeen = true; save(); route(); };
+    $app.querySelector("#inst-ok").onclick = go; $app.querySelector("#inst-later").onclick = go;
+  }
+
+  // ---------- PREMIÈRE OUVERTURE
+  function vBienvenue(){
+    document.querySelector("nav.tabs").hidden = true;
+    $app.innerHTML = `<section class="hero" style="padding-top:24px">
+      <div class="mosaic">${["sante","caf","impots","banque","logement","emploi","mdph","papiers","droits","qui"].map(k=>ico(k)).join("")}</div>
+      <span class="eyebrow">Étape 2 sur 2 · Bienvenue</span>
+      <h1>Salut ! Moi c'est la <span class="mk">Galère Academy</span>.</h1>
+      <p class="lede">Je t'aide à t'y retrouver dans tes papiers, tes droits et tes rendez-vous. Pour commencer, dis-m'en un peu plus sur toi.</p></section>
+      <form class="card" id="onb" style="gap:14px">
+        <label style="display:flex;flex-direction:column;gap:4px;font-weight:700">Ton prénom<input type="text" id="ob-prenom" class="search" autocomplete="given-name" placeholder="ex. Inès" value="${esc(st.prenom||"")}"></label>
+        <label style="display:flex;flex-direction:column;gap:4px;font-weight:700">Ta date de naissance<input type="date" id="ob-naiss" class="search" value="${esc(st.naissance||"")}"><span class="foot" style="font-weight:400">Pour te souhaiter ton anniversaire 🎂 et te dire où tu en es avant tes 18 ans.</span></label>
+        <div style="display:flex;flex-direction:column;gap:4px"><label for="ob-ville" style="font-weight:700">Ta ville</label>${villeInput("ob-ville")}<span class="foot">Pour trouver les accueils les plus proches de chez toi.</span></div>
+        <button class="btn" type="submit">C'est parti</button>
+        <button class="back" type="button" id="ob-skip" style="align-self:center">Passer pour l'instant</button>
+        <p class="foot">Tout ce que tu écris reste sur ce téléphone. Personne d'autre ne le voit, même pas ton référent. Tu peux le modifier plus tard sur l'accueil.</p>
+      </form>`;
+    attachVille($app.querySelector("#ob-ville"), $app.querySelector("#ob-ville-sug"));
+    const done = () => { st.onboarded = true; save(); document.querySelector("nav.tabs").hidden = false; location.hash = "accueil"; route(); };
+    $app.querySelector("#onb").onsubmit = e => { e.preventDefault(); st.prenom = $app.querySelector("#ob-prenom").value.trim(); st.naissance = $app.querySelector("#ob-naiss").value; done(); };
+    $app.querySelector("#ob-skip").onclick = done;
+  }
+
+  // ---------- ACCUEIL
+  function vAccueil(){
+    const bd = birthdayBanner();
+    const m18 = monthsTo18(), ag = ageNow();
+    const where = ag === null ? "" : m18 > 0 ? `Tes 18 ans : dans ${m18 < 1 ? "moins d'un mois" : m18 + " mois"}. Regarde ta feuille de route.` : ag < 21 ? `Tu as ${ag} ans. Ta feuille de route te dit quoi faire maintenant.` : "";
+    $app.innerHTML = `${bd}${storageBanner()}
+    <section class="hero">
+      <span class="eyebrow">${st.prenom ? "Salut " + esc(st.prenom) + " 👋" : "Le parcours des 18-21 ans"}</span>
+      <h1>Bienvenue à la <span class="mk">Galère Academy</span></h1>
+      <p class="lede">Les papiers, les sites, les numéros… c'est compliqué pour tout le monde. Ici, on ne te fait pas la leçon : on joue, on teste, on se trompe sans risque, et tu repars avec les bons réflexes.</p>
+      <div class="mosaic">${["sante","caf","impots","banque","logement","emploi","mdph","papiers","droits","qui"].map(k=>ico(k)).join("")}</div>
+    </section>
+    <div class="card" data-prog="all"></div>
+    <div class="card"><span class="eyebrow">Moi</span>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><label style="display:flex;flex-direction:column;gap:4px;font-size:.88rem;font-weight:700">Mon prénom<input type="text" id="me-prenom" value="${esc(st.prenom||"")}" placeholder="Facultatif" autocomplete="given-name"></label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:.88rem;font-weight:700">Ma date de naissance<input type="date" id="me-naiss" value="${esc(st.naissance||"")}" style="font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 10px;min-width:0"></label></div>
+      <span class="foot">${where || "Facultatif : pour te souhaiter ton anniversaire et te dire où tu en es avant tes 18 ans. Reste sur ce téléphone."}</span></div>
+    <div class="card"><span class="eyebrow">Où j'habite</span>${villeInput("ville0")}${depSelect("dep0")}<span class="foot">${st.loc ? "Tes partenaires les plus proches de " + esc(st.loc.nom) + " sont dans l'onglet Contacts." : "Tape ta ville puis choisis-la dans la liste : l'appli trouvera les partenaires les plus proches."}</span></div>
+    <div class="grid" style="grid-template-columns:1fr">
+      <a class="big-btn" href="#jeux"><div class="lft">${ico("vf","sante")}<div><strong>Jouer</strong><br><span>J'appelle qui ?, Vrai ou faux, Arnaque ou pas ?, Le mois de Sam</span></div></div><b class="go">›</b></a>
+      <a class="big-btn" href="#fiches"><div class="lft">${ico("papiers")}<div><strong>Les fiches</strong><br><span>Santé, CAF, impôts, banque, logement, emploi, MDPH, papiers, droits</span></div></div><b class="go">›</b></a>
+      <a class="big-btn" href="#fiches" id="go18"><div class="lft">${ico("droits","droits")}<div><strong>Mes 18 ans</strong><br><span>La feuille de route, étape par étape et dans l'ordre</span></div></div><b class="go">›</b></a>
+      <a class="big-btn" href="#agenda"><div class="lft">${ico("kit","emploi")}<div><strong>Mon agenda</strong><br><span>Mes rendez-vous, l'adresse, le numéro, les papiers à prendre</span></div></div><b class="go">›</b></a>
+      <a class="big-btn" href="#kit"><div class="lft">${ico("kit","banque")}<div><strong>Mon kit de survie</strong><br><span>Ce que je dois avoir, mon coffre-fort, mon budget</span></div></div><b class="go">›</b></a>
+      <a class="big-btn" href="#contacts"><div class="lft">${ico("phone","logement")}<div><strong>Numéros et contacts</strong><br><span>Mes numéros (Sécu, CAF, impôts…), les numéros qui sauvent, les partenaires</span></div></div><b class="go">›</b></a>
+    </div>
+    <details class="card"><summary><b>📲 Installer l'appli sur mon téléphone</b></summary><div class="instbox" style="margin-top:10px">${installHtml(isIOS() ? "ios" : "and")}</div></details>
+    <div class="card" style="flex-direction:row;align-items:center;gap:14px">${ico("droits","droits",44)}<div><b style="font-family:var(--display)">Créée par des éducs et des ASS</b><br><span class="foot">Une appli pensée par des éducateurs et des assistants de service social de l'ASE, à partir de ce que les jeunes nous demandent vraiment.</span></div></div>
+    <p class="foot">Informations à jour en octobre 2026. Les montants changent chaque année : vérifie sur ameli.fr, caf.fr, impots.gouv.fr ou service-public.fr. Cette appli ne remplace pas ton référent.</p>`;
+    renderProg($app.querySelector("[data-prog]")); bindInstall($app);
+    $app.querySelector("#dep0").addEventListener("change", e => { st.dep = e.target.value; save(); });
+    $app.querySelector("#go18").addEventListener("click", () => { openFiche = "droits"; });
+    const b18 = $app.querySelector("#bd18"); if(b18) b18.addEventListener("click", () => { openFiche = "droits"; });
+    $app.querySelector("#me-prenom").addEventListener("change", e => { st.prenom = e.target.value.trim(); save(); vAccueil(); });
+    $app.querySelector("#me-naiss").addEventListener("change", e => { st.naissance = e.target.value; save(); vAccueil(); });
+    if(bd){ const k = "bd-" + new Date().getFullYear(); if(!st[k]){ st[k] = 1; save(); setTimeout(confetti, 300); } }
+    attachVille($app.querySelector("#ville0"), $app.querySelector("#ville0-sug"), () => { const s = $app.querySelector("#dep0"); if(s) s.value = st.dep; });
+  }
+
+  // ---------- FICHES
+  let openFiche = null;
+  function vFiches(){
+    if(openFiche){ return vFiche(GA.fiches.find(f => f.id === openFiche)); }
+    $app.innerHTML = `<div class="fhead" data-c="papiers">${ico("papiers","papiers",52)}<div><span class="eyebrow">Ton classeur</span><h2>Les fiches</h2></div></div><p class="lede">Une fiche par thème. Ouvre une fiche pour lire l'essentiel et cocher ce que tu as fait.</p>
+    <h3>Les démarches pas à pas</h3>
+    <div class="filters">${GA.demarches.map(d=>`<button class="chip" data-dm="${d.id}" data-fid="${d.fiche}">${esc(d.titre.split(" (")[0])}</button>`).join("")}</div>
+    <div class="fgrid">${GA.fiches.map(f => {
+      const k = (f.faire||[]).map((t,i)=>f.id+"-"+i), d = nbDone(k);
+      return `<button class="folder" data-c="${f.id}" data-n="${f.n === "0" ? "Départ" : f.n}" data-f="${f.id}"><div class="top">${ico(f.id,null,40)}<strong>${esc(f.titre)}</strong></div><span>${k.length ? (d === k.length ? `<span class="done">Tout est fait</span>` : `${d} / ${k.length} à faire`) : "À lire"}</span></button>`;
+    }).join("")}</div>`;
+    $app.querySelectorAll("[data-f]").forEach(b => b.onclick = () => { openFiche = b.dataset.f; vFiches(); window.scrollTo(0,0); });
+    $app.querySelectorAll("[data-dm]").forEach(b => b.onclick = () => { openFiche = b.dataset.fid; vFiches(); const d = document.getElementById("dem-"+b.dataset.dm); if(d){ d.open = true; d.scrollIntoView({block:"start"}); } });
+  }
+  function demarche(d){
+    const keys = d.etapes.map((t,i)=>"dm-"+d.id+"-"+i), done = nbDone(keys);
+    return `<details class="dem" data-c="${d.fiche}" id="dem-${d.id}"><summary>${ico(d.fiche,d.fiche,36)}<b>${esc(d.titre)}</b><span class="pg">${done}/${keys.length}</span><span class="chev">›</span></summary><div class="body">
+      <div class="when"><b>Quand ?</b> ${esc(d.quand)}</div>
+      <span class="eyebrow">Étape par étape</span><ol>${d.etapes.map((t,i)=>`<li>${checkbox("dm-"+d.id+"-"+i,t)}</li>`).join("")}</ol>
+      <span class="eyebrow">Les papiers à préparer</span><ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px">${d.pieces.map(p=>`<li>${esc(p)}</li>`).join("")}</ul>
+      <span class="eyebrow">Les liens officiels</span><div class="links">${d.liens.map(l=>`<a href="${l[1]}" target="_blank" rel="noopener">${esc(l[0])}</a>`).join("")}</div>
+      ${d.astuce?`<div class="note">💡 ${esc(d.astuce)}</div>`:""}
+    </div></details>`;
+  }
+  function roadmap(){
+    const keys = []; GA.majorite.forEach((ph,i) => ph.items.forEach((x,j) => keys.push("mj-"+i+"-"+j)));
+    const d = nbDone(keys);
+    return `<div class="card" data-c="droits"><span class="eyebrow">Étape par étape, dans l'ordre</span><h3>Ma feuille de route vers mes 18 ans</h3><div class="row" style="justify-content:space-between"><b id="mjn">${d} / ${keys.length}</b><span class="foot">enregistré sur ce téléphone</span></div><div class="progress"><i id="mjb" style="width:${Math.round(d/keys.length*100)}%;background:var(--c-droits)"></i></div></div>
+    <ol class="road">${GA.majorite.map((ph,i)=>`<li${phaseNow()===i?' class="now"':""}><div class="ph"><span class="dotn">${i+1}</span><b>${esc(ph.p)}</b>${phaseNow()===i?'<span class="soon" style="background:var(--c-droits)">Tu es ici</span>':""}</div><div class="checks">${ph.items.map((x,j)=>`${checkbox("mj-"+i+"-"+j,x.t)}${x.dm?`<button class="back" data-godm="${x.dm}" style="margin:-4px 0 4px 44px">→ La démarche pas à pas</button>`:x.f?`<button class="back" data-gof="${x.f}" style="margin:-4px 0 4px 44px">→ La fiche</button>`:""}`).join("")}</div></li>`).join("")}</ol>`;
+  }
+  function table(t){
+    return `${t.titre?`<h3>${esc(t.titre)}</h3>`:""}<div class="tbl"><table><thead><tr>${t.tete.map(h=>`<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${t.lignes.map(l=>`<tr>${l.map((c,i)=>i===0?`<td><b>${esc(c)}</b></td>`:`<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  }
+  function vFiche(f){
+    let h = `<button class="back" id="back">‹ Toutes les fiches</button><div class="fhead" data-c="${f.id}">${ico(f.id,null,56)}<div><span class="eyebrow">${f.n==="0"?"Pour commencer":"Fiche "+f.n}</span><h2>${esc(f.titre)}</h2></div></div>`;
+    if(f.id === "droits") h += roadmap();
+    h += `<div class="bref" data-c="${f.id}"><h3>En bref</h3><ul>${f.bref.map(b=>`<li>${esc(b)}</li>`).join("")}</ul></div>`;
+    if(f.tableau) h += table(f.tableau);
+    if(f.note) h += `<div class="note">${esc(f.note)}</div>`;
+    if(f.tableau2) h += table(f.tableau2);
+    if(f.liste) h += `<h3>${esc(f.liste.titre)}</h3><div class="card"><ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px">${f.liste.items.map(i=>`<li>${esc(i)}</li>`).join("")}</ul></div>`;
+    if(f.mots) h += `<h3>Les mots à connaître</h3><div class="mots">${f.mots.map(m=>`<div class="mot"><b>${esc(m[0])}</b><span>${esc(m[1])}</span></div>`).join("")}</div>`;
+    const dms = (GA.demarches||[]).filter(d => d.fiche === f.id);
+    if(dms.length) h += `<h3>Les démarches pas à pas</h3><div style="display:flex;flex-direction:column;gap:10px">${dms.map(demarche).join("")}</div>`;
+    if(f.faire) h += `<h3>Je le fais</h3><div class="checks">${f.faire.map((t,i)=>checkbox(f.id+"-"+i,t)).join("")}</div>`;
+    if(f.aide) h += `<div class="help"><span class="eyebrow">Qui peut m'aider ?</span><span>${esc(f.aide)}</span><span class="foot">Ces adresses sont celles du Lauragais. Pour trouver les plus proches de chez toi, va dans l'onglet <a href="#contacts">Contacts</a>.</span></div>`;
+    const jeu = Object.keys(THEMES).includes(f.id) ? f.id : null;
+    if(jeu) h += `<button class="btn" id="jouer">Jouer sur ce thème</button>`;
+    $app.innerHTML = h;
+    bindChecks();
+    $app.querySelector("#back").onclick = () => { openFiche = null; vFiches(); };
+    $app.querySelectorAll("[data-godm]").forEach(b => b.onclick = () => { const dm = GA.demarches.find(x => x.id === b.dataset.godm); if(!dm) return; openFiche = dm.fiche; vFiches(); const el = document.getElementById("dem-"+dm.id); if(el){ el.open = true; el.scrollIntoView({block:"start"}); } });
+    $app.querySelectorAll("[data-gof]").forEach(b => b.onclick = () => { openFiche = b.dataset.gof; vFiches(); window.scrollTo(0,0); });
+    const j = $app.querySelector("#jouer"); if(j) j.onclick = () => { game = null; theme = jeu; location.hash = "jeux"; };
+  }
+
+  // ---------- JEUX
+  let game = null, theme = null;
+  const GAMES = [
+    {id:"qui", ic:"phone", c:"sante", nom:"J'appelle qui ?", d:"Une situation, trois réponses. Trouve le bon numéro ou le bon organisme.", tag:"Séances 1 à 6"},
+    {id:"vf", ic:"vf", c:"banque", nom:"Vrai ou faux", d:"Des idées reçues sur la CAF, la santé, la banque, tes droits…", tag:"Séances 1 à 6"},
+    {id:"arnaque", ic:"alerte", c:"caf", nom:"Arnaque ou pas ?", d:"SMS, appels, annonces : saurais-tu repérer le piège ?", tag:"Séance 4"},
+    {id:"sam", ic:"wallet", c:"logement", nom:"Le mois de Sam", d:"Aide Sam à finir le mois sans découvert. Chaque semaine, une surprise.", tag:"Séance 4"}
+  ];
+  function vJeux(){
+    if(game) return game.render();
+    const themes = Object.keys(THEMES);
+    $app.innerHTML = `<div class="fhead" data-c="sante">${ico("vf","sante",52)}<div><span class="eyebrow">On joue</span><h2>Les jeux</h2></div></div><p class="lede">À jouer seul sur ton téléphone ou en équipes sur grand écran. Tu peux choisir un thème.</p>
+    <div class="filters" role="group" aria-label="Thème"><button class="chip" data-t="" aria-pressed="${!theme}">Tous les thèmes</button>${themes.map(t=>`<button class="chip" data-t="${t}" aria-pressed="${theme===t}">${THEMES[t]}</button>`).join("")}</div>
+    <div class="grid">${GAMES.map(g=>`<button class="gcard" data-c="${g.c}" data-g="${g.id}"><div class="top">${ico(g.ic,g.c,48)}<span class="tag">${g.tag}</span></div><strong>${g.nom}</strong><span>${g.d}</span>${st.best[g.id]!=null?`<span>Meilleur score : <b>${st.best[g.id]}</b></span>`:""}</button>`).join("")}</div>`;
+    $app.querySelectorAll("[data-t]").forEach(b => b.onclick = () => { theme = b.dataset.t || null; vJeux(); });
+    $app.querySelectorAll("[data-g]").forEach(b => b.onclick = () => { start(b.dataset.g); });
+  }
+  function start(id){
+    if(id === "sam") game = samGame();
+    else game = quiz(id);
+    game.render(); window.scrollTo(0,0);
+  }
+  function endScreen(id, score, total, label){
+    const prev = st.best[id]; if(prev == null || score > prev){ st.best[id] = score; save(); }
+    const pct = total ? score/total : 0;
+    const emo = pct === 1 ? "🏆" : pct >= .7 ? "💪" : pct >= .4 ? "📚" : "🔁";
+    const msg = pct === 1 ? "Parfait. Tu es prêt à affronter la paperasse." : pct >= .7 ? "Très bien. Encore quelques réflexes à prendre." : pct >= .4 ? "Pas mal. Relis la fiche et retente ta chance." : "C'est en se trompant qu'on apprend. On recommence ?";
+    $app.innerHTML = `<div class="card end"><span class="emo" aria-hidden="true">${emo}</span><span class="stamp" style="color:var(--ok)">Terminé</span><div class="big">${score} / ${total}</div><p>${label}</p><p class="lede">${st.prenom ? esc(st.prenom) + ", " + msg.charAt(0).toLowerCase() + msg.slice(1) : msg}</p><div class="row"><button class="btn" id="again">Rejouer</button><button class="btn ghost" id="menu">Autres jeux</button></div></div>`;
+    $app.querySelector("#again").onclick = () => start(id);
+    $app.querySelector("#menu").onclick = () => { game = null; vJeux(); };
+  }
+  function quiz(id){
+    let pool = GA[id].filter(q => !theme || q.t === theme || id === "arnaque");
+    if(!pool.length) pool = GA[id];
+    const qs = shuffle(pool).slice(0, 10);
+    let i = 0, score = 0, answered = null;
+    const g = {render(){
+      if(i >= qs.length) return endScreen(id, score, qs.length, "bonnes réponses");
+      const q = qs[i];
+      const name = GAMES.find(x=>x.id===id).nom;
+      let h = `<button class="back" id="quit">‹ Quitter</button><div class="hud"><span>${name} · ${i+1}/${qs.length}</span><span class="sc">${score} pt${score>1?"s":""}</span></div><div class="progress"><i style="width:${i/qs.length*100}%;background:var(--accent)"></i></div>`;
+      if(id === "qui"){
+        h += `<div class="qcard" data-c="${q.t}"><div class="top">${ico(q.t==="handicap"?"mdph":q.t,q.t,36)}<span class="eyebrow">${THEMES[q.t]||""} · Qui contacter ?</span></div><p class="q">${esc(q.q)}</p></div>`;
+        const opts = q._o || (q._o = shuffle(q.o));
+        h += `<div class="opts">${opts.map((o,k)=>`<button class="opt ${answered!=null ? (o===q.r?"ok":(o===answered?"ko":"")) : ""}" data-a="${esc(o)}" ${answered!=null?"disabled":""}><span class="k">${"ABC"[k]}</span>${esc(o)}</button>`).join("")}</div>`;
+      } else {
+        const right = q.r;
+        const labels = id === "vf" ? [["true","👍 Vrai"],["false","👎 Faux"]] : [["true","🚩 Arnaque"],["false","✅ Normal"]];
+        h += id === "vf" ? `<div class="qcard" data-c="${q.t}"><div class="top">${ico(q.t==="handicap"?"mdph":q.t,q.t,36)}<span class="eyebrow">${THEMES[q.t]||""} · Vrai ou faux ?</span></div><p class="q">${esc(q.q)}</p></div>` : `<div class="qcard" data-c="caf"><div class="top">${ico("alerte","caf",36)}<span class="eyebrow">Ce message, c'est…</span></div><div class="sms">${esc(q.m)}</div></div>`;
+        h += `<div class="duo">${labels.map(([v,l])=>`<button class="opt ${answered!=null ? (String(right)===v?"ok":(answered===v?"ko":"")) : ""}" data-a="${v}" ${answered!=null?"disabled":""}>${l}</button>`).join("")}</div>`;
+      }
+      if(answered != null){
+        const good = id === "qui" ? answered === q.r : answered === String(q.r);
+        h += `<div class="verdict ${good?"ok":"ko"}" role="status"><span class="stamp">${good?"Validé":"Raté"}</span>${id==="qui"&&!good?`<b>Bonne réponse : ${esc(q.r)}</b>`:""}<p>${esc(q.e)}</p></div><button class="btn" id="next">${i+1<qs.length?"Question suivante":"Voir mon score"}</button>`;
+      }
+      $app.innerHTML = h;
+      $app.querySelector("#quit").onclick = () => { game = null; vJeux(); };
+      $app.querySelectorAll("[data-a]").forEach(b => b.onclick = () => {
+        answered = b.dataset.a;
+        const good = id === "qui" ? answered === q.r : answered === String(q.r);
+        if(good) score++;
+        g.render(); const n = $app.querySelector("#next"); if(n) n.focus({preventScroll:true});
+      });
+      const n = $app.querySelector("#next"); if(n) n.onclick = () => { i++; answered = null; g.render(); window.scrollTo(0,0); };
+    }};
+    return g;
+  }
+  function samGame(){
+    const S = GA.sam;
+    const tin = S.entrees.reduce((a,b)=>a+b[1],0), tout = S.sorties.reduce((a,b)=>a+b[1],0);
+    let solde = tin - tout, step = -1, log = [], last = null;
+    const plan = []; [1,2,3,4].forEach(w => S.evenements.filter(e=>e.s===w).forEach(e=>plan.push(e)));
+    const g = {render(){
+      let h = `<button class="back" id="quit">‹ Quitter</button><div class="fhead" data-c="logement">${ico("wallet","logement",48)}<div><span class="eyebrow">Jeu de budget</span><h2>Le mois de Sam</h2></div></div>`;
+      if(step === -1){
+        h += `<p class="lede">${esc(S.intro)}</p><div class="money"><div class="card"><h3>Ce qui rentre</h3>${S.entrees.map(e=>`<div class="line"><span>${esc(e[0])}</span><b>${fmt(e[1])}</b></div>`).join("")}<div class="line"><b>Total</b><b>${fmt(tin)}</b></div></div>
+        <div class="card"><h3>Ce qui sort</h3>${S.sorties.map(e=>`<div class="line"><span>${esc(e[0])}</span><b>${fmt(e[1])}</b></div>`).join("")}<div class="line"><b>Total</b><b>${fmt(tout)}</b></div></div></div>
+        <div class="card"><span class="eyebrow">Reste pour vivre au début du mois</span><span class="solde pos">${fmt(solde)}</span><p>Pendant 4 semaines, des imprévus vont arriver. À toi de choisir. Objectif : finir le mois au-dessus de 0 €.</p></div>
+        <button class="btn" id="go">Commencer le mois</button>`;
+      } else if(step < plan.length){
+        const e = plan[step];
+        h += `<div class="hud"><span>Semaine ${e.s} sur 4</span><span class="sc ${solde<0?"neg":""}">${fmt(solde)}</span></div><div class="weeks">${[1,2,3,4].map(w=>`<i class="${w<=e.s?"on":""}"></i>`).join("")}</div>`;
+        if(last){ h += `<div class="verdict ${last.v>=0?"ok":"ko"}" role="status"><b>${last.v>=0?"+":""}${fmt(last.v)}</b>${last.m?`<p>${esc(last.m)}</p>`:""}</div>`; }
+        h += `<p class="q">${esc(e.t)}</p><div class="opts">${e.c.map((c,k)=>`<button class="opt" data-c="${k}">${esc(c[0])}</button>`).join("")}</div>`;
+      } else {
+        const ok = solde >= 0;
+        if(st.best.sam == null || Math.round(solde) > st.best.sam){ st.best.sam = Math.round(solde); save(); }
+        h += `${last?`<div class="verdict ${last.v>=0?"ok":"ko"}" role="status"><b>${last.v>=0?"+":""}${fmt(last.v)}</b>${last.m?`<p>${esc(last.m)}</p>`:""}</div>`:""}
+        <div class="card end"><span class="stamp" style="color:var(${ok?"--ok":"--ko"})">${ok?"Mois réussi":"Découvert"}</span><span class="eyebrow">Il reste à Sam</span><span class="solde ${ok?"pos":"neg"}">${fmt(solde)}</span>
+        <p>${ok?"Bravo, Sam finit le mois sans découvert.":"Sam est à découvert : ça coûte cher. Qu'est-ce que tu changerais ?"}</p>
+        <div class="tbl" style="width:100%"><table><tbody>${log.map(l=>`<tr><td>${esc(l[0])}</td><td style="text-align:right;white-space:nowrap"><b>${l[1]>=0?"+":""}${fmt(l[1])}</b></td></tr>`).join("")}</tbody></table></div>
+        <div class="row"><button class="btn" id="again">Rejouer</button><button class="btn ghost" id="menu">Autres jeux</button></div></div>`;
+      }
+      $app.innerHTML = h;
+      $app.querySelector("#quit").onclick = () => { game = null; vJeux(); };
+      const go = $app.querySelector("#go"); if(go) go.onclick = () => { step = 0; g.render(); };
+      $app.querySelectorAll("[data-c]").forEach(b => b.onclick = () => {
+        const e = plan[step], c = e.c[+b.dataset.c];
+        solde += c[1]; log.push([c[0] + " (semaine " + e.s + ")", c[1]]);
+        last = {v:c[1], m:c[2]||null};
+        step++; g.render(); window.scrollTo(0,0);
+      });
+      const a = $app.querySelector("#again"); if(a) a.onclick = () => start("sam");
+      const m = $app.querySelector("#menu"); if(m) m.onclick = () => { game = null; vJeux(); };
+    }};
+    return g;
+  }
+
+  // ---------- KIT
+  function vKit(){
+    const b = st.budget;
+    const IN = ["Salaire / allocation","APL","Prime d'activité","Autre"], OUT = ["Loyer (après APL)","Électricité, eau","Téléphone, internet","Assurance","Transport","Courses","Loisirs, imprévus"];
+    $app.innerHTML = `<div class="fhead" data-c="banque">${ico("kit","banque",52)}<div><span class="eyebrow">Avant 18 ans, ou maintenant</span><h2>Mon kit de survie</h2></div></div><p class="lede">Ce que tu dois avoir avant tes 18 ans, ou maintenant. Coche au fur et à mesure : c'est enregistré sur ce téléphone, personne d'autre ne le voit.</p>
+    <div class="card" data-prog="kit"></div>
+    <div class="checks">${GA.kit.map((t,i)=>checkbox("kit-"+i,t)).join("")}</div>
+    <div class="fhead" data-c="papiers" style="margin-top:12px">${ico("papiers","papiers",52)}<div><span class="eyebrow">Mes papiers en sécurité</span><h2>Mon coffre-fort</h2></div></div>
+    <div class="bref" data-c="papiers"><h3>En bref</h3><ul>
+      <li>Les originaux restent dans ton classeur papier, rangé en 6 intercalaires.</li>
+      <li>Pour les copies numériques, utilise un vrai coffre sécurisé. Pas la galerie photo de ton téléphone, pas tes messages.</li>
+      <li>N'envoie jamais la photo de ta carte d'identité à quelqu'un que tu ne connais pas.</li>
+      <li>Tu peux garder une photo de tes papiers dans l'appli : elle est chiffrée avec ton code et ne quitte jamais ton téléphone.</li></ul></div>
+    <div id="vault"></div>
+    <div class="grid">
+      <div class="card"><div class="row" style="align-items:center">${ico("droits","droits",40)}<h3>France Identité</h3></div>
+        <p>L'appli officielle et gratuite de l'État. Elle met ta carte d'identité et ton permis dans ton téléphone.</p>
+        <p>Elle sert à créer un justificatif d'identité à usage unique au lieu d'envoyer une photocopie, à te connecter à FranceConnect, et à montrer ton permis lors d'un contrôle.</p>
+        <p class="foot">Il faut : être majeur, une carte d'identité au format carte bancaire (depuis 2021), un téléphone avec NFC (Android 11 ou iOS 16 minimum).</p></div>
+      <div class="card"><div class="row" style="align-items:center">${ico("kit","banque",40)}<h3>Reconnect</h3></div>
+        <p>Un coffre-fort numérique solidaire : un espace personnel et sécurisé pour garder la copie de tes papiers et les partager avec les professionnels qui t'accompagnent.</p>
+        <p>On y accède par une structure qui t'accompagne. Demande à ton référent.</p>
+        <a href="https://www.reconnect.fr/" target="_blank" rel="noopener">reconnect.fr</a></div>
+    </div>
+    <h3>Ce que j'ai mis à l'abri</h3><p class="lede">Coche quand l'original est dans ton classeur et la copie dans ton coffre.</p>
+    <div class="card" data-prog2></div>
+    <div class="checks">${GA.coffre.map((t,i)=>checkbox("cf-"+i,t)).join("")}</div>
+    <h2 style="margin-top:12px">Mon budget du mois</h2><p class="lede">Remplis avec tes vrais chiffres ou des chiffres inventés. Rien n'est envoyé.</p>
+    <div class="money"><div class="card"><h3>Ce qui rentre</h3>${IN.map((l,i)=>`<div class="fld"><label for="bi${i}">${l}</label><input type="number" inputmode="decimal" min="0" id="bi${i}" data-b="in${i}" value="${b["in"+i]??""}" placeholder="0"></div>`).join("")}</div>
+    <div class="card"><h3>Ce qui sort</h3>${OUT.map((l,i)=>`<div class="fld"><label for="bo${i}">${l}</label><input type="number" inputmode="decimal" min="0" id="bo${i}" data-b="out${i}" value="${b["out"+i]??""}" placeholder="0"></div>`).join("")}</div></div>
+    <div class="card" id="reste"></div>
+    <div class="row"><button class="btn ghost" id="raz">Effacer mon budget</button></div>
+    <div class="fhead" data-c="qui" style="margin-top:12px">${ico("kit","qui",52)}<div><span class="eyebrow">Nouveau téléphone ?</span><h2>Ma sauvegarde</h2></div></div>
+    <div class="card" id="backup"></div>`;
+    renderProg($app.querySelector("[data-prog]")); bindChecks(); renderCoffre(); renderVault();
+    const calc = () => {
+      let tin = 0, tout = 0; IN.forEach((l,i)=>tin += +(st.budget["in"+i]||0)); OUT.forEach((l,i)=>tout += +(st.budget["out"+i]||0));
+      const r = tin - tout;
+      $app.querySelector("#reste").innerHTML = `<span class="eyebrow">Reste pour vivre = ce qui rentre − ce qui sort</span><span class="solde ${r<0?"neg":"pos"}">${fmt(r)}</span><span class="foot">${fmt(tin)} − ${fmt(tout)}${r<0?" · Le Point conseil budget (gratuit, France Services de Nailloux) peut t'aider.":""}</span>`;
+    };
+    $app.querySelectorAll("[data-b]").forEach(i => i.addEventListener("input", () => { st.budget[i.dataset.b] = i.value; save(); calc(); }));
+    let armed = false;
+    $app.querySelector("#raz").onclick = e => { if(!armed){ armed = true; e.target.textContent = "Confirmer : tout effacer"; return; } st.budget = {}; save(); vKit(); };
+    calc(); renderBackup();
+  }
+
+  // ---------- SAUVEGARDE (fichier chiffré avec un code)
+  async function bkKey(code, salt){ return deriveKey(code, salt); }
+  async function makeBackup(code){
+    let docs = [];
+    try{ docs = (await store("readonly", s => s.getAll())) || []; }catch(e){}
+    const payload = {v:1, date:new Date().toISOString(), st, vault: vMeta(), docs: docs.map(d => ({...d, iv:b64(d.iv), data:b64(d.data), tiv:b64(d.tiv), thumb:b64(d.thumb)}))};
+    const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+    const key = await bkKey(code, salt);
+    const c = await crypto.subtle.encrypt({name:"AES-GCM", iv}, key, enc.encode(JSON.stringify(payload)));
+    return JSON.stringify({app:"galere-academy", v:1, salt:b64(salt), iv:b64(iv), data:b64(c)});
+  }
+  async function readBackup(text, code){
+    const f = JSON.parse(text); if(f.app !== "galere-academy") throw new Error("format");
+    const key = await bkKey(code, unb64(f.salt));
+    const p = JSON.parse(dec.decode(await crypto.subtle.decrypt({name:"AES-GCM", iv:unb64(f.iv)}, key, unb64(f.data))));
+    return p;
+  }
+  function renderBackup(){
+    const box = document.getElementById("backup"); if(!box) return;
+    if(!vSupported()){ box.innerHTML = `<p>La sauvegarde n'est pas possible sur ce navigateur.</p>`; return; }
+    box.innerHTML = `<p>Tu changes de téléphone, ou l'adresse de l'appli change ? Fais une sauvegarde : un fichier protégé par un code, qui contient tout ce que tu as noté (agenda, numéros, contacts, cases cochées, coffre-fort).</p>
+      <div style="display:grid;grid-template-columns:1fr;gap:10px">
+        <label style="display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:.88rem">Code de la sauvegarde (6 chiffres ou plus)<input class="pin" id="bk-code" type="password" inputmode="numeric" autocomplete="new-password" minlength="6"></label>
+        <button class="btn" id="bk-save" type="button">💾 Créer ma sauvegarde</button>
+        <label class="btn ghost" style="text-align:center;cursor:pointer">📂 Restaurer une sauvegarde<input type="file" id="bk-file" accept=".galere,.json,application/json" hidden></label>
+        <span id="bk-msg" class="foot"></span>
+      </div>
+      <p class="foot">Garde le fichier dans un endroit sûr (ton Drive, tes fichiers, Reconnect). Sans le code, personne ne peut l'ouvrir, même pas toi : note-le quelque part. Pour le coffre-fort, il te faudra aussi ton code habituel.</p>`;
+    const msg = box.querySelector("#bk-msg"), codeOf = () => box.querySelector("#bk-code").value.trim();
+    box.querySelector("#bk-save").onclick = async () => {
+      const code = codeOf(); if(!/^\d{6,}$/.test(code)){ msg.innerHTML = `<span class="err">Choisis un code d'au moins 6 chiffres.</span>`; return; }
+      msg.textContent = "Préparation…";
+      try{
+        const text = await makeBackup(code);
+        const name = "sauvegarde-galere-academy-" + new Date().toISOString().slice(0,10) + ".galere";
+        const file = new File([text], name, {type:"application/json"});
+        if(navigator.canShare && navigator.canShare({files:[file]})){ try{ await navigator.share({files:[file], title:"Ma sauvegarde Galère Academy"}); msg.textContent = "Sauvegarde prête. Range-la dans un endroit sûr."; return; }catch(e){ if(e && e.name === "AbortError"){ msg.textContent = ""; return; } } }
+        const a = document.createElement("a"); a.href = URL.createObjectURL(file); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+        msg.textContent = "Sauvegarde téléchargée : " + name + ". Si rien ne se passe, ouvre l'appli depuis son site (galere-academy.fr).";
+      }catch(e){ msg.innerHTML = `<span class="err">La sauvegarde n'a pas pu être créée.</span>`; }
+    };
+    box.querySelector("#bk-file").onchange = async e => {
+      const f = e.target.files && e.target.files[0]; if(!f) return;
+      const code = codeOf(); if(!code){ msg.innerHTML = `<span class="err">Tape d'abord le code de ta sauvegarde, puis choisis le fichier.</span>`; e.target.value = ""; return; }
+      msg.textContent = "Lecture…";
+      try{
+        const p = await readBackup(await f.text(), code);
+        st = Object.assign({checks:{}, contacts:{}, budget:{}, best:{}}, p.st || {}); save();
+        if(p.vault){ try{ localStorage.setItem(VK, JSON.stringify(p.vault)); }catch(err){} }
+        if(p.docs && p.docs.length){ await store("readwrite", s => { s.clear(); p.docs.forEach(d => s.put({...d, iv:unb64(d.iv), data:unb64(d.data).buffer, tiv:unb64(d.tiv), thumb:unb64(d.thumb).buffer})); }); }
+        vLock(); msg.textContent = "Tout est revenu ! 🎉"; setTimeout(() => { location.hash = "accueil"; route(); }, 900);
+      }catch(err){ msg.innerHTML = `<span class="err">Impossible d'ouvrir ce fichier : le code est faux ou le fichier n'est pas une sauvegarde Galère Academy.</span>`; }
+      e.target.value = "";
+    };
+  }
+
+  // ---------- COFFRE CHIFFRÉ (photos des papiers, sur le téléphone uniquement)
+  const VK = "galere-academy-vault";
+  let vKey = null, vTimer = null, vUrls = [], vTries = 0;
+  const enc = new TextEncoder(), dec = new TextDecoder();
+  const b64 = buf => { let s = ""; new Uint8Array(buf).forEach(c => s += String.fromCharCode(c)); return btoa(s); };
+  const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const vMeta = () => { try{ return JSON.parse(localStorage.getItem(VK) || "null"); }catch(e){ return null; } };
+  const vSupported = () => { try{ return !!(window.crypto && crypto.subtle && window.indexedDB); }catch(e){ return false; } };
+  async function deriveKey(pin, salt){
+    const base = await crypto.subtle.importKey("raw", enc.encode(pin), "PBKDF2", false, ["deriveKey"]);
+    return crypto.subtle.deriveKey({name:"PBKDF2", salt, iterations:310000, hash:"SHA-256"}, base, {name:"AES-GCM", length:256}, false, ["encrypt","decrypt"]);
+  }
+  const aes = async (data) => { const iv = crypto.getRandomValues(new Uint8Array(12)); const c = await crypto.subtle.encrypt({name:"AES-GCM", iv}, vKey, data); return {iv, c}; };
+  const unaes = (iv, c, key) => crypto.subtle.decrypt({name:"AES-GCM", iv}, key || vKey, c);
+  function idb(){ return new Promise((res, rej) => { const r = indexedDB.open("galere-academy", 1); r.onupgradeneeded = () => r.result.createObjectStore("docs", {keyPath:"id"}); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
+  async function store(mode, fn){ const db = await idb(); return new Promise((res, rej) => { const t = db.transaction("docs", mode); const q = fn(t.objectStore("docs")); t.oncomplete = () => { db.close(); res(q && "result" in q ? q.result : undefined); }; t.onerror = () => rej(t.error); t.onabort = () => rej(t.error); }); }
+  function vLock(){ vKey = null; clearTimeout(vTimer); vUrls.forEach(u => URL.revokeObjectURL(u)); vUrls = []; const v = document.querySelector(".viewer"); if(v) v.remove(); }
+  function vTouch(){ clearTimeout(vTimer); vTimer = setTimeout(() => { vLock(); if(document.getElementById("vault")) renderVault(); }, 5*60*1000); }
+  document.addEventListener("visibilitychange", () => { if(document.hidden && vKey){ vLock(); if(document.getElementById("vault")) renderVault(); } });
+  async function shrink(file, max, q){
+    const url = URL.createObjectURL(file);
+    try{
+      const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+      const r = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+      const cv = document.createElement("canvas"); cv.width = Math.round(img.naturalWidth*r); cv.height = Math.round(img.naturalHeight*r);
+      cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+      const blob = await new Promise(res => cv.toBlob(res, "image/jpeg", q));
+      return await blob.arrayBuffer();
+    } finally { URL.revokeObjectURL(url); }
+  }
+  async function renderVault(){
+    const box = document.getElementById("vault"); if(!box) return;
+    const head = `<div class="card" data-c="papiers"><div class="lockbar"><div class="row" style="align-items:center;gap:10px">${ico("papiers","papiers",40)}<div><h3>Mes papiers dans l'appli</h3><span class="foot">Chiffrés avec ton code · seulement sur ce téléphone</span></div></div>`;
+    if(!vSupported()){ box.innerHTML = head + `</div><p class="lede">Ce téléphone ou ce navigateur ne permet pas de garder des papiers chiffrés. Utilise Reconnect ou France Identité.</p></div>`; return; }
+    const meta = vMeta();
+    if(!meta){
+      box.innerHTML = head + `</div>
+        <p>Prends en photo ta carte d'identité, ta carte Vitale, ton RIB… pour les avoir toujours sur toi et les montrer à un guichet.</p>
+        <ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px"><li>Tu choisis un code à 6 chiffres. Sans lui, personne ne peut ouvrir tes papiers, même pas ton référent.</li><li><b>Si tu oublies ton code, tes photos sont perdues.</b> Garde toujours les originaux dans ton classeur.</li><li>Si tu changes de téléphone ou si tu vides ton navigateur, les photos disparaissent aussi.</li></ul>
+        <form id="vcreate" style="display:grid;gap:10px;grid-template-columns:1fr 1fr">
+          <label style="display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:.88rem">Mon code (6 chiffres)<input class="pin" id="vp1" type="password" inputmode="numeric" autocomplete="new-password" maxlength="6" pattern="[0-9]{6}" required></label>
+          <label style="display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:.88rem">Je le retape<input class="pin" id="vp2" type="password" inputmode="numeric" autocomplete="new-password" maxlength="6" pattern="[0-9]{6}" required></label>
+          <span class="err" id="verr" style="grid-column:1/-1"></span>
+          <button class="btn" type="submit" style="grid-column:1/-1">Créer mon coffre</button>
+        </form></div>`;
+      box.querySelector("#vcreate").onsubmit = async e => {
+        e.preventDefault();
+        const p1 = box.querySelector("#vp1").value, p2 = box.querySelector("#vp2").value, er = box.querySelector("#verr");
+        if(!/^[0-9]{6}$/.test(p1)) { er.textContent = "Le code doit faire 6 chiffres."; return; }
+        if(p1 !== p2) { er.textContent = "Les deux codes ne sont pas pareils."; return; }
+        if(/^(\d)\1{5}$/.test(p1) || "0123456789".includes(p1) || "9876543210".includes(p1)) { er.textContent = "Ce code est trop facile à deviner. Choisis-en un autre."; return; }
+        er.textContent = "Création…";
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+        vKey = await deriveKey(p1, salt);
+        const {iv, c} = await aes(enc.encode("galere-ok"));
+        try{ localStorage.setItem(VK, JSON.stringify({salt:b64(salt), iv:b64(iv), check:b64(c)})); }catch(err){ er.textContent = "Impossible d'enregistrer sur ce téléphone."; vKey = null; return; }
+        try{ navigator.storage && navigator.storage.persist && navigator.storage.persist(); }catch(err){}
+        vTouch(); renderVault();
+      };
+      return;
+    }
+    if(!vKey){
+      box.innerHTML = head + `<span class="stamp" style="color:var(--c-papiers)">Fermé</span></div>
+        <form id="vopen" style="display:grid;gap:10px">
+          <label style="display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:.88rem">Mon code<input class="pin" id="vpin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="6" required></label>
+          <span class="err" id="verr"></span>
+          <button class="btn" type="submit">Ouvrir mon coffre</button>
+        </form>
+        <button class="back" id="vforgot">J'ai oublié mon code</button></div>`;
+      box.querySelector("#vopen").onsubmit = async e => {
+        e.preventDefault();
+        const er = box.querySelector("#verr"); er.textContent = "Ouverture…";
+        try{
+          const k = await deriveKey(box.querySelector("#vpin").value, unb64(meta.salt));
+          const ok = dec.decode(await unaes(unb64(meta.iv), unb64(meta.check), k));
+          if(ok !== "galere-ok") throw 0;
+          vKey = k; vTries = 0; vTouch(); renderVault();
+        }catch(err){ vTries++; er.textContent = "Code incorrect." + (vTries >= 3 ? " Prends ton temps : si tu l'as oublié, tu peux vider le coffre et recommencer." : ""); box.querySelector("#vpin").value = ""; }
+      };
+      let armed = 0;
+      box.querySelector("#vforgot").onclick = async e => {
+        if(armed === 0){ armed = 1; e.target.textContent = "Sans le code, tes photos ne peuvent pas être récupérées. Toucher encore pour tout effacer et recréer un coffre."; return; }
+        try{ await store("readwrite", s => s.clear()); }catch(err){}
+        try{ localStorage.removeItem(VK); }catch(err){}
+        renderVault();
+      };
+      return;
+    }
+    // ouvert
+    vTouch();
+    let docs = [];
+    try{ docs = (await store("readonly", s => s.getAll())) || []; }catch(err){ box.innerHTML = head + `</div><p class="err">Le coffre n'a pas pu s'ouvrir sur ce navigateur.</p></div>`; return; }
+    docs.sort((a,b) => a.cat - b.cat || a.date.localeCompare(b.date));
+    vUrls.forEach(u => URL.revokeObjectURL(u)); vUrls = [];
+    const thumbs = await Promise.all(docs.map(async d => { try{ const u = URL.createObjectURL(new Blob([await unaes(d.tiv, d.thumb)], {type:"image/jpeg"})); vUrls.push(u); return u; }catch(err){ return ""; } }));
+    const total = docs.reduce((a,d) => a + d.data.byteLength, 0);
+    box.innerHTML = head + `<button class="btn ghost" id="vclose" style="padding:8px 12px">🔒 Fermer</button></div>
+      <form id="vadd" style="display:grid;gap:10px;grid-template-columns:1fr 1fr">
+        <label style="display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:.88rem;grid-column:1/-1">Quel papier ?<select id="vcat" class="search">${GA.coffre.map((t,i)=>`<option value="${i}">${esc(t)}</option>`).join("")}<option value="99">Autre papier</option></select></label>
+        <label style="display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:.88rem;grid-column:1/-1">Précision (facultatif)<input type="text" id="vnote" placeholder="ex. recto, verso, juin 2026"></label>
+        <label class="btn" style="grid-column:1/-1;text-align:center;cursor:pointer">📷 Prendre en photo ou choisir une image<input type="file" id="vfile" accept="image/*" hidden></label>
+        <span class="foot" id="vmsg" style="grid-column:1/-1">Pour un PDF, fais une capture d'écran de la page.</span>
+      </form>
+      ${docs.length ? `<div class="vgrid">${docs.map((d,i)=>`<button class="vdoc" data-v="${d.id}">${thumbs[i]?`<img src="${thumbs[i]}" alt="">`:""}<span>${esc(d.cat==99?"Autre papier":GA.coffre[d.cat]||"Papier")}</span><small>${esc(d.note||"")}${d.note?" · ":""}${new Date(d.date).toLocaleDateString("fr-FR")}</small></button>`).join("")}</div>` : `<div class="help"><span>Ton coffre est vide. Commence par ta carte d'identité (recto et verso) et ta carte Vitale.</span></div>`}
+      <p class="foot">${docs.length} papier${docs.length>1?"s":""} · ${total < 1048576 ? Math.max(1,Math.round(total/1024)) + " Ko" : (total/1048576).toFixed(1) + " Mo"} · Le coffre se ferme tout seul après 5 minutes ou quand tu quittes l'appli.</p></div>`;
+    box.querySelector("#vclose").onclick = () => { vLock(); renderVault(); };
+    box.querySelector("#vfile").onchange = async e => {
+      const f = e.target.files && e.target.files[0]; if(!f) return;
+      const msg = box.querySelector("#vmsg"); msg.textContent = "Chiffrement…";
+      try{
+        const full = await shrink(f, 1800, .85), th = await shrink(f, 360, .7);
+        const a = await aes(full), b = await aes(th);
+        const cat = +box.querySelector("#vcat").value;
+        await store("readwrite", s => s.put({id:"d"+Date.now().toString(36)+Math.random().toString(36).slice(2,6), cat, note:box.querySelector("#vnote").value.trim(), date:new Date().toISOString(), iv:a.iv, data:a.c, tiv:b.iv, thumb:b.c}));
+        if(cat !== 99){ st.checks["cf-"+cat] = true; save(); const c = document.getElementById("c-cf-"+cat); if(c) c.checked = true; renderCoffre(); }
+        renderVault();
+      }catch(err){ msg.textContent = "Cette image n'a pas pu être ajoutée. Essaie une photo au format JPEG ou PNG."; }
+    };
+    box.querySelectorAll("[data-v]").forEach(b => b.onclick = async () => {
+      vTouch();
+      const d = docs.find(x => x.id === b.dataset.v); if(!d) return;
+      let url = ""; try{ url = URL.createObjectURL(new Blob([await unaes(d.iv, d.data)], {type:"image/jpeg"})); vUrls.push(url); }catch(err){ return; }
+      const v = document.createElement("div"); v.className = "viewer"; v.setAttribute("role","dialog"); v.setAttribute("aria-label","Papier");
+      v.innerHTML = `<div class="vt"><b>${esc(d.cat==99?"Autre papier":GA.coffre[d.cat]||"Papier")}${d.note?" · "+esc(d.note):""}</b><button id="vx">Fermer</button></div><img src="${url}" alt="${esc(GA.coffre[d.cat]||"Papier")}"><div class="vt"><span style="font-size:.85rem">À montrer, pas à envoyer.</span><button id="vdel">Supprimer</button></div>`;
+      document.body.appendChild(v);
+      v.querySelector("#vx").onclick = () => v.remove();
+      let armed = false;
+      v.querySelector("#vdel").onclick = async e => { if(!armed){ armed = true; e.target.textContent = "Confirmer la suppression"; return; } await store("readwrite", s => s.delete(d.id)); v.remove(); renderVault(); };
+    });
+  }
+
+  // ---------- CONTACTS
+  function vContacts(){
+    const MINE = [[0,"Mon référent"],["as","Mon assistante sociale"],[1,"Mon médecin traitant"],[2,"Ma Mission locale"],[3,"Ma conseillère CAF / MDS"],[4,"Mon bailleur"],[5,"Autre"]];
+    const IDS = [
+      ["secu","Numéro de sécurité sociale","15 chiffres, sur ta carte Vitale ou ton attestation de droits ameli","sante"],
+      ["caf","Numéro d'allocataire CAF","Sur tous tes courriers CAF et dans l'appli « Caf - Mon Compte »","caf"],
+      ["fiscal","Numéro fiscal","13 chiffres, en haut de ton avis d'impôt","impots"],
+      ["ft","Identifiant France Travail","Sur tes courriers et dans ton espace francetravail.fr","emploi"],
+      ["ml","Numéro de dossier Mission locale","Demande-le à ton conseiller","emploi"],
+      ["hlm","Numéro unique de demande de logement social","Sur l'attestation de ta demande","logement"],
+      ["mutuelle","Numéro d'adhérent mutuelle","Sur ta carte de mutuelle","sante"],
+      ["permis","Numéro de permis de conduire","Sur ton permis","papiers"]];
+    $app.innerHTML = `<div class="fhead" data-c="impots">${ico("impots","impots",52)}<div><span class="eyebrow">Toujours sous la main</span><h2>Mes numéros</h2></div></div>
+    <p class="lede">Les numéros qu'on te demande tout le temps. Ils restent sur ce téléphone et sont masqués : touche « Voir » pour les afficher.</p>
+    <div class="note"><b>Jamais ici :</b> tes mots de passe, tes codes de carte bancaire ou les codes reçus par SMS. Ceux-là, tu ne les notes nulle part et tu ne les donnes à personne.</div>
+    <div style="display:flex;flex-direction:column;gap:10px">${IDS.map(([k,l,w,c])=>`<div class="card" data-c="${c}" style="gap:6px"><div class="row" style="align-items:center;gap:10px">${ico(c==="emploi"?"emploi":c,c,32)}<label for="id-${k}" style="font-weight:700">${l}</label></div><div class="idrow"><input type="password" autocomplete="off" id="id-${k}" data-id="${k}" value="${esc((st.ids||{})[k]||"")}" placeholder="À compléter" style="font-family:var(--display);letter-spacing:.06em"><button class="btn ghost" type="button" data-show="${k}">Voir</button><button class="btn ghost" type="button" data-copy="${k}">Copier</button></div><span class="foot">Où le trouver : ${w}</span></div>`).join("")}</div>
+    <div class="fhead" data-c="logement" style="margin-top:12px">${ico("phone","logement",52)}<div><span class="eyebrow">À enregistrer dans ton téléphone</span><h2>Les numéros qui sauvent</h2></div></div>
+    <div class="num">${GA.numeros.map((n,i)=>`<div class="${i<6?"urgent":""}"><b>${esc(n[0])}</b><span>${esc(n[1])}</span></div>`).join("")}</div>
+    <h2 style="margin-top:12px">Les partenaires près de chez moi</h2>
+    <p class="lede">Tape ta ville ou ton code postal et choisis-la dans la liste : l'appli affiche les accueils les plus proches, avec l'adresse, le téléphone et les horaires.</p>
+    ${villeInput("ville")}
+    <input class="search" type="search" id="q" placeholder="Chercher : logement, permis, santé…" aria-label="Chercher un partenaire">
+    <div class="grid" id="orgs"></div>
+    <h2 style="margin-top:12px">Mes contacts</h2><p class="lede">Note les noms et numéros de tes interlocuteurs. Enregistré sur ce téléphone uniquement.</p>
+    <div class="card">${MINE.map(([i,m])=>`<div class="contact"><b>${m}</b><input type="text" id="cn${i}" data-c="n${i}" placeholder="Nom" value="${esc(st.contacts["n"+i]||"")}" aria-label="${m} : nom"><input type="tel" id="ct${i}" data-c="t${i}" placeholder="Téléphone" value="${esc(st.contacts["t"+i]||"")}" aria-label="${m} : téléphone"></div>`).join("")}</div>`;
+    const draw = async q => {
+      q = (q||"").toLowerCase();
+      const box = $app.querySelector("#orgs"); if(!box) return;
+      if(!st.loc){ box.innerHTML = `<div class="help" style="grid-column:1/-1"><span>Indique ta ville pour voir tes partenaires. En attendant, les numéros nationaux : CAF 32 30, Assurance maladie 36 46, France Travail 39 49, impôts 0809 401 401, Banque de France 34 14.</span></div>`; return; }
+      box.innerHTML = `<p class="lede" style="grid-column:1/-1">Chargement des adresses…</p>`;
+      try{ await loadData(); }catch(e){ box.innerHTML = `<div class="help" style="grid-column:1/-1"><span>Les adresses n'ont pas pu se charger. Vérifie ta connexion et réessaie.</span></div>`; return; }
+      const d = dep();
+      const list = GA.national.filter(o => !q || (o.nom+" "+o.role).toLowerCase().includes(q));
+      box.innerHTML = list.map(o => { const np = o.k ? nearest(o.k, 3) : []; return `<div class="card org" data-c="${o.c}"><div class="row" style="align-items:center;gap:10px">${ico(o.ic,o.c,36)}<h3>${esc(o.nom)}</h3></div><span>${esc(o.role)}</span>${o.tel?`<span class="tel">Numéro national : ${esc(o.tel)}</span>`:""}${np.length ? `<div class="places">${placeHtml(np[0])}${np.length>1?`<details><summary class="foot" style="cursor:pointer;font-weight:700">${np.length-1} autre${np.length>2?"s":""} accueil${np.length>2?"s":""} proche${np.length>2?"s":""}</summary><div class="places" style="margin-top:8px">${np.slice(1).map(placeHtml).join("")}</div></details>`:""}</div>` : (o.site?`<a href="https://${o.site.startsWith("www")?o.site:"www."+o.site}" target="_blank" rel="noopener">📍 Trouver l'accueil le plus proche</a>`:"")}${o.k && d ? `<a href="${annu(o.k)}" target="_blank" rel="noopener">Toutes les adresses du ${esc(d[0])}</a>` : ""}</div>`; }).join("") + (st.dep === "31" ? `<details class="card" style="grid-column:1/-1"><summary><b>Coordonnées du Lauragais (MDS de Villefranche)</b></summary><div class="grid" style="margin-top:10px">` + GA.annuaire.map(o => `<div class="card org"><h3>${esc(o.nom)}</h3><span>${esc(o.role)}</span>${o.ou?`<span class="foot">${esc(o.ou)}</span>`:""}${o.tel?`<span class="tel">${esc(o.tel)}</span>`:""}</div>`).join("") + `</div></details>` : "") + `<p class="foot" style="grid-column:1/-1">Adresses : annuaire officiel de Service Public (données ouvertes, novembre 2026). Vérifie les horaires avant de te déplacer.</p>`;
+    };
+    $app.querySelector("#q").addEventListener("input", e => draw(e.target.value)); draw("");
+    attachVille($app.querySelector("#ville"), $app.querySelector("#ville-sug"), () => draw($app.querySelector("#q").value));
+    $app.querySelectorAll("input[data-c]").forEach(i => i.addEventListener("input", () => { st.contacts[i.dataset.c] = i.value; save(); }));
+    $app.querySelectorAll("[data-id]").forEach(i => i.addEventListener("input", () => { st.ids = st.ids || {}; st.ids[i.dataset.id] = i.value; save(); }));
+    $app.querySelectorAll("[data-show]").forEach(b => b.onclick = () => { const i = $app.querySelector("#id-"+b.dataset.show); const show = i.type === "password"; i.type = show ? "text" : "password"; b.textContent = show ? "Cacher" : "Voir"; });
+    $app.querySelectorAll("[data-copy]").forEach(b => b.onclick = async () => { const i = $app.querySelector("#id-"+b.dataset.copy); try{ await navigator.clipboard.writeText(i.value); b.textContent = "Copié"; }catch(e){ i.type = "text"; i.select(); b.textContent = "Sélectionné"; } setTimeout(()=>{ b.textContent = "Copier"; }, 1500); });
+  }
+
+  // ---------- AGENDA
+  let calM = null, calSel = null, editR = null;
+  const pad = n => String(n).padStart(2,"0");
+  const isoD = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+  const todayIso = () => isoD(new Date());
+  const typeOf = id => GA.rdvTypes.find(t => t.id === id) || GA.rdvTypes[GA.rdvTypes.length-1];
+  function rdvs(){ return (st.rdv || []).slice().sort((a,b) => (a.date+(a.heure||"")).localeCompare(b.date+(b.heure||""))); }
+  function rdvCard(r){
+    const t = typeOf(r.type), d = new Date(r.date+"T12:00");
+    const diff = Math.round((new Date(r.date+"T00:00") - new Date(todayIso()+"T00:00"))/86400000);
+    const past = diff < 0;
+    const docs = r.docs || [];
+    const ok = docs.filter(x => x.ok).length;
+    return `<div class="rdv ${past?"past":""}" data-c="${t.c}">
+      <div class="row" style="justify-content:space-between;align-items:center"><div class="row" style="align-items:center;gap:10px">${ico(t.c==="qui"?"qui":({droits:"droits",caf:"caf",sante:"sante",emploi:"emploi",logement:"logement",banque:"banque",impots:"impots",mdph:"mdph",papiers:"papiers"}[t.c]),t.c,36)}<div><div class="when">${d.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})}${r.heure?" · "+r.heure.replace(":"," h "):""}</div><span class="foot">${esc(t.nom)}</span></div></div>${!past && diff <= 2 ? `<span class="soon">${diff===0?"Aujourd'hui":diff===1?"Demain":"Dans 2 jours"}</span>`:""}</div>
+      ${r.objet?`<b>${esc(r.objet)}</b>`:""}
+      <div class="meta">${r.lieu?`<span>📍 ${esc(r.lieu)}</span>`:""}${r.tel?`<span>📞 <span class="tel">${esc(r.tel)}</span></span>`:""}${r.avec?`<span>👤 ${esc(r.avec)}</span>`:""}</div>
+      ${docs.length?`<div><span class="eyebrow">Je prends avec moi · ${ok}/${docs.length}</span></div><div class="docs">${docs.map((x,k)=>`<label class="chk"><input type="checkbox" data-rd="${r.id}" data-k="${k}" ${x.ok?"checked":""} id="rd-${r.id}-${k}"><span>${esc(x.t)}</span></label>`).join("")}</div>`:""}
+      ${r.notes?`<p class="foot">${esc(r.notes)}</p>`:""}
+      <div class="row"><button class="btn ghost" data-edit="${r.id}" style="padding:8px 12px">Modifier</button><button class="btn ghost" data-del="${r.id}" style="padding:8px 12px">Supprimer</button></div>
+    </div>`;
+  }
+  function vAgenda(){
+    const now = new Date();
+    if(!calM) calM = new Date(now.getFullYear(), now.getMonth(), 1);
+    const list = rdvs();
+    const y = calM.getFullYear(), m = calM.getMonth();
+    const first = new Date(y, m, 1), startDow = (first.getDay()+6)%7;
+    const cells = [];
+    for(let i=0;i<42;i++){ const d = new Date(y, m, 1 - startDow + i); cells.push(d); }
+    const byDay = {}; list.forEach(r => (byDay[r.date] = byDay[r.date] || []).push(r));
+    const upcoming = list.filter(r => r.date >= todayIso());
+    const past = list.filter(r => r.date < todayIso()).reverse();
+    const shown = calSel ? list.filter(r => r.date === calSel) : upcoming;
+    $app.innerHTML = `<div class="fhead" data-c="emploi">${ico("kit","emploi",52)}<div><span class="eyebrow">Mes rendez-vous importants</span><h2>Mon agenda</h2></div></div>
+    <p class="lede">Note tes rendez-vous avec l'adresse, le numéro et les papiers à prendre. Tout reste sur ce téléphone.</p>
+    <div class="card"><div class="calhd"><button id="pm" aria-label="Mois précédent">‹</button><h3 style="text-transform:capitalize">${first.toLocaleDateString("fr-FR",{month:"long",year:"numeric"})}</h3><button id="nm" aria-label="Mois suivant">›</button></div>
+      <div class="cal">${["L","M","M","J","V","S","D"].map(x=>`<span class="dn">${x}</span>`).join("")}${cells.map(d=>{const k=isoD(d), rs=byDay[k]||[];return `<button data-day="${k}" class="${d.getMonth()!==m?"out":""} ${k===todayIso()?"today":""} ${k===calSel?"sel":""}" aria-label="${d.toLocaleDateString("fr-FR",{day:"numeric",month:"long"})}${rs.length?", "+rs.length+" rendez-vous":""}">${d.getDate()}${rs.length?`<span class="dots">${rs.slice(0,3).map(r=>`<i data-c="${typeOf(r.type).c}"></i>`).join("")}</span>`:""}</button>`;}).join("")}</div></div>
+    <button class="btn" id="add">+ Ajouter un rendez-vous${calSel?" le "+new Date(calSel+"T12:00").toLocaleDateString("fr-FR",{day:"numeric",month:"long"}):""}</button>
+    <div id="formbox"></div>
+    <div class="row" style="justify-content:space-between;align-items:baseline"><h3>${calSel?"Le "+new Date(calSel+"T12:00").toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"}):"À venir"}</h3>${calSel?`<button class="back" id="all">Voir tout ce qui arrive</button>`:""}</div>
+    <div style="display:flex;flex-direction:column;gap:12px">${shown.length?shown.map(rdvCard).join(""):`<div class="help"><span>${calSel?"Rien ce jour-là.":"Aucun rendez-vous à venir."} Ajoute ton prochain rendez-vous : CAF, Mission locale, médecin, visite d'appartement… L'appli te proposera les papiers à prendre.</span></div>`}</div>
+    ${!calSel && past.length?`<details class="card"><summary><b>Rendez-vous passés (${past.length})</b></summary><div style="display:flex;flex-direction:column;gap:12px;margin-top:10px">${past.map(rdvCard).join("")}</div></details>`:""}
+    <p class="foot">La liste des papiers est une aide : vérifie toujours ce qui est demandé sur ta convocation ou ton message de rendez-vous.</p>`;
+    $app.querySelector("#pm").onclick = () => { calM = new Date(y, m-1, 1); vAgenda(); };
+    $app.querySelector("#nm").onclick = () => { calM = new Date(y, m+1, 1); vAgenda(); };
+    $app.querySelectorAll("[data-day]").forEach(b => b.onclick = () => { calSel = calSel === b.dataset.day ? null : b.dataset.day; vAgenda(); });
+    const all = $app.querySelector("#all"); if(all) all.onclick = () => { calSel = null; vAgenda(); };
+    $app.querySelector("#add").onclick = () => openForm(null);
+    $app.querySelectorAll("[data-rd]").forEach(i => i.addEventListener("change", () => { const r = st.rdv.find(x => x.id === i.dataset.rd); r.docs[+i.dataset.k].ok = i.checked; save(); vAgenda(); }));
+    $app.querySelectorAll("[data-edit]").forEach(b => b.onclick = () => openForm(st.rdv.find(x => x.id === b.dataset.edit)));
+    $app.querySelectorAll("[data-del]").forEach(b => b.onclick = () => { if(b.dataset.armed){ st.rdv = st.rdv.filter(x => x.id !== b.dataset.del); save(); vAgenda(); } else { b.dataset.armed = "1"; b.textContent = "Confirmer la suppression"; } });
+    if(editR !== null) openForm(editR === "new" ? null : st.rdv.find(x=>x.id===editR));
+  }
+  function openForm(r){
+    editR = r ? r.id : "new";
+    const box = $app.querySelector("#formbox");
+    const cur = r || {type:"caf", date: calSel || todayIso(), heure:"", objet:"", lieu:"", tel:"", avec:"", notes:"", docs:null};
+    let docs = (cur.docs || typeOf(cur.type).docs.map(t => ({t, ok:false}))).map(x => ({...x}));
+    const fillOrg = t => {
+      const d = dep();
+      if(t.id === "referent" || t.id === "as"){ const o = d && d[0] === "31" ? GA.annuaire[0] : null; return o ? {lieu:o.ou, tel:o.tel} : {lieu:"",tel:""}; }
+      const n = t.nat ? GA.national.find(x => x.k === t.nat) : (t.id === "banque" ? null : null);
+      return {lieu:"", tel: n && n.tel ? n.tel : ""};
+    };
+    if(!r){ const f = fillOrg(typeOf(cur.type)); cur.lieu = f.lieu; cur.tel = f.tel; }
+    box.innerHTML = `<div class="card"><h3>${r?"Modifier le rendez-vous":"Nouveau rendez-vous"}</h3><form class="rf" id="rf">
+      <label class="full">Avec qui ?<select id="r-type">${GA.rdvTypes.map(t=>`<option value="${t.id}" ${t.id===cur.type?"selected":""}>${esc(t.nom)}</option>`).join("")}</select></label>
+      <label>Date<input type="date" id="r-date" required value="${cur.date}"></label>
+      <label>Heure<input type="time" id="r-heure" value="${cur.heure||""}"></label>
+      <label class="full">Pour quoi ?<input type="text" id="r-objet" value="${esc(cur.objet||"")}" placeholder="ex. Demande d'APL"></label>
+      <label class="full">Adresse<input type="text" id="r-lieu" value="${esc(cur.lieu||"")}" placeholder="Adresse du rendez-vous"><a id="r-find" target="_blank" rel="noopener" style="font-weight:400"></a></label>
+      <label>Téléphone<input type="tel" id="r-tel" value="${esc(cur.tel||"")}" placeholder="Numéro"></label>
+      <label>Nom de la personne<input type="text" id="r-avec" value="${esc(cur.avec||"")}" placeholder="ex. Mme Martin"></label>
+      <div class="full"><span class="eyebrow">Papiers à prendre</span><div class="sugg" id="r-docs"></div>
+        <div class="row" style="margin-top:8px"><input type="text" id="r-newdoc" placeholder="Ajouter un papier" style="flex:1"><button type="button" class="btn ghost" id="r-adddoc" style="padding:8px 12px">Ajouter</button></div></div>
+      <label class="full">Notes<input type="text" id="r-notes" value="${esc(cur.notes||"")}" placeholder="ex. Arriver 10 min avant, bus de 8 h 12"></label>
+      <div class="row full"><button class="btn" type="submit">Enregistrer</button><button class="btn ghost" type="button" id="r-cancel">Annuler</button></div>
+    </form></div>`;
+    const drawDocs = () => {
+      const sug = typeOf($app.querySelector("#r-type").value).docs;
+      const names = docs.map(x=>x.t);
+      const extra = sug.filter(t => !names.includes(t));
+      $app.querySelector("#r-docs").innerHTML = docs.map((x,k)=>`<button type="button" aria-pressed="true" data-rm="${k}">✓ ${esc(x.t)}</button>`).join("") + extra.map(t=>`<button type="button" aria-pressed="false" data-ad="${esc(t)}">+ ${esc(t)}</button>`).join("");
+      $app.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { docs.splice(+b.dataset.rm,1); drawDocs(); });
+      $app.querySelectorAll("[data-ad]").forEach(b => b.onclick = () => { docs.push({t:b.dataset.ad, ok:false}); drawDocs(); });
+    };
+    drawDocs();
+    const autoFill = async () => {
+      if(r || !st.loc) return;
+      const t = typeOf($app.querySelector("#r-type").value); if(!t.nat || t.id === "referent" || t.id === "as") return;
+      try{ await loadData(); }catch(e){ return; }
+      const n = nearest(t.nat, 1)[0]; if(!n) return;
+      const x = n[1], l = $app.querySelector("#r-lieu"), tl = $app.querySelector("#r-tel"); if(!l) return;
+      l.value = [x[1], x[2], (x[3]+" "+x[4]).trim()].filter(Boolean).join(", "); if(x[5]) tl.value = x[5];
+    };
+    autoFill(); $app.querySelector("#r-type").addEventListener("change", autoFill);
+    const drawFind = () => { const t = typeOf($app.querySelector("#r-type").value), a = $app.querySelector("#r-find"), d = dep(); const o = t.nat ? GA.national.find(x => x.k === t.nat) : null; if(o && !(d && d[0]==="31" && (t.id==="referent"||t.id==="as"))){ a.href = near(o) || annu(t.nat); a.textContent = "📍 Trouver l'adresse " + (st.ville ? "la plus proche de " + st.ville : d ? "dans le " + d[0] : "") + " (annuaire officiel)"; a.hidden = false; } else { a.hidden = true; } };
+    drawFind();
+    $app.querySelector("#r-type").addEventListener("change", drawFind);
+    $app.querySelector("#r-type").onchange = e => {
+      const t = typeOf(e.target.value), f = fillOrg(t);
+      if(!r){ $app.querySelector("#r-lieu").value = f.lieu; $app.querySelector("#r-tel").value = f.tel; docs = t.docs.map(x => ({t:x, ok:false})); }
+      drawDocs();
+    };
+    $app.querySelector("#r-adddoc").onclick = () => { const i = $app.querySelector("#r-newdoc"); if(i.value.trim()){ docs.push({t:i.value.trim(), ok:false}); i.value=""; drawDocs(); } };
+    $app.querySelector("#r-cancel").onclick = () => { editR = null; box.innerHTML = ""; };
+    $app.querySelector("#rf").onsubmit = e => {
+      e.preventDefault();
+      const v = id => $app.querySelector(id).value.trim();
+      const data = {id: r ? r.id : "r"+Date.now().toString(36), type:v("#r-type"), date:v("#r-date"), heure:v("#r-heure"), objet:v("#r-objet"), lieu:v("#r-lieu"), tel:v("#r-tel"), avec:v("#r-avec"), notes:v("#r-notes"), docs};
+      st.rdv = (st.rdv || []).filter(x => x.id !== data.id).concat([data]); save();
+      editR = null; calSel = data.date; const d = new Date(data.date+"T12:00"); calM = new Date(d.getFullYear(), d.getMonth(), 1); vAgenda();
+    };
+    box.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  const VIEWS = {accueil:vAccueil, fiches:vFiches, jeux:vJeux, agenda:vAgenda, kit:vKit, contacts:vContacts};
+  function route(){
+    if(!st.installSeen && !standalone() && !st.onboarded && !(st.prenom || st.naissance || st.loc)){ vInstaller(); return; }
+    if(!st.onboarded && !(st.prenom || st.naissance || st.loc)){ vBienvenue(); return; }
+    document.querySelector("nav.tabs").hidden = false;
+    const v = (location.hash||"").replace("#","");
+    const name = VIEWS[v] ? v : "accueil";
+    document.querySelectorAll("nav.tabs a").forEach(a => a.setAttribute("aria-current", a.dataset.v === name ? "page" : "false"));
+    if(name !== "fiches") openFiche = null; if(name !== "agenda") editR = null; if(name !== "kit" && vKey) vLock();
+    VIEWS[name](); window.scrollTo(0,0);
+  }
+  window.addEventListener("hashchange", route);
+  document.querySelectorAll("nav.tabs a").forEach(a => a.addEventListener("click", () => { if(a.dataset.v === "jeux") game = null; if(a.dataset.v==="fiches") openFiche = null; if(location.hash === "#"+a.dataset.v) route(); }));
+  route();
+})();
+</script>
+
+<script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}</script>
+</body>
+</html>

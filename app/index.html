@@ -46,7 +46,8 @@
   --ok:#5fd19a; --ok-soft:#173a2b; --ko:#ff8a73; --ko-soft:#3d1f1a; color-scheme:dark}
 *{box-sizing:border-box}
 html,body{background:var(--bg)}
-body{color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 calc(88px + env(safe-area-inset-bottom,0px))}
+html{font-size:calc(100% * var(--fz,1))}
+body{color:var(--ink);font-family:var(--body);font-size:calc(16px * var(--fz,1));line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 calc(88px + env(safe-area-inset-bottom,0px))}
 .wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:20px;padding-block:20px 8px}
 h1,h2,h3{font-family:var(--display);line-height:1.1;margin:0;text-wrap:balance}
 h1{font-size:clamp(2rem,7vw,3.1rem);font-weight:800;letter-spacing:-.02em}
@@ -216,6 +217,11 @@ input[type=number]{text-align:right;font-variant-numeric:tabular-nums}
 .vdoc span{padding:8px 10px;font-size:.85rem;font-weight:700;line-height:1.25}
 .vdoc small{padding:0 10px 8px;color:var(--muted);font-size:.75rem}
 .pin{font-family:var(--display);font-size:1.6rem;letter-spacing:.5em;text-align:center}
+.tts{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:7px 13px;font:700 .88rem var(--body);cursor:pointer}
+.tts[aria-pressed=true]{background:var(--ink);color:var(--surface)}
+.fzrow{display:flex;gap:8px}
+.fzrow button{flex:1;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 0;font-weight:800;cursor:pointer}
+.fzrow button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
 .viewer{position:fixed;inset:0;z-index:50;background:#000;display:flex;flex-direction:column;padding:calc(10px + env(safe-area-inset-top,0px)) max(10px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px));gap:10px}
 .viewer .vt{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#fff}
 .viewer .vt b{font-family:var(--display)}
@@ -339,7 +345,7 @@ fiches: [
   faire:["J'ai ma carte Vitale à mon nom (ou l'appli).","J'ai créé mon compte ameli.","Mon RIB et mon adresse sont à jour sur ameli.",
    "J'ai déclaré un médecin traitant.","J'ai une mutuelle ou la CSS (et je connais sa date de fin).","J'ai enregistré le 15, le 116 117 et le 3114 dans mon téléphone."],
   aide:"Accueil CPAM, MDS, Mission locale, ton référent. Téléphone de l'Assurance maladie : 36 46."},
- {id:"caf", n:"2", titre:"La CAF",
+ {id:"caf", plus:[["Simuler toutes mes aides (1jeune1solution)","https://www.1jeune1solution.gouv.fr/mes-aides"],["Les fiches de La B'ASE, pour les jeunes de la protection de l'enfance","https://www.la-base.org"]], n:"2", titre:"La CAF",
   bref:["La CAF peut t'aider à payer ton loyer (APL) et compléter ton salaire (prime d'activité, dès 18 ans).",
    "Rien n'est automatique : tu fais une simulation, puis une demande sur caf.fr ou l'appli.",
    "Demande l'APL dès que tu entres dans ton logement : le 1er mois n'est jamais payé.",
@@ -366,7 +372,7 @@ fiches: [
    "Quelqu'un te propose de l'argent facile contre ta carte ou ton RIB ? C'est illégal, tu risques gros."]},
   note:"Mon budget : reste pour vivre = ce qui rentre − ce qui sort. Fais le calcul dans « Mon kit » > « Mon budget ».",
   aide:"Point conseil budget (gratuit) à la France Services de Nailloux. Banque de France : 34 14. Appli gratuite « Pilote Budget »."},
- {id:"logement", n:"5", titre:"Mon logement",
+ {id:"logement", plus:[["Simuler mes aides au logement (1jeune1solution)","https://www.1jeune1solution.gouv.fr/mes-aides"],["Les fiches logement de La B'ASE","https://www.la-base.org"]], n:"5", titre:"Mon logement",
   bref:["Avant de signer, calcule : loyer + charges + énergie + assurance − APL. Il doit te rester de quoi vivre.",
    "Visale : une caution gratuite si tu as 30 ans ou moins. Demande-la avant de signer.","L'assurance habitation est obligatoire.",
    "Fais l'état des lieux avec des photos, et demande l'APL tout de suite.","Ancien de l'ASE ? Tu es prioritaire pour un logement social pendant 3 ans."],
@@ -393,7 +399,7 @@ fiches: [
   liste:{titre:"Mon classeur en 6 intercalaires",items:["Identité (carte d'identité, acte de naissance, JDC)","Santé (carte Vitale, CSS, mutuelle)","CAF et aides","Impôts",
    "Travail et formation (fiches de paie, contrats, diplômes)","Logement et banque (bail, quittances, assurance, RIB)"]},
   aide:"France Services de Nailloux (aide aux démarches en ligne, conseiller numérique), ton référent."},
- {id:"droits", n:"9", titre:"Mes 18 ans : la feuille de route",
+ {id:"droits", plus:[["Les 108 fiches de La B'ASE (CNAPE)","https://www.la-base.org"],["Simuler mes aides (1jeune1solution)","https://www.1jeune1solution.gouv.fr/mes-aides"]], n:"9", titre:"Mes 18 ans : la feuille de route",
   bref:["Tu signes seul tes contrats, tu votes, tu es responsable de tes papiers.",
    "Jusqu'à 21 ans, si tu as été confié à l'ASE, le Département peut continuer à t'accompagner. Et tu peux revenir demander de l'aide.",
    "Ton pécule (l'allocation de rentrée scolaire mise de côté pour toi) : tu dois le demander à la Caisse des dépôts.",
@@ -648,7 +654,22 @@ demarches:[
   etapes:["Va sur le site de la Caisse des dépôts, rubrique « jeunes majeurs de l'enfance protégée ».","Fais ta demande de restitution de l'allocation de rentrée scolaire mise de côté pour toi.","Suis ta demande et garde le courrier de réponse dans ton classeur."],
   pieces:["Pièce d'identité","RIB à ton nom"],
   liens:[["Faire ma demande (Caisse des dépôts)","https://consignations.caissedesdepots.fr/particulier/restitution-jeunes-majeurs-enfance-protegee/allocation-rentree-scolaire-ars"],["Explications de la Caf","https://caf.fr/allocataires/actualites/actualites-nationales/jeunes-majeurs-issus-de-l-ase-demandez-vos-allocations-de-rentree"]],
-  astuce:"Il n'arrive pas tout seul : si tu ne le demandes pas, il reste bloqué. Ton référent peut t'aider."}
+  astuce:"Il n'arrive pas tout seul : si tu ne le demandes pas, il reste bloqué. Ton référent peut t'aider."},
+ {id:"premaj",fiche:"droits",titre:"Préparer mon entretien de pré-majorité",quand:"À 17 ans, au plus tard un an avant tes 18 ans. Si tu es arrivé(e) à l'ASE après 17 ans, il a lieu le plus vite possible.",
+  etapes:["Ton référent ASE te propose une date. Tu peux venir avec ta personne de confiance.","Avant, note tes questions : où je vais habiter, comment je paie ma formation, qui m'aide après 18 ans.","Pendant l'entretien, on fait le bilan de ton parcours et on t'explique tes droits.","Vous construisez ensemble ton projet d'accès à l'autonomie : école ou formation, logement, santé, argent, emploi.","Si tu es de nationalité étrangère, on t'explique comment l'ASE t'aide pour ton titre de séjour (ou une demande d'asile).","Ensuite, le Département te dit comment tu seras accompagné(e) vers l'autonomie. Range ce document dans ton classeur.","Tes besoins changent ? Tu peux demander un nouvel entretien."],
+  pieces:["Tes questions écrites (dans les notes de ton téléphone)","Ton projet : école, formation, travail","Tes papiers : carte d'identité ou titre de séjour, carte Vitale","Ton budget si tu l'as fait (Mon kit > Mon budget)"],
+  liens:[["Le texte de loi (article L222-5-1)","https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000045136761"],["Des fiches pour les jeunes de la protection de l'enfance (La B'ASE)","https://www.la-base.org"]],
+  astuce:"C'est un droit, pas un examen. Dis ce que tu veux pour après tes 18 ans et pose toutes tes questions."},
+ {id:"apjm",fiche:"droits",titre:"Être accompagné(e) après 18 ans (jusqu'à 21 ans)",quand:"À préparer dès 17 ans avec ton référent. Tu peux demander une aide jusqu'à tes 21 ans, même si tu as déjà quitté l'ASE.",
+  etapes:["Parles-en avec ton référent, au plus tard pendant ton entretien de pré-majorité.","Fais ta demande par écrit au Département (ton référent t'aide). Explique ton projet et pourquoi tu as besoin d'aide.","Le Département décide. Si c'est oui, tu signes un accompagnement jeune majeur : logement, argent, suivi… selon ta situation.","Respecte tes engagements et fais le point régulièrement avec ton référent.","Ta formation n'est pas finie à la fin de l'accompagnement ? Tu peux être accompagné(e) jusqu'à la fin de l'année scolaire ou universitaire.","Tu as quitté l'ASE et tu as moins de 21 ans ? Tu peux redemander une aide au Département.","On te propose aussi le Contrat d'engagement jeune (CEJ) avec la Mission locale ou France Travail.","Le Département refuse ? Demande la décision par écrit : tu peux la contester. Le Point justice et le Défenseur des droits t'aident gratuitement."],
+  pieces:["Ta lettre de demande (ton référent peut t'aider)","Ton projet : formation, travail, logement","Tes justificatifs de ressources (fiches de paie, bourse…)","Ta pièce d'identité ou ton titre de séjour"],
+  liens:[["Le texte de loi (article L222-5)","https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000049050913"],["Le Contrat d'engagement jeune (1jeune1solution)","https://www.1jeune1solution.gouv.fr/contrat-engagement-jeune"],["Le Défenseur des droits","https://www.defenseurdesdroits.fr"]],
+  astuce:"La loi vise les jeunes qui n'ont pas assez de ressources ou de soutien familial. Dis-le clairement dans ta demande. Ce droit ne s'applique pas en cas d'obligation de quitter le territoire (OQTF)."},
+ {id:"sejour",fiche:"droits",titre:"Mon titre de séjour à 18 ans",quand:"Prépare-le dès 17 ans avec ton référent. Confié(e) à l'ASE au plus tard à 16 ans : demande au plus tard la veille de tes 19 ans. Confié(e) entre 16 et 18 ans : demande le plus tôt possible et vérifie le délai exact avec ton référent.",
+  etapes:["Dès 17 ans, parles-en à ton référent : l'ASE doit t'aider dans cette démarche.","Rassemble tes papiers d'identité : passeport, acte de naissance, carte consulaire. Si tu n'en as pas, préviens ton référent tôt : ça peut être long.","Confié(e) à l'ASE au plus tard le jour de tes 16 ans : tu peux obtenir une carte « vie privée et familiale » d'un an.","Confié(e) entre 16 et 18 ans : tu peux obtenir, à titre exceptionnel, une carte « salarié » ou « travailleur temporaire » si tu suis depuis au moins 6 mois une formation qui donne un métier.","Dans les deux cas, la préfecture regarde le sérieux de ta formation, tes liens avec ta famille dans ton pays et l'avis de ta structure d'accueil.","Dépose ta demande à la préfecture (ou en ligne, selon ta préfecture). Garde le récépissé : il prouve que ta demande est en cours.","Réponse négative ou OQTF ? Les délais pour contester sont très courts : va tout de suite voir ton référent, un avocat ou une association."],
+  pieces:["Passeport ou carte consulaire, acte de naissance","La décision qui t'a confié(e) à l'ASE","Certificat de scolarité, contrat d'apprentissage ou attestation de formation, bulletins","L'avis de ta structure d'accueil sur ton insertion","Justificatif d'hébergement","Photos d'identité et timbre fiscal (selon le titre)"],
+  liens:[["La carte « vie privée et familiale » (article L423-22)","https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000045137531"],["La carte « salarié » pour les 16-18 ans (article L435-3)","https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000045137527"],["Les délais de la demande (article R431-5)","https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000043292776"],["La nationalité française (Code civil, article 21-12)","https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000032207643"],["Infos pour les jeunes étrangers (InfoMIE)","https://www.infomie.net"]],
+  astuce:"Confié(e) à l'ASE depuis au moins 3 ans ? Avant tes 18 ans, tu peux peut-être demander la nationalité française. Demande vite à ton référent : après 18 ans, cette voie n'est plus possible."}
 ],
 majorite:[
  {p:"Dès 16 ans",items:[
@@ -656,9 +677,9 @@ majorite:[
   {t:"Avoir une carte d'identité valide.",dm:"cni"},
   {t:"M'inscrire à la Mission locale (possible dès 16 ans) et parler du CEJ.",f:"emploi"}]},
  {p:"À 17 ans, au plus tard un an avant mes 18 ans",items:[
-  {t:"Faire avec mon référent l'entretien de préparation à la majorité : bilan de mon parcours, mes droits, mon projet d'accès à l'autonomie. C'est un droit : je peux venir avec ma personne de confiance."},
-  {t:"Préparer avec mon référent ma demande d'accompagnement jeune majeur, possible jusqu'à 21 ans si je n'ai pas assez de ressources ou de soutien familial."},
-  {t:"Si je suis de nationalité étrangère : préparer dès maintenant ma demande de titre de séjour avec mon référent."},
+  {t:"Faire avec mon référent l'entretien de préparation à la majorité : bilan de mon parcours, mes droits, mon projet d'accès à l'autonomie. C'est un droit : je peux venir avec ma personne de confiance.",dm:"premaj"},
+  {t:"Préparer avec mon référent ma demande d'accompagnement jeune majeur, possible jusqu'à 21 ans si je n'ai pas assez de ressources ou de soutien familial.",dm:"apjm"},
+  {t:"Si je suis de nationalité étrangère : préparer dès maintenant ma demande de titre de séjour avec mon référent.",dm:"sejour"},
   {t:"Faire ma JDC si je suis convoqué·e, et garder l'attestation.",dm:"jdc"}]},
  {p:"Les 3 derniers mois avant mes 18 ans",items:[
   {t:"Vérifier que j'ai ma carte Vitale et mon compte ameli à mon nom, et une mutuelle ou la CSS.",dm:"css"},
@@ -668,7 +689,7 @@ majorite:[
   {t:"Préparer avec mon référent où je vais habiter après 18 ans (logement social, Visale…).",dm:"hlm"}]},
  {p:"Le mois de mes 18 ans",items:[
   {t:"Demander mon pécule à la Caisse des dépôts.",dm:"pecule"},
-  {t:"Signer mon accompagnement jeune majeur, si je l'ai demandé, et noter mes engagements."},
+  {t:"Signer mon accompagnement jeune majeur, si je l'ai demandé, et noter mes engagements.",dm:"apjm"},
   {t:"Créer mon compte CAF si j'ai un logement ou un travail (APL, prime d'activité).",dm:"apl"},
   {t:"Créer mon espace impots.gouv.fr et savoir avec mon référent si je déclare seul·e ou si je reste rattaché·e.",f:"impots"},
   {t:"Vérifier que je suis bien inscrit·e sur les listes électorales."}]},
@@ -677,7 +698,7 @@ majorite:[
   {t:"Renouveler ma CSS chaque année (2 à 4 mois avant la fin) et ma demande de logement social.",dm:"css"},
   {t:"Déclarer mes revenus chaque printemps, même si je gagne peu.",f:"impots"},
   {t:"Signaler mes changements à la CAF, à la CPAM et à France Travail.",f:"caf"},
-  {t:"Préparer la suite avant 21 ans. Si mon accompagnement s'arrête, je peux redemander une aide au Département tant que j'ai moins de 21 ans."}]}
+  {t:"Préparer la suite avant 21 ans. Si mon accompagnement s'arrête, je peux redemander une aide au Département tant que j'ai moins de 21 ans.",dm:"apjm"}]}
 ],
 mots:["Carte Vitale","Mutuelle","Tiers payant","Médecin traitant","Reste à charge","APL","Numéro d'allocataire","Indu","Prime d'activité","Avis d'impôt","RIB","Découvert",
  "Visale","État des lieux","Quittance","FranceConnect","Pécule","CEJ","RQTH","Actualisation"]
@@ -709,6 +730,27 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
   let st = {checks:{}, contacts:{}, budget:{}, best:{}};
   try{ const s = JSON.parse(localStorage.getItem(KEY) || "null"); if(s) st = Object.assign(st, s); }catch(e){}
   const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} };
+  const applyFz = () => { try{ document.documentElement.style.setProperty("--fz", st.fz || 1); }catch(e){} };
+  applyFz();
+  // lecture à voix haute
+  const canSpeak = () => { try{ return "speechSynthesis" in window && "SpeechSynthesisUtterance" in window; }catch(e){ return false; } };
+  let speakBtn = null;
+  function stopSpeak(){ try{ speechSynthesis.cancel(); }catch(e){} if(speakBtn){ speakBtn.setAttribute("aria-pressed","false"); speakBtn.textContent = "🔊 Écouter"; } speakBtn = null; }
+  function speak(text, btn){
+    if(speakBtn === btn){ stopSpeak(); return; }
+    stopSpeak();
+    const parts = String(text).replace(/\s+/g," ").match(/[^.!?:]+[.!?:]*/g) || [text];
+    const voix = (speechSynthesis.getVoices() || []).find(v => /^fr/i.test(v.lang));
+    speakBtn = btn; btn.setAttribute("aria-pressed","true"); btn.textContent = "⏹ Arrêter";
+    parts.forEach((t,i) => { const u = new SpeechSynthesisUtterance(t.trim()); u.lang = "fr-FR"; u.rate = .95; if(voix) u.voice = voix; if(i === parts.length-1) u.onend = () => { if(speakBtn === btn) stopSpeak(); }; speechSynthesis.speak(u); });
+  }
+  const ttsBtn = id => canSpeak() ? `<button class="tts" type="button" data-tts="${id}" aria-pressed="false">🔊 Écouter</button>` : "";
+  // partager (téléphone) ou copier
+  async function shareText(title, text, msgEl){
+    if(navigator.share){ try{ await navigator.share({title, text}); return; }catch(e){ if(e && e.name === "AbortError") return; } }
+    try{ await navigator.clipboard.writeText(text); if(msgEl) msgEl.textContent = "Texte copié : colle-le dans un SMS ou un mail à ton référent."; }
+    catch(e){ if(msgEl) msgEl.innerHTML = `Envoie-le par <a href="sms:?&body=${encodeURIComponent(text)}">SMS</a> ou par <a href="mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(text)}">mail</a>.`; }
+  }
   // le navigateur garde-t-il les infos ?
   let storageOK = false;
   try{ localStorage.setItem("ga-test", "1"); storageOK = localStorage.getItem("ga-test") === "1"; localStorage.removeItem("ga-test"); }catch(e){ storageOK = false; }
@@ -861,11 +903,21 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
   }
 
   // ---------- ACCUEIL
+  let goBackup = false;
+  function hasData(){ return Object.keys(st.checks||{}).length > 2 || (st.rdv||[]).length > 0 || Object.keys(st.contacts||{}).length > 0 || !!localStorage.getItem("galere-academy-vault"); }
+  function bkBanner(){
+    if(!st.onboarded || embedded || !storageOK || !hasData()) return "";
+    const day = 86400000, now = Date.now();
+    if(st.lastBk && now - st.lastBk < 30*day) return "";
+    if(st.bkSnooze && now - st.bkSnooze < 7*day) return "";
+    const quand = st.lastBk ? "Ta dernière sauvegarde date de plus d'un mois." : "Tu n'as encore jamais fait de sauvegarde.";
+    return `<div class="note" style="border-left-color:var(--c-papiers)">💾 <b>Pense à sauvegarder ton appli.</b> ${quand} Si tu perds ou changes de téléphone, tout ce que tu as noté est perdu. <div class="row" style="margin-top:8px;gap:8px"><a class="btn" href="#kit" id="bk-go" style="padding:8px 14px">Faire ma sauvegarde</a><button class="btn ghost" id="bk-later" type="button" style="padding:8px 14px">Plus tard</button></div></div>`;
+  }
   function vAccueil(){
     const bd = birthdayBanner();
     const m18 = monthsTo18(), ag = ageNow();
     const where = ag === null ? "" : m18 > 0 ? `Tes 18 ans : dans ${m18 < 1 ? "moins d'un mois" : m18 + " mois"}. Regarde ta feuille de route.` : ag < 21 ? `Tu as ${ag} ans. Ta feuille de route te dit quoi faire maintenant.` : "";
-    $app.innerHTML = `${bd}${storageBanner()}
+    $app.innerHTML = `${bd}${storageBanner()}${bkBanner()}
     <section class="hero">
       <span class="eyebrow">${st.prenom ? "Salut " + esc(st.prenom) + " 👋" : "Le parcours des 18-21 ans"}</span>
       <h1>Bienvenue à la <span class="mk">Galère Academy</span></h1>
@@ -877,6 +929,7 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><label style="display:flex;flex-direction:column;gap:4px;font-size:.88rem;font-weight:700">Mon prénom<input type="text" id="me-prenom" value="${esc(st.prenom||"")}" placeholder="Facultatif" autocomplete="given-name"></label>
       <label style="display:flex;flex-direction:column;gap:4px;font-size:.88rem;font-weight:700">Ma date de naissance<input type="date" id="me-naiss" value="${esc(st.naissance||"")}" style="font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 10px;min-width:0"></label></div>
       <span class="foot">${where || "Facultatif : pour te souhaiter ton anniversaire et te dire où tu en es avant tes 18 ans. Reste sur ce téléphone."}</span></div>
+    <div class="card"><span class="eyebrow">Taille du texte</span><div class="fzrow">${[[1,"A"],[1.15,"A+"],[1.3,"A++"]].map(([v,l])=>`<button type="button" data-fz="${v}" aria-pressed="${(st.fz||1)==v}" style="font-size:${v}rem">${l}</button>`).join("")}</div><span class="foot">Dans chaque fiche, le bouton 🔊 Écouter lit le texte à voix haute.</span></div>
     <div class="card"><span class="eyebrow">Où j'habite</span>${villeInput("ville0")}${depSelect("dep0")}<span class="foot">${st.loc ? "Tes partenaires les plus proches de " + esc(st.loc.nom) + " sont dans l'onglet Contacts." : "Tape ta ville puis choisis-la dans la liste : l'appli trouvera les partenaires les plus proches."}</span></div>
     <div class="grid" style="grid-template-columns:1fr">
       <a class="big-btn" href="#jeux"><div class="lft">${ico("vf","sante")}<div><strong>Jouer</strong><br><span>J'appelle qui ?, Vrai ou faux, Arnaque ou pas ?, Le mois de Sam</span></div></div><b class="go">›</b></a>
@@ -888,8 +941,11 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
     </div>
     <details class="card"><summary><b>📲 Installer l'appli sur mon téléphone</b></summary><div class="instbox" style="margin-top:10px">${installHtml(isIOS() ? "ios" : "and")}</div></details>
     <div class="card" style="flex-direction:row;align-items:center;gap:14px">${ico("droits","droits",44)}<div><b style="font-family:var(--display)">Créée par des éducs et des ASS</b><br><span class="foot">Une appli pensée par des éducateurs et des assistants de service social de l'ASE, à partir de ce que les jeunes nous demandent vraiment.</span></div></div>
-    <p class="foot">Informations à jour en octobre 2026. Les montants changent chaque année : vérifie sur ameli.fr, caf.fr, impots.gouv.fr ou service-public.fr. Cette appli ne remplace pas ton référent.</p>`;
+    <p class="foot">Informations à jour en novembre 2026. Les montants changent chaque année : vérifie sur ameli.fr, caf.fr, impots.gouv.fr ou service-public.fr. Cette appli ne remplace pas ton référent.</p>`;
     renderProg($app.querySelector("[data-prog]")); bindInstall($app);
+    $app.querySelectorAll("[data-fz]").forEach(b => b.onclick = () => { st.fz = +b.dataset.fz; save(); applyFz(); vAccueil(); });
+    const bkg = $app.querySelector("#bk-go"); if(bkg) bkg.onclick = () => { goBackup = true; };
+    const bkl = $app.querySelector("#bk-later"); if(bkl) bkl.onclick = () => { st.bkSnooze = Date.now(); save(); vAccueil(); };
     $app.querySelector("#dep0").addEventListener("change", e => { st.dep = e.target.value; save(); });
     $app.querySelector("#go18").addEventListener("click", () => { openFiche = "droits"; });
     const b18 = $app.querySelector("#bd18"); if(b18) b18.addEventListener("click", () => { openFiche = "droits"; });
@@ -911,7 +967,7 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
       return `<button class="folder" data-c="${f.id}" data-n="${f.n === "0" ? "Départ" : f.n}" data-f="${f.id}"><div class="top">${ico(f.id,null,40)}<strong>${esc(f.titre)}</strong></div><span>${k.length ? (d === k.length ? `<span class="done">Tout est fait</span>` : `${d} / ${k.length} à faire`) : "À lire"}</span></button>`;
     }).join("")}</div>`;
     $app.querySelectorAll("[data-f]").forEach(b => b.onclick = () => { openFiche = b.dataset.f; vFiches(); window.scrollTo(0,0); });
-    $app.querySelectorAll("[data-dm]").forEach(b => b.onclick = () => { openFiche = b.dataset.fid; vFiches(); const d = document.getElementById("dem-"+b.dataset.dm); if(d){ d.open = true; d.scrollIntoView({block:"start"}); } });
+    $app.querySelectorAll("[data-dm]").forEach(b => b.onclick = () => { stopSpeak(); openFiche = b.dataset.fid; vFiches(); const d = document.getElementById("dem-"+b.dataset.dm); if(d){ d.open = true; d.scrollIntoView({block:"start"}); } });
   }
   function demarche(d){
     const keys = d.etapes.map((t,i)=>"dm-"+d.id+"-"+i), done = nbDone(keys);
@@ -921,12 +977,13 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
       <span class="eyebrow">Les papiers à préparer</span><ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px">${d.pieces.map(p=>`<li>${esc(p)}</li>`).join("")}</ul>
       <span class="eyebrow">Les liens officiels</span><div class="links">${d.liens.map(l=>`<a href="${l[1]}" target="_blank" rel="noopener">${esc(l[0])}</a>`).join("")}</div>
       ${d.astuce?`<div class="note">💡 ${esc(d.astuce)}</div>`:""}
+      ${ttsBtn("dm:"+d.id)}
     </div></details>`;
   }
   function roadmap(){
     const keys = []; GA.majorite.forEach((ph,i) => ph.items.forEach((x,j) => keys.push("mj-"+i+"-"+j)));
     const d = nbDone(keys);
-    return `<div class="card" data-c="droits"><span class="eyebrow">Étape par étape, dans l'ordre</span><h3>Ma feuille de route vers mes 18 ans</h3><div class="row" style="justify-content:space-between"><b id="mjn">${d} / ${keys.length}</b><span class="foot">enregistré sur ce téléphone</span></div><div class="progress"><i id="mjb" style="width:${Math.round(d/keys.length*100)}%;background:var(--c-droits)"></i></div></div>
+    return `<div class="card" data-c="droits"><span class="eyebrow">Étape par étape, dans l'ordre</span><h3>Ma feuille de route vers mes 18 ans</h3><div class="row" style="justify-content:space-between"><b id="mjn">${d} / ${keys.length}</b><span class="foot">enregistré sur ce téléphone</span></div><div class="progress"><i id="mjb" style="width:${Math.round(d/keys.length*100)}%;background:var(--c-droits)"></i></div><button class="btn ghost" id="mj-share" type="button" style="margin-top:6px">📤 Envoyer mon avancée à mon référent</button><span class="foot" id="mj-msg">Tu choisis à qui tu l'envoies (SMS, mail, WhatsApp). Rien n'est envoyé sans toi.</span></div>
     <ol class="road">${GA.majorite.map((ph,i)=>`<li${phaseNow()===i?' class="now"':""}><div class="ph"><span class="dotn">${i+1}</span><b>${esc(ph.p)}</b>${phaseNow()===i?'<span class="soon" style="background:var(--c-droits)">Tu es ici</span>':""}</div><div class="checks">${ph.items.map((x,j)=>`${checkbox("mj-"+i+"-"+j,x.t)}${x.dm?`<button class="back" data-godm="${x.dm}" style="margin:-4px 0 4px 44px">→ La démarche pas à pas</button>`:x.f?`<button class="back" data-gof="${x.f}" style="margin:-4px 0 4px 44px">→ La fiche</button>`:""}`).join("")}</div></li>`).join("")}</ol>`;
   }
   function table(t){
@@ -934,6 +991,7 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
   }
   function vFiche(f){
     let h = `<button class="back" id="back">‹ Toutes les fiches</button><div class="fhead" data-c="${f.id}">${ico(f.id,null,56)}<div><span class="eyebrow">${f.n==="0"?"Pour commencer":"Fiche "+f.n}</span><h2>${esc(f.titre)}</h2></div></div>`;
+    h += ttsBtn("f:"+f.id);
     if(f.id === "droits") h += roadmap();
     h += `<div class="bref" data-c="${f.id}"><h3>En bref</h3><ul>${f.bref.map(b=>`<li>${esc(b)}</li>`).join("")}</ul></div>`;
     if(f.tableau) h += table(f.tableau);
@@ -944,12 +1002,26 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
     const dms = (GA.demarches||[]).filter(d => d.fiche === f.id);
     if(dms.length) h += `<h3>Les démarches pas à pas</h3><div style="display:flex;flex-direction:column;gap:10px">${dms.map(demarche).join("")}</div>`;
     if(f.faire) h += `<h3>Je le fais</h3><div class="checks">${f.faire.map((t,i)=>checkbox(f.id+"-"+i,t)).join("")}</div>`;
+    if(f.plus) h += `<h3>Pour aller plus loin</h3><div class="links">${f.plus.map(l=>`<a href="${l[1]}" target="_blank" rel="noopener">${esc(l[0])}</a>`).join("")}</div>`;
     if(f.aide) h += `<div class="help"><span class="eyebrow">Qui peut m'aider ?</span><span>${esc(f.aide)}</span><span class="foot">Ces adresses sont celles du Lauragais. Pour trouver les plus proches de chez toi, va dans l'onglet <a href="#contacts">Contacts</a>.</span></div>`;
     const jeu = Object.keys(THEMES).includes(f.id) ? f.id : null;
     if(jeu) h += `<button class="btn" id="jouer">Jouer sur ce thème</button>`;
     $app.innerHTML = h;
-    bindChecks();
-    $app.querySelector("#back").onclick = () => { openFiche = null; vFiches(); };
+    bindChecks(); stopSpeak();
+    $app.querySelector("#back").onclick = () => { stopSpeak(); openFiche = null; vFiches(); };
+    $app.querySelectorAll("[data-tts]").forEach(b => b.onclick = () => {
+      const [k, id] = b.dataset.tts.split(":");
+      let t = "";
+      if(k === "f"){ t = [f.titre + ".", ...f.bref, f.note || "", f.liste ? f.liste.titre + ". " + f.liste.items.join(" ") : "", f.aide ? "Qui peut m'aider ? " + f.aide : ""].join(" "); }
+      else { const d = GA.demarches.find(x => x.id === id); if(!d) return; t = [d.titre + ".", "Quand ? " + d.quand, "Étape par étape.", ...d.etapes.map((e,i) => "Étape " + (i+1) + ". " + e), "Les papiers à préparer : " + d.pieces.join(", ") + ".", d.astuce ? "Astuce. " + d.astuce : ""].join(" "); }
+      speak(t, b);
+    });
+    const shr = $app.querySelector("#mj-share"); if(shr) shr.onclick = () => {
+      const lines = [], todo = [];
+      GA.majorite.forEach((ph,i) => ph.items.forEach((x,j) => (st.checks["mj-"+i+"-"+j] ? lines : todo).push("- " + x.t)));
+      const txt = `Ma feuille de route Galère Academy${st.prenom ? " (" + st.prenom + ")" : ""} : ${lines.length} étapes faites sur ${lines.length + todo.length}.\n\nC'est fait :\n${lines.join("\n") || "- rien pour l'instant"}\n\nIl me reste :\n${todo.join("\n") || "- tout est fait !"}`;
+      shareText("Ma feuille de route", txt, $app.querySelector("#mj-msg"));
+    };
     $app.querySelectorAll("[data-godm]").forEach(b => b.onclick = () => { const dm = GA.demarches.find(x => x.id === b.dataset.godm); if(!dm) return; openFiche = dm.fiche; vFiches(); const el = document.getElementById("dem-"+dm.id); if(el){ el.open = true; el.scrollIntoView({block:"start"}); } });
     $app.querySelectorAll("[data-gof]").forEach(b => b.onclick = () => { openFiche = b.dataset.gof; vFiches(); window.scrollTo(0,0); });
     const j = $app.querySelector("#jouer"); if(j) j.onclick = () => { game = null; theme = jeu; location.hash = "jeux"; };
@@ -1107,6 +1179,7 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
     let armed = false;
     $app.querySelector("#raz").onclick = e => { if(!armed){ armed = true; e.target.textContent = "Confirmer : tout effacer"; return; } st.budget = {}; save(); vKit(); };
     calc(); renderBackup();
+    if(goBackup){ goBackup = false; setTimeout(() => { const b = document.getElementById("backup"); if(b) b.scrollIntoView({block:"start"}); }, 60); }
   }
 
   // ---------- SAUVEGARDE (fichier chiffré avec un code)
@@ -1136,6 +1209,8 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
         <label class="btn ghost" style="text-align:center;cursor:pointer">📂 Restaurer une sauvegarde<input type="file" id="bk-file" accept=".galere,.json,application/json" hidden></label>
         <span id="bk-msg" class="foot"></span>
       </div>
+      <details style="margin-top:4px"><summary><b>📱 Je change de téléphone : comment faire ?</b></summary><ol style="margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px"><li>Sur l'ancien téléphone : choisis un code, puis <b>Créer ma sauvegarde</b>.</li><li>Envoie-toi le fichier (mail, Drive, WhatsApp à toi-même) pour le retrouver sur le nouveau.</li><li>Sur le nouveau téléphone : va sur <b>galere-academy.fr</b> et installe l'appli.</li><li>Ouvre <b>Mon kit</b>, tape le même code, puis <b>Restaurer une sauvegarde</b> et choisis le fichier.</li><li>Vérifie que tout est là avant d'effacer l'ancien téléphone.</li></ol></details>
+      ${st.lastBk ? `<span class="foot">Dernière sauvegarde : le ${new Date(st.lastBk).toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"})}.</span>` : ""}
       <p class="foot">Garde le fichier dans un endroit sûr (ton Drive, tes fichiers, Reconnect). Sans le code, personne ne peut l'ouvrir, même pas toi : note-le quelque part. Pour le coffre-fort, il te faudra aussi ton code habituel.</p>`;
     const msg = box.querySelector("#bk-msg"), codeOf = () => box.querySelector("#bk-code").value.trim();
     box.querySelector("#bk-save").onclick = async () => {
@@ -1145,8 +1220,9 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
         const text = await makeBackup(code);
         const name = "sauvegarde-galere-academy-" + new Date().toISOString().slice(0,10) + ".galere";
         const file = new File([text], name, {type:"application/json"});
-        if(navigator.canShare && navigator.canShare({files:[file]})){ try{ await navigator.share({files:[file], title:"Ma sauvegarde Galère Academy"}); msg.textContent = "Sauvegarde prête. Range-la dans un endroit sûr."; return; }catch(e){ if(e && e.name === "AbortError"){ msg.textContent = ""; return; } } }
+        if(navigator.canShare && navigator.canShare({files:[file]})){ try{ await navigator.share({files:[file], title:"Ma sauvegarde Galère Academy"}); st.lastBk = Date.now(); save(); msg.textContent = "Sauvegarde prête. Range-la dans un endroit sûr."; return; }catch(e){ if(e && e.name === "AbortError"){ msg.textContent = ""; return; } } }
         const a = document.createElement("a"); a.href = URL.createObjectURL(file); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+        st.lastBk = Date.now(); save();
         msg.textContent = "Sauvegarde téléchargée : " + name + ". Si rien ne se passe, ouvre l'appli depuis son site (galere-academy.fr).";
       }catch(e){ msg.innerHTML = `<span class="err">La sauvegarde n'a pas pu être créée.</span>`; }
     };
@@ -1288,9 +1364,15 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
       const d = docs.find(x => x.id === b.dataset.v); if(!d) return;
       let url = ""; try{ url = URL.createObjectURL(new Blob([await unaes(d.iv, d.data)], {type:"image/jpeg"})); vUrls.push(url); }catch(err){ return; }
       const v = document.createElement("div"); v.className = "viewer"; v.setAttribute("role","dialog"); v.setAttribute("aria-label","Papier");
-      v.innerHTML = `<div class="vt"><b>${esc(d.cat==99?"Autre papier":GA.coffre[d.cat]||"Papier")}${d.note?" · "+esc(d.note):""}</b><button id="vx">Fermer</button></div><img src="${url}" alt="${esc(GA.coffre[d.cat]||"Papier")}"><div class="vt"><span style="font-size:.85rem">À montrer, pas à envoyer.</span><button id="vdel">Supprimer</button></div>`;
+      v.innerHTML = `<div class="vt"><b>${esc(d.cat==99?"Autre papier":GA.coffre[d.cat]||"Papier")}${d.note?" · "+esc(d.note):""}</b><button id="vx">Fermer</button></div><img src="${url}" alt="${esc(GA.coffre[d.cat]||"Papier")}"><div class="vt"><span style="font-size:.85rem">À montrer en priorité. À envoyer seulement à ton référent ou à un organisme officiel.</span><span style="display:flex;gap:8px">${navigator.canShare ? `<button id="vsh">Envoyer</button>` : ""}<button id="vdel">Supprimer</button></span></div>`;
       document.body.appendChild(v);
       v.querySelector("#vx").onclick = () => v.remove();
+      const vsh = v.querySelector("#vsh"); let shArmed = false;
+      if(vsh) vsh.onclick = async () => {
+        if(!shArmed){ shArmed = true; vsh.textContent = "Envoyer à qui ? Je confirme"; return; }
+        try{ const blob = await (await fetch(url)).blob(); const f = new File([blob], (GA.coffre[d.cat] || "papier").replace(/[^a-z0-9]+/gi,"-").toLowerCase() + ".jpg", {type:"image/jpeg"}); if(navigator.canShare({files:[f]})) await navigator.share({files:[f], title: GA.coffre[d.cat] || "Papier"}); }catch(err){}
+        shArmed = false; vsh.textContent = "Envoyer";
+      };
       let armed = false;
       v.querySelector("#vdel").onclick = async e => { if(!armed){ armed = true; e.target.textContent = "Confirmer la suppression"; return; } await store("readwrite", s => s.delete(d.id)); v.remove(); renderVault(); };
     });
@@ -1345,6 +1427,19 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
   const isoD = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
   const todayIso = () => isoD(new Date());
   const typeOf = id => GA.rdvTypes.find(t => t.id === id) || GA.rdvTypes[GA.rdvTypes.length-1];
+  function icsRdv(r){
+    if(!r) return;
+    const t = typeOf(r.type), e = v => String(v||"").replace(/\\/g,"\\\\").replace(/\n/g,"\\n").replace(/([,;])/g,"\\$1");
+    const d = r.date.replace(/-/g,""), pad = n => String(n).padStart(2,"0");
+    let start, end;
+    if(r.heure){ const [h,m] = r.heure.split(":").map(Number), fin = new Date(2000,0,1,h,m+60); start = "DTSTART:" + d + "T" + pad(h) + pad(m) + "00"; end = "DTEND:" + (fin.getDate() > 1 ? isoD(new Date(new Date(r.date+"T12:00").getTime()+86400000)).replace(/-/g,"") : d) + "T" + pad(fin.getHours()) + pad(fin.getMinutes()) + "00"; }
+    else { start = "DTSTART;VALUE=DATE:" + d; end = "DTEND;VALUE=DATE:" + isoD(new Date(new Date(r.date+"T12:00").getTime()+86400000)).replace(/-/g,""); }
+    const desc = [r.tel ? "Téléphone : " + r.tel : "", r.avec ? "Avec : " + r.avec : "", (r.docs||[]).length ? "À prendre : " + r.docs.map(x => x.t).join(", ") : "", r.notes || ""].filter(Boolean).join("\n");
+    const stamp = new Date().toISOString().replace(/[-:]/g,"").slice(0,15) + "Z";
+    const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Galere Academy//FR","CALSCALE:GREGORIAN","BEGIN:VEVENT","UID:" + r.id + "@galere-academy.fr","DTSTAMP:" + stamp, start, end, "SUMMARY:" + e((r.objet ? r.objet + " – " : "") + t.nom), r.lieu ? "LOCATION:" + e(r.lieu) : "", desc ? "DESCRIPTION:" + e(desc) : "", "BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:" + e("Rendez-vous demain : " + t.nom),"TRIGGER:-P1D","END:VALARM","BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:" + e("Rendez-vous dans 2 heures : " + t.nom),"TRIGGER:-PT2H","END:VALARM","END:VEVENT","END:VCALENDAR"].filter(Boolean).join("\r\n");
+    const name = "rdv-" + r.date + ".ics", file = new File([ics], name, {type:"text/calendar"});
+    const a = document.createElement("a"); a.href = URL.createObjectURL(file); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  }
   function rdvs(){ return (st.rdv || []).slice().sort((a,b) => (a.date+(a.heure||"")).localeCompare(b.date+(b.heure||""))); }
   function rdvCard(r){
     const t = typeOf(r.type), d = new Date(r.date+"T12:00");
@@ -1358,7 +1453,7 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
       <div class="meta">${r.lieu?`<span>📍 ${esc(r.lieu)}</span>`:""}${r.tel?`<span>📞 <span class="tel">${esc(r.tel)}</span></span>`:""}${r.avec?`<span>👤 ${esc(r.avec)}</span>`:""}</div>
       ${docs.length?`<div><span class="eyebrow">Je prends avec moi · ${ok}/${docs.length}</span></div><div class="docs">${docs.map((x,k)=>`<label class="chk"><input type="checkbox" data-rd="${r.id}" data-k="${k}" ${x.ok?"checked":""} id="rd-${r.id}-${k}"><span>${esc(x.t)}</span></label>`).join("")}</div>`:""}
       ${r.notes?`<p class="foot">${esc(r.notes)}</p>`:""}
-      <div class="row"><button class="btn ghost" data-edit="${r.id}" style="padding:8px 12px">Modifier</button><button class="btn ghost" data-del="${r.id}" style="padding:8px 12px">Supprimer</button></div>
+      <div class="row">${!past?`<button class="btn ghost" data-ics="${r.id}" style="padding:8px 12px">📅 Dans l'agenda du téléphone</button>`:""}<button class="btn ghost" data-edit="${r.id}" style="padding:8px 12px">Modifier</button><button class="btn ghost" data-del="${r.id}" style="padding:8px 12px">Supprimer</button></div>
     </div>`;
   }
   function vAgenda(){
@@ -1390,6 +1485,7 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
     $app.querySelector("#add").onclick = () => openForm(null);
     $app.querySelectorAll("[data-rd]").forEach(i => i.addEventListener("change", () => { const r = st.rdv.find(x => x.id === i.dataset.rd); r.docs[+i.dataset.k].ok = i.checked; save(); vAgenda(); }));
     $app.querySelectorAll("[data-edit]").forEach(b => b.onclick = () => openForm(st.rdv.find(x => x.id === b.dataset.edit)));
+    $app.querySelectorAll("[data-ics]").forEach(b => b.onclick = () => icsRdv(st.rdv.find(x => x.id === b.dataset.ics)));
     $app.querySelectorAll("[data-del]").forEach(b => b.onclick = () => { if(b.dataset.armed){ st.rdv = st.rdv.filter(x => x.id !== b.dataset.del); save(); vAgenda(); } else { b.dataset.armed = "1"; b.textContent = "Confirmer la suppression"; } });
     if(editR !== null) openForm(editR === "new" ? null : st.rdv.find(x=>x.id===editR));
   }
@@ -1472,7 +1568,6 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
   route();
 })();
 </script>
-
 <script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("../sw.js").catch(()=>{}));}</script>
 </body>
 </html>

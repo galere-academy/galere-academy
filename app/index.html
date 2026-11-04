@@ -903,7 +903,7 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
   }
 
   // ---------- ACCUEIL
-  let goBackup = false;
+  let goBackup = false, regOpen = false;
   function hasData(){ return Object.keys(st.checks||{}).length > 2 || (st.rdv||[]).length > 0 || Object.keys(st.contacts||{}).length > 0 || !!localStorage.getItem("galere-academy-vault"); }
   function bkBanner(){
     if(!st.onboarded || embedded || !storageOK || !hasData()) return "";
@@ -915,22 +915,15 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
   }
   function vAccueil(){
     const bd = birthdayBanner();
-    const m18 = monthsTo18(), ag = ageNow();
+    const m18 = monthsTo18(), ag = ageNow(), compact = !!(st.onboarded || st.prenom);
     const where = ag === null ? "" : m18 > 0 ? `Tes 18 ans : dans ${m18 < 1 ? "moins d'un mois" : m18 + " mois"}. Regarde ta feuille de route.` : ag < 21 ? `Tu as ${ag} ans. Ta feuille de route te dit quoi faire maintenant.` : "";
     $app.innerHTML = `${bd}${storageBanner()}${bkBanner()}
     <section class="hero">
       <span class="eyebrow">${st.prenom ? "Salut " + esc(st.prenom) + " 👋" : "Le parcours des 18-21 ans"}</span>
       <h1>Bienvenue à la <span class="mk">Galère Academy</span></h1>
-      <p class="lede">Les papiers, les sites, les numéros… c'est compliqué pour tout le monde. Ici, on ne te fait pas la leçon : on joue, on teste, on se trompe sans risque, et tu repars avec les bons réflexes.</p>
-      <div class="mosaic">${["sante","caf","impots","banque","logement","emploi","mdph","papiers","droits","qui"].map(k=>ico(k)).join("")}</div>
+      ${compact ? (where ? `<p class="lede">${where}</p>` : "") : `<p class="lede">Les papiers, les sites, les numéros… c'est compliqué pour tout le monde. Ici, on ne te fait pas la leçon : on joue, on teste, on se trompe sans risque, et tu repars avec les bons réflexes.</p>`}
+      ${compact ? "" : `<div class="mosaic">${["sante","caf","impots","banque","logement","emploi","mdph","papiers","droits","qui"].map(k=>ico(k)).join("")}</div>`}
     </section>
-    <div class="card" data-prog="all"></div>
-    <div class="card"><span class="eyebrow">Moi</span>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><label style="display:flex;flex-direction:column;gap:4px;font-size:.88rem;font-weight:700">Mon prénom<input type="text" id="me-prenom" value="${esc(st.prenom||"")}" placeholder="Facultatif" autocomplete="given-name"></label>
-      <label style="display:flex;flex-direction:column;gap:4px;font-size:.88rem;font-weight:700">Ma date de naissance<input type="date" id="me-naiss" value="${esc(st.naissance||"")}" style="font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 10px;min-width:0"></label></div>
-      <span class="foot">${where || "Facultatif : pour te souhaiter ton anniversaire et te dire où tu en es avant tes 18 ans. Reste sur ce téléphone."}</span></div>
-    <div class="card"><span class="eyebrow">Taille du texte</span><div class="fzrow">${[[1,"A"],[1.15,"A+"],[1.3,"A++"]].map(([v,l])=>`<button type="button" data-fz="${v}" aria-pressed="${(st.fz||1)==v}" style="font-size:${v}rem">${l}</button>`).join("")}</div><span class="foot">Dans chaque fiche, le bouton 🔊 Écouter lit le texte à voix haute.</span></div>
-    <div class="card"><span class="eyebrow">Où j'habite</span>${villeInput("ville0")}${depSelect("dep0")}<span class="foot">${st.loc ? "Tes partenaires les plus proches de " + esc(st.loc.nom) + " sont dans l'onglet Contacts." : "Tape ta ville puis choisis-la dans la liste : l'appli trouvera les partenaires les plus proches."}</span></div>
     <div class="grid" style="grid-template-columns:1fr">
       <a class="big-btn" href="#jeux"><div class="lft">${ico("vf","sante")}<div><strong>Jouer</strong><br><span>J'appelle qui ?, Vrai ou faux, Arnaque ou pas ?, Le mois de Sam</span></div></div><b class="go">›</b></a>
       <a class="big-btn" href="#fiches"><div class="lft">${ico("papiers")}<div><strong>Les fiches</strong><br><span>Santé, CAF, impôts, banque, logement, emploi, MDPH, papiers, droits</span></div></div><b class="go">›</b></a>
@@ -939,18 +932,27 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
       <a class="big-btn" href="#kit"><div class="lft">${ico("kit","banque")}<div><strong>Mon kit de survie</strong><br><span>Ce que je dois avoir, mon coffre-fort, mon budget</span></div></div><b class="go">›</b></a>
       <a class="big-btn" href="#contacts"><div class="lft">${ico("phone","logement")}<div><strong>Numéros et contacts</strong><br><span>Mes numéros (Sécu, CAF, impôts…), les numéros qui sauvent, les partenaires</span></div></div><b class="go">›</b></a>
     </div>
+    <div class="card" data-prog="all"></div>
+    <details class="card" id="reglages"${st.loc && !regOpen ? "" : " open"}><summary><b>⚙️ Mes réglages</b> <span class="foot">prénom, date de naissance, ville, taille du texte</span></summary><div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">
+    <div class="card" style="box-shadow:none"><span class="eyebrow">Moi</span>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><label style="display:flex;flex-direction:column;gap:4px;font-size:.88rem;font-weight:700">Mon prénom<input type="text" id="me-prenom" value="${esc(st.prenom||"")}" placeholder="Facultatif" autocomplete="given-name"></label>
+      <label style="display:flex;flex-direction:column;gap:4px;font-size:.88rem;font-weight:700">Ma date de naissance<input type="date" id="me-naiss" value="${esc(st.naissance||"")}" style="font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 10px;min-width:0"></label></div>
+      <span class="foot">${where || "Facultatif : pour te souhaiter ton anniversaire et te dire où tu en es avant tes 18 ans. Reste sur ce téléphone."}</span></div>
+    <div class="card" style="box-shadow:none"><span class="eyebrow">Taille du texte</span><div class="fzrow">${[[1,"A"],[1.15,"A+"],[1.3,"A++"]].map(([v,l])=>`<button type="button" data-fz="${v}" aria-pressed="${(st.fz||1)==v}" style="font-size:${v}rem">${l}</button>`).join("")}</div><span class="foot">Dans chaque fiche, le bouton 🔊 Écouter lit le texte à voix haute.</span></div>
+    <div class="card" style="box-shadow:none"><span class="eyebrow">Où j'habite</span>${villeInput("ville0")}${depSelect("dep0")}<span class="foot">${st.loc ? "Tes partenaires les plus proches de " + esc(st.loc.nom) + " sont dans l'onglet Contacts." : "Tape ta ville puis choisis-la dans la liste : l'appli trouvera les partenaires les plus proches."}</span></div>
+    </div></details>
     <details class="card"><summary><b>📲 Installer l'appli sur mon téléphone</b></summary><div class="instbox" style="margin-top:10px">${installHtml(isIOS() ? "ios" : "and")}</div></details>
     <div class="card" style="flex-direction:row;align-items:center;gap:14px">${ico("droits","droits",44)}<div><b style="font-family:var(--display)">Créée par des éducs et des ASS</b><br><span class="foot">Une appli pensée par des éducateurs et des assistants de service social de l'ASE, à partir de ce que les jeunes nous demandent vraiment.</span></div></div>
     <p class="foot">Informations à jour en novembre 2026. Les montants changent chaque année : vérifie sur ameli.fr, caf.fr, impots.gouv.fr ou service-public.fr. Cette appli ne remplace pas ton référent.</p>`;
     renderProg($app.querySelector("[data-prog]")); bindInstall($app);
-    $app.querySelectorAll("[data-fz]").forEach(b => b.onclick = () => { st.fz = +b.dataset.fz; save(); applyFz(); vAccueil(); });
+    $app.querySelectorAll("[data-fz]").forEach(b => b.onclick = () => { st.fz = +b.dataset.fz; save(); applyFz(); regOpen = true; vAccueil(); });
     const bkg = $app.querySelector("#bk-go"); if(bkg) bkg.onclick = () => { goBackup = true; };
     const bkl = $app.querySelector("#bk-later"); if(bkl) bkl.onclick = () => { st.bkSnooze = Date.now(); save(); vAccueil(); };
     $app.querySelector("#dep0").addEventListener("change", e => { st.dep = e.target.value; save(); });
     $app.querySelector("#go18").addEventListener("click", () => { openFiche = "droits"; });
     const b18 = $app.querySelector("#bd18"); if(b18) b18.addEventListener("click", () => { openFiche = "droits"; });
-    $app.querySelector("#me-prenom").addEventListener("change", e => { st.prenom = e.target.value.trim(); save(); vAccueil(); });
-    $app.querySelector("#me-naiss").addEventListener("change", e => { st.naissance = e.target.value; save(); vAccueil(); });
+    $app.querySelector("#me-prenom").addEventListener("change", e => { st.prenom = e.target.value.trim(); save(); regOpen = true; vAccueil(); });
+    $app.querySelector("#me-naiss").addEventListener("change", e => { st.naissance = e.target.value; save(); regOpen = true; vAccueil(); });
     if(bd){ const k = "bd-" + new Date().getFullYear(); if(!st[k]){ st[k] = 1; save(); setTimeout(confetti, 300); } }
     attachVille($app.querySelector("#ville0"), $app.querySelector("#ville0-sug"), () => { const s = $app.querySelector("#dep0"); if(s) s.value = st.dep; });
   }

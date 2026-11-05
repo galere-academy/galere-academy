@@ -17,6 +17,7 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <script>/* compteur de visites anonyme, sans cookie (GoatCounter) */(function(){if(location.hostname!=="galere-academy.fr")return;window.gcQ=window.gcQ||[];var s=document.createElement("script");s.async=true;s.src="https://gc.zgo.at/count.js";s.setAttribute("data-goatcounter","https://galere-academy.goatcounter.com/count");s.setAttribute("data-goatcounter-settings",'{"no_onload":true}');s.onload=function(){window.gcFlush=function(){var q=window.gcQ;while(q.length){var x=q.shift();try{window.goatcounter.count(x.event?{path:x.path,title:x.path,event:true}:{path:x.path});}catch(e){}}};window.gcFlush();};document.head.appendChild(s);})();</script>
 <script>/* compteur de visites anonyme, sans cookie (GoatCounter) */(function(){if(location.hostname!=="galere-academy.fr")return;window.gcQ=window.gcQ||[];var s=document.createElement("script");s.async=true;s.src="https://gc.zgo.at/count.js";s.setAttribute("data-goatcounter","https://galere-academy.goatcounter.com/count");s.setAttribute("data-goatcounter-settings",'{"no_onload":true}');s.onload=function(){window.gcFlush=function(){var q=window.gcQ;while(q.length){var x=q.shift();try{window.goatcounter.count(x.event?{path:x.path,title:x.path,event:true}:{path:x.path});}catch(e){}}};window.gcFlush();};document.head.appendChild(s);})();</script>
+<script>/* compteur de visites anonyme, sans cookie (GoatCounter) */(function(){if(location.hostname!=="galere-academy.fr")return;window.gcQ=window.gcQ||[];var s=document.createElement("script");s.async=true;s.src="https://gc.zgo.at/count.js";s.setAttribute("data-goatcounter","https://galere-academy.goatcounter.com/count");s.setAttribute("data-goatcounter-settings",'{"no_onload":true}');s.onload=function(){window.gcFlush=function(){var q=window.gcQ;while(q.length){var x=q.shift();try{window.goatcounter.count(x.event?{path:x.path,title:x.path,event:true}:{path:x.path});}catch(e){}}};window.gcFlush();};document.head.appendChild(s);})();</script>
 </head>
 <body>
 
@@ -87,7 +88,9 @@ nav.tabs a[aria-current="page"] .ic{background:var(--marker);color:var(--marker-
 .folder strong{font-family:var(--display);font-size:1.1rem;line-height:1.15}
 .folder span{color:var(--muted);font-size:.88rem}
 .folder .done{color:var(--ok);font-weight:700}
-.fgrid{display:grid;gap:30px 12px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));padding-top:22px}
+.fgrid{display:grid;gap:30px 12px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));padding-top:22px}
+.fgrid .folder .top{flex-direction:column;align-items:flex-start;gap:10px}
+.fgrid .folder strong{font-family:var(--display);font-size:1.02rem;line-height:1.2}
 .back{align-self:flex-start;background:none;border:0;padding:6px 0;color:var(--accent);font-weight:700}
 .bref{background:var(--marker);color:var(--marker-ink);border-radius:var(--r);padding:16px 16px 16px 18px;display:flex;flex-direction:column;gap:8px}
 .bref h3{font-size:1rem;text-transform:uppercase;letter-spacing:.06em}
@@ -967,13 +970,14 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
   let openFiche = null;
   function vFiches(){
     if(openFiche){ return vFiche(GA.fiches.find(f => f.id === openFiche)); }
-    $app.innerHTML = `<div class="fhead" data-c="papiers">${ico("papiers","papiers",52)}<div><span class="eyebrow">Ton classeur</span><h2>Les fiches</h2></div></div><p class="lede">Une fiche par thème. Ouvre une fiche pour lire l'essentiel et cocher ce que tu as fait.</p>
-    <h3>Les démarches pas à pas</h3>
-    <div class="filters">${GA.demarches.map(d=>`<button class="chip" data-dm="${d.id}" data-fid="${d.fiche}">${esc(d.titre.split(" (")[0])}</button>`).join("")}</div>
+    $app.innerHTML = `<div class="fhead" data-c="papiers">${ico("papiers","papiers",52)}<div><span class="eyebrow">Ton classeur</span><h2>Les fiches</h2></div></div><p class="lede">Une fiche par thème. Touche une fiche pour l'ouvrir.</p>
     <div class="fgrid">${GA.fiches.map(f => {
       const k = (f.faire||[]).map((t,i)=>f.id+"-"+i), d = nbDone(k);
       return `<button class="folder" data-c="${f.id}" data-n="${f.n === "0" ? "Départ" : f.n}" data-f="${f.id}"><div class="top">${ico(f.id,null,40)}<strong>${esc(f.titre)}</strong></div><span>${k.length ? (d === k.length ? `<span class="done">Tout est fait</span>` : `${d} / ${k.length} à faire`) : "À lire"}</span></button>`;
-    }).join("")}</div>`;
+    }).join("")}</div>
+    <h3 style="margin-top:8px">Les démarches pas à pas</h3>
+    <div class="filters">${GA.demarches.map(d=>`<button class="chip" data-dm="${d.id}" data-fid="${d.fiche}">${esc(d.titre.split(" (")[0])}</button>`).join("")}</div>
+    `;
     $app.querySelectorAll("[data-f]").forEach(b => b.onclick = () => { openFiche = b.dataset.f; vFiches(); window.scrollTo(0,0); });
     $app.querySelectorAll("[data-dm]").forEach(b => b.onclick = () => { stopSpeak(); openFiche = b.dataset.fid; vFiches(); const d = document.getElementById("dem-"+b.dataset.dm); if(d){ d.open = true; d.scrollIntoView({block:"start"}); } });
   }

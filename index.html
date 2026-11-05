@@ -144,6 +144,7 @@ footer b{color:var(--ink)}
 }
 @media (max-width:420px){.prom{grid-template-columns:1fr}.cta .btn{width:100%}}
 </style>
+<script>/* compteur de visites anonyme, sans cookie (GoatCounter) */(function(){if(location.hostname!=="galere-academy.fr")return;window.gcQ=window.gcQ||[];var s=document.createElement("script");s.async=true;s.src="https://gc.zgo.at/count.js";s.setAttribute("data-goatcounter","https://galere-academy.goatcounter.com/count");s.onload=function(){window.gcFlush=function(){var q=window.gcQ;while(q.length){var x=q.shift();try{window.goatcounter.count(x.event?{path:x.path,title:x.path,event:true}:{path:x.path});}catch(e){}}};window.gcFlush();};document.head.appendChild(s);})();</script>
 </head>
 <body>
 
@@ -163,15 +164,15 @@ footer b{color:var(--ink)}
       <h1>Tes papiers à 18 ans, <span class="mk">sans la galère</span>.</h1>
       <p class="lead">CAF, sécu, impôts, logement, carte d'identité… L'appli t'explique tout, étape par étape, et te dit qui appeler près de chez toi.</p>
       <div class="cta">
-        <a class="btn btn-y" href="#installer">📲 Installer l'appli</a>
-        <a class="btn btn-w" href="app/">Ouvrir sans installer →</a>
+        <a class="btn btn-y" href="#installer" data-goatcounter-click="clic-installer-haut">📲 Installer l'appli</a>
+        <a class="btn btn-w" href="app/" data-goatcounter-click="clic-ouvrir-sans-installer">Ouvrir sans installer →</a>
       </div>
       <p class="mini">Tes infos restent sur ton téléphone. Personne d'autre ne les voit.</p>
     </div>
     <div class="phone">
       <span class="sticker">42 secondes, promis</span>
       <video id="pub" src="media/pub.mp4" poster="media/pub.jpg" autoplay muted loop playsinline preload="metadata"></video>
-      <button class="sound" id="snd" type="button">🔊 Mettre le son</button>
+      <button class="sound" id="snd" type="button" data-goatcounter-click="video-son">🔊 Mettre le son</button>
     </div>
   </div>
 </div>
@@ -240,7 +241,7 @@ footer b{color:var(--ink)}
   <div class="wrap">
     <p class="kicker rv">Nos promesses</p>
     <h2 class="rv">Ton téléphone, tes infos.</h2>
-    <p class="sub rv">Pas de compte à créer, pas de pub, pas de données envoyées. On n'a même pas de serveur pour les stocker.</p>
+    <p class="sub rv">Pas de compte à créer, pas de pub. Ce que tu notes ne quitte jamais ton téléphone : on n'a même pas de serveur pour le stocker. On compte seulement les visites, sans cookie et sans savoir qui tu es.</p>
     <div class="prom">
       <div class="pr rv"><div class="e">🆓</div><b>Gratuite</b><span>Pour toujours, sans pub.</span></div>
       <div class="pr rv"><div class="e">🙅</div><b>Sans compte</b><span>Ni mail, ni mot de passe.</span></div>
@@ -258,7 +259,7 @@ footer b{color:var(--ink)}
       <div class="qr"><img src="media/qr.svg" alt="QR code vers galere-academy.fr"><p>Scanne avec ton téléphone</p></div>
       <div>
         <div id="bipzone" hidden>
-          <button class="btn btn-y" id="bip" type="button">📲 Installer Galère Academy</button>
+          <button class="btn btn-y" id="bip" type="button" data-goatcounter-click="clic-installer-bouton">📲 Installer Galère Academy</button>
           <p class="mini" style="color:var(--muted)">Un clic, et l'icône arrive sur ton écran d'accueil.</p>
         </div>
         <div id="done" class="okmsg" hidden>✅ C'est installé ! Cherche l'icône « Galère Academy » sur ton écran d'accueil.</div>
@@ -294,6 +295,7 @@ footer b{color:var(--ink)}
   <div class="wrap">
     <p><b>Galère Academy</b> · Créée par des éducs et des ASS de l'ASE</p>
     <p>Gratuite, sans pub, sans compte. Tes données restent sur ton appareil.</p>
+    <p style="font-size:13px">Pour savoir si l'appli est utile, on compte les visites de façon anonyme (GoatCounter : sans cookie, sans adresse IP enregistrée, serveurs en Europe).</p>
   </div>
 </footer>
 

@@ -15,6 +15,8 @@
 <meta name="apple-mobile-web-app-title" content="Galère Academy">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<script>/* compteur de visites anonyme, sans cookie (GoatCounter) */(function(){if(location.hostname!=="galere-academy.fr")return;window.gcQ=window.gcQ||[];var s=document.createElement("script");s.async=true;s.src="https://gc.zgo.at/count.js";s.setAttribute("data-goatcounter","https://galere-academy.goatcounter.com/count");s.setAttribute("data-goatcounter-settings",'{"no_onload":true}');s.onload=function(){window.gcFlush=function(){var q=window.gcQ;while(q.length){var x=q.shift();try{window.goatcounter.count(x.event?{path:x.path,title:x.path,event:true}:{path:x.path});}catch(e){}}};window.gcFlush();};document.head.appendChild(s);})();</script>
+<script>/* compteur de visites anonyme, sans cookie (GoatCounter) */(function(){if(location.hostname!=="galere-academy.fr")return;window.gcQ=window.gcQ||[];var s=document.createElement("script");s.async=true;s.src="https://gc.zgo.at/count.js";s.setAttribute("data-goatcounter","https://galere-academy.goatcounter.com/count");s.setAttribute("data-goatcounter-settings",'{"no_onload":true}');s.onload=function(){window.gcFlush=function(){var q=window.gcQ;while(q.length){var x=q.shift();try{window.goatcounter.count(x.event?{path:x.path,title:x.path,event:true}:{path:x.path});}catch(e){}}};window.gcFlush();};document.head.appendChild(s);})();</script>
 </head>
 <body>
 
@@ -730,8 +732,12 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
   let st = {checks:{}, contacts:{}, budget:{}, best:{}};
   try{ const s = JSON.parse(localStorage.getItem(KEY) || "null"); if(s) st = Object.assign(st, s); }catch(e){}
   const save = () => { try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} };
+  // compteur de visites anonyme (GoatCounter, sans cookie) : seulement sur galere-academy.fr
+  const gc = (path, ev) => { try{ (window.gcQ = window.gcQ || []).push({path, event: !!ev}); if(window.gcFlush) window.gcFlush(); }catch(e){} };
   const applyFz = () => { try{ document.documentElement.style.setProperty("--fz", st.fz || 1); }catch(e){} };
   applyFz();
+  setTimeout(() => { if(standalone()) gc("ouverture-appli-installee", 1); }, 0);
+  try{ addEventListener("appinstalled", () => gc("installation", 1)); }catch(e){}
   // lecture à voix haute
   const canSpeak = () => { try{ return "speechSynthesis" in window && "SpeechSynthesisUtterance" in window; }catch(e){ return false; } };
   let speakBtn = null;
@@ -862,7 +868,7 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
   const bipBtn = () => bip ? `<button type="button" class="btn" id="bipbtn" style="margin-bottom:10px">📲 Installer l'appli maintenant</button>` : "";
   const standalone = () => { try{ return matchMedia("(display-mode: standalone)").matches || navigator.standalone === true; }catch(e){ return false; } };
   function bindInstall(root){
-    const bb = root.querySelector("#bipbtn"); if(bb) bb.onclick = async () => { if(!bip) return; bip.prompt(); try{ await bip.userChoice; }catch(e){} bip = null; bb.remove(); };
+    const bb = root.querySelector("#bipbtn"); if(bb) bb.onclick = async () => { if(!bip) return; bip.prompt(); try{ const c = await bip.userChoice; if(c && c.outcome === "accepted") gc("installation-bouton", 1); }catch(e){} bip = null; bb.remove(); };
     root.querySelectorAll("[data-os]").forEach(b => b.onclick = () => { const box = b.closest(".instbox"); box.innerHTML = installHtml(b.dataset.os); bindInstall(box); });
   }
   function vInstaller(){
@@ -1016,12 +1022,14 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
       let t = "";
       if(k === "f"){ t = [f.titre + ".", ...f.bref, f.note || "", f.liste ? f.liste.titre + ". " + f.liste.items.join(" ") : "", f.aide ? "Qui peut m'aider ? " + f.aide : ""].join(" "); }
       else { const d = GA.demarches.find(x => x.id === id); if(!d) return; t = [d.titre + ".", "Quand ? " + d.quand, "Étape par étape.", ...d.etapes.map((e,i) => "Étape " + (i+1) + ". " + e), "Les papiers à préparer : " + d.pieces.join(", ") + ".", d.astuce ? "Astuce. " + d.astuce : ""].join(" "); }
+      if(speakBtn !== b) gc("ecouter", 1);
       speak(t, b);
     });
     const shr = $app.querySelector("#mj-share"); if(shr) shr.onclick = () => {
       const lines = [], todo = [];
       GA.majorite.forEach((ph,i) => ph.items.forEach((x,j) => (st.checks["mj-"+i+"-"+j] ? lines : todo).push("- " + x.t)));
       const txt = `Ma feuille de route Galère Academy${st.prenom ? " (" + st.prenom + ")" : ""} : ${lines.length} étapes faites sur ${lines.length + todo.length}.\n\nC'est fait :\n${lines.join("\n") || "- rien pour l'instant"}\n\nIl me reste :\n${todo.join("\n") || "- tout est fait !"}`;
+      gc("partage-referent", 1);
       shareText("Ma feuille de route", txt, $app.querySelector("#mj-msg"));
     };
     $app.querySelectorAll("[data-godm]").forEach(b => b.onclick = () => { const dm = GA.demarches.find(x => x.id === b.dataset.godm); if(!dm) return; openFiche = dm.fiche; vFiches(); const el = document.getElementById("dem-"+dm.id); if(el){ el.open = true; el.scrollIntoView({block:"start"}); } });
@@ -1222,9 +1230,9 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
         const text = await makeBackup(code);
         const name = "sauvegarde-galere-academy-" + new Date().toISOString().slice(0,10) + ".galere";
         const file = new File([text], name, {type:"application/json"});
-        if(navigator.canShare && navigator.canShare({files:[file]})){ try{ await navigator.share({files:[file], title:"Ma sauvegarde Galère Academy"}); st.lastBk = Date.now(); save(); msg.textContent = "Sauvegarde prête. Range-la dans un endroit sûr."; return; }catch(e){ if(e && e.name === "AbortError"){ msg.textContent = ""; return; } } }
+        if(navigator.canShare && navigator.canShare({files:[file]})){ try{ await navigator.share({files:[file], title:"Ma sauvegarde Galère Academy"}); st.lastBk = Date.now(); save(); gc("sauvegarde", 1); msg.textContent = "Sauvegarde prête. Range-la dans un endroit sûr."; return; }catch(e){ if(e && e.name === "AbortError"){ msg.textContent = ""; return; } } }
         const a = document.createElement("a"); a.href = URL.createObjectURL(file); a.download = name; document.body.appendChild(a); a.click(); a.remove();
-        st.lastBk = Date.now(); save();
+        st.lastBk = Date.now(); save(); gc("sauvegarde", 1);
         msg.textContent = "Sauvegarde téléchargée : " + name + ". Si rien ne se passe, ouvre l'appli depuis son site (galere-academy.fr).";
       }catch(e){ msg.innerHTML = `<span class="err">La sauvegarde n'a pas pu être créée.</span>`; }
     };
@@ -1439,6 +1447,7 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
     const desc = [r.tel ? "Téléphone : " + r.tel : "", r.avec ? "Avec : " + r.avec : "", (r.docs||[]).length ? "À prendre : " + r.docs.map(x => x.t).join(", ") : "", r.notes || ""].filter(Boolean).join("\n");
     const stamp = new Date().toISOString().replace(/[-:]/g,"").slice(0,15) + "Z";
     const ics = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Galere Academy//FR","CALSCALE:GREGORIAN","BEGIN:VEVENT","UID:" + r.id + "@galere-academy.fr","DTSTAMP:" + stamp, start, end, "SUMMARY:" + e((r.objet ? r.objet + " – " : "") + t.nom), r.lieu ? "LOCATION:" + e(r.lieu) : "", desc ? "DESCRIPTION:" + e(desc) : "", "BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:" + e("Rendez-vous demain : " + t.nom),"TRIGGER:-P1D","END:VALARM","BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:" + e("Rendez-vous dans 2 heures : " + t.nom),"TRIGGER:-PT2H","END:VALARM","END:VEVENT","END:VCALENDAR"].filter(Boolean).join("\r\n");
+    gc("agenda-telephone", 1);
     const name = "rdv-" + r.date + ".ics", file = new File([ics], name, {type:"text/calendar"});
     const a = document.createElement("a"); a.href = URL.createObjectURL(file); a.download = name; document.body.appendChild(a); a.click(); a.remove();
   }
@@ -1556,14 +1565,14 @@ const ico = (k, c, s) => `<span class="ico" data-c="${c||k}" ${s?`style="--s:${s
 
   const VIEWS = {accueil:vAccueil, fiches:vFiches, jeux:vJeux, agenda:vAgenda, kit:vKit, contacts:vContacts};
   function route(){
-    if(!st.installSeen && !standalone() && !st.onboarded && !(st.prenom || st.naissance || st.loc)){ vInstaller(); return; }
-    if(!st.onboarded && !(st.prenom || st.naissance || st.loc)){ vBienvenue(); return; }
+    if(!st.installSeen && !standalone() && !st.onboarded && !(st.prenom || st.naissance || st.loc)){ vInstaller(); gc("/app/installer"); return; }
+    if(!st.onboarded && !(st.prenom || st.naissance || st.loc)){ vBienvenue(); gc("/app/bienvenue"); return; }
     document.querySelector("nav.tabs").hidden = false;
     const v = (location.hash||"").replace("#","");
     const name = VIEWS[v] ? v : "accueil";
     document.querySelectorAll("nav.tabs a").forEach(a => a.setAttribute("aria-current", a.dataset.v === name ? "page" : "false"));
     if(name !== "fiches") openFiche = null; if(name !== "agenda") editR = null; if(name !== "kit" && vKey) vLock();
-    VIEWS[name](); window.scrollTo(0,0);
+    VIEWS[name](); window.scrollTo(0,0); gc("/app/" + name);
   }
   window.addEventListener("hashchange", route);
   document.querySelectorAll("nav.tabs a").forEach(a => a.addEventListener("click", () => { if(a.dataset.v === "jeux") game = null; if(a.dataset.v==="fiches") openFiche = null; if(location.hash === "#"+a.dataset.v) route(); }));

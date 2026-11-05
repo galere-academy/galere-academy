@@ -16,9 +16,7 @@
 <meta property="og:title" content="Galère Academy">
 <meta property="og:description" content="Les papiers à 18 ans, sans la galère. Gratuit, sans compte.">
 <meta property="og:image" content="https://galere-academy.fr/media/pub.jpg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<link rel="stylesheet" href="fonts/fonts.css">
 <style>
 :root{
   --navy:#15213b; --navy2:#1d2c4f; --bg:#f3f5fa; --surface:#fff; --ink:#15213b; --muted:#56627a; --line:#d9dfeb;
@@ -144,7 +142,7 @@ footer b{color:var(--ink)}
 }
 @media (max-width:420px){.prom{grid-template-columns:1fr}.cta .btn{width:100%}}
 </style>
-<script>/* compteur de visites anonyme, sans cookie (GoatCounter) */(function(){if(location.hostname!=="galere-academy.fr")return;window.gcQ=window.gcQ||[];var s=document.createElement("script");s.async=true;s.src="https://gc.zgo.at/count.js";s.setAttribute("data-goatcounter","https://galere-academy.goatcounter.com/count");s.onload=function(){window.gcFlush=function(){var q=window.gcQ;while(q.length){var x=q.shift();try{window.goatcounter.count(x.event?{path:x.path,title:x.path,event:true}:{path:x.path});}catch(e){}}};window.gcFlush();};document.head.appendChild(s);})();</script>
+<script>/* compteur de visites anonyme, sans cookie (GoatCounter) */(function(){if(location.hostname!=="galere-academy.fr")return;try{if(localStorage.getItem("skipgc")==="t")return;}catch(e){}window.gcQ=window.gcQ||[];var s=document.createElement("script");s.async=true;s.src="https://gc.zgo.at/count.js";s.setAttribute("data-goatcounter","https://galere-academy.goatcounter.com/count");s.onload=function(){window.gcFlush=function(){var q=window.gcQ;while(q.length){var x=q.shift();try{window.goatcounter.count(x.event?{path:x.path,title:x.path,event:true}:{path:x.path});}catch(e){}}};window.gcFlush();};document.head.appendChild(s);})();</script>
 </head>
 <body>
 
@@ -296,6 +294,7 @@ footer b{color:var(--ink)}
     <p><b>Galère Academy</b> · Créée par des éducs et des ASS de l'ASE</p>
     <p>Gratuite, sans pub, sans compte. Tes données restent sur ton appareil.</p>
     <p style="font-size:13px">Pour savoir si l'appli est utile, on compte les visites de façon anonyme (GoatCounter : sans cookie, sans adresse IP enregistrée, serveurs en Europe).</p>
+    <p style="font-size:13px"><a href="mentions-legales.html">Mentions légales et confidentialité</a></p>
   </div>
 </footer>
 

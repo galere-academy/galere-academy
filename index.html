@@ -118,6 +118,8 @@ h2{font-size:clamp(30px,4.4vw,46px);font-weight:800;max-width:20ch}
 ol.steps{margin:0;padding:0;list-style:none;counter-reset:s}
 ol.steps li{counter-increment:s;display:flex;gap:12px;align-items:flex-start;margin:10px 0}
 ol.steps li::before{content:counter(s);flex:none;width:28px;height:28px;border-radius:50%;background:var(--marker);color:#15213b;font:800 15px/28px var(--display);text-align:center}
+.ivid{margin-top:18px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.ivid video{width:100%;max-width:300px;border-radius:20px;background:#15213b;box-shadow:0 14px 30px rgba(21,33,59,.25)}
 .okmsg{background:#e2f4ea;color:#14633f;border-radius:14px;padding:12px 16px;font-weight:700;margin-top:14px}
 footer{padding:40px 0 60px;color:var(--muted);font-size:15px;text-align:center}
 footer b{color:var(--ink)}
@@ -283,6 +285,10 @@ footer b{color:var(--ink)}
           <li><span>Ou tape <b>galere-academy.fr</b> sur ton téléphone.</span></li>
           <li><span>Tu peux aussi l'utiliser ici : <a href="app/"><b>ouvrir l'appli sur l'ordinateur</b></a>.</span></li>
         </ol>
+        <div class="ivid" id="ivid">
+          <video id="ivideo" src="media/install-ios.mp4" poster="media/install-ios.jpg" controls playsinline preload="none"></video>
+          <p class="mini" style="color:var(--muted)">La vidéo montre chaque geste, en 24 secondes (avec le son, c'est mieux).</p>
+        </div>
         <div class="cta" style="margin-top:22px"><a class="btn btn-n" href="app/">Ouvrir l'appli maintenant →</a></div>
       </div>
     </div>
@@ -305,7 +311,7 @@ footer b{color:var(--ink)}
   s.onclick = function(){ v.muted = !v.muted; if(!v.muted){ v.currentTime = 0; v.play(); } s.textContent = v.muted ? "🔊 Mettre le son" : "🔇 Couper le son"; };
   // onglets selon l'appareil
   var ua = navigator.userAgent, isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1), isAnd = /Android/.test(ua);
-  function show(t){ document.querySelectorAll(".tabs button").forEach(function(b){ b.setAttribute("aria-selected", b.dataset.t === t); }); document.querySelectorAll("ol.steps").forEach(function(o){ o.hidden = o.dataset.p !== t; }); }
+  function show(t){ document.querySelectorAll(".tabs button").forEach(function(b){ b.setAttribute("aria-selected", b.dataset.t === t); }); document.querySelectorAll("ol.steps").forEach(function(o){ o.hidden = o.dataset.p !== t; }); var iv = document.getElementById("ivideo"), w = document.getElementById("ivid"); if(iv){ var os = t === "android" ? "android" : "ios"; if(iv.dataset.os !== os){ iv.dataset.os = os; iv.src = "media/install-" + os + ".mp4"; iv.poster = "media/install-" + os + ".jpg"; } } }
   document.querySelectorAll(".tabs button").forEach(function(b){ b.onclick = function(){ show(b.dataset.t); }; });
   show(isIOS ? "iphone" : isAnd ? "android" : "pc");
   // bouton d'installation (Android, Chrome, Edge)
